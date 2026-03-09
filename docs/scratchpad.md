@@ -227,3 +227,4 @@
   - Not recommended gap: если разница по primary хуже, чем `--not-recommended-gap`.
     - Сейчас: `--not-recommended-gap 0.005`.
   - Confirm streak: рекомендация `PROMOTE_RECOMMENDED` только после `--confirm-streak 2` окон подряд.
+  - Проверка promotable (`/api/rl/policy/exists`) должна URL-энкодить `version` (символ `+` в `+00:00`), иначе `exists` может стать false.

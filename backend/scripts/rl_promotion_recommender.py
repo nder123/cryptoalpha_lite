@@ -47,11 +47,8 @@ def _read_json(url: str, timeout_seconds: float = 5.0) -> dict[str, Any]:
 def _is_promotable(api_base: str, policy_version: str, timeout_seconds: float) -> bool:
     if not policy_version:
         return False
-    url = (
-        api_base.rstrip("/")
-        + "/api/rl/policy/exists?version="
-        + urllib.parse.quote(policy_version)
-    )
+    query = urllib.parse.urlencode({"version": policy_version})
+    url = api_base.rstrip("/") + "/api/rl/policy/exists?" + query
     try:
         data = _read_json(url, timeout_seconds=timeout_seconds)
     except Exception:
