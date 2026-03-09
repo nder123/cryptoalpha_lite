@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "composite": true,
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "allowJs": false,
+        "esModuleInterop": true,
+        "types": [
+            "vite/client",
+            "vitest/globals"
+        ],
+        "lib": [
+            "ES2021"
+        ],
+        "target": "ES2021"
+    },
+    "include": [
+        "vite.config.ts",
+        "tailwind.config.ts",
+        "postcss.config.js"
+    ]
+}

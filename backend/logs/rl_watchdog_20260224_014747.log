@@ -1,0 +1,1 @@
+2026-02-23T22:47:47+00:00  watchdog_start  cmd=/usr/bin/python3 /home/ander/CascadeProjects/cryptoalpha_lite/backend/scripts/rl_baseline_helper.py --api-base http://127.0.0.1:8000 --interval 60.0 --min-trades 20 --top 10 --timeout 5.0 --since 2026-02-23T17:39:10.184750Z

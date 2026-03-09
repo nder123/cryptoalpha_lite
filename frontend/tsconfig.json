@@ -1,0 +1,21 @@
+{
+    "extends": "./tsconfig.node.json",
+    "compilerOptions": {
+        "jsx": "react-jsx",
+        "types": [
+            "vite/client",
+            "vitest/globals"
+        ],
+        "lib": [
+            "ES2021",
+            "DOM"
+        ]
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

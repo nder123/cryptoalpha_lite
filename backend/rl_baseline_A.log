@@ -1,0 +1,1264 @@
+ts=2026-02-19T16:13:58+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.6445884,
+    "avg_pnl_pct": 0.012083907531380753,
+    "total_trades": 2390,
+    "winning_trades": 1182,
+    "win_rate": 0.49456066945606697,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2392
+}
+----
+ts=2026-02-19T16:18:58+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64470008,
+    "avg_pnl_pct": 0.012098825595984944,
+    "total_trades": 2391,
+    "winning_trades": 1183,
+    "win_rate": 0.49477206189878714,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2393
+}
+----
+ts=2026-02-19T16:23:58+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64476222,
+    "avg_pnl_pct": 0.01210489966555184,
+    "total_trades": 2392,
+    "winning_trades": 1184,
+    "win_rate": 0.49498327759197325,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2394
+}
+----
+ts=2026-02-19T16:28:58+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64468359,
+    "avg_pnl_pct": 0.012085759715837861,
+    "total_trades": 2393,
+    "winning_trades": 1184,
+    "win_rate": 0.4947764312578354,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2395
+}
+----
+ts=2026-02-19T16:33:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64473748,
+    "avg_pnl_pct": 0.01209034837092732,
+    "total_trades": 2394,
+    "winning_trades": 1185,
+    "win_rate": 0.4949874686716792,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2396
+}
+----
+ts=2026-02-19T16:38:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64493472,
+    "avg_pnl_pct": 0.01212054070981211,
+    "total_trades": 2395,
+    "winning_trades": 1186,
+    "win_rate": 0.4951983298538622,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2397
+}
+----
+ts=2026-02-19T16:43:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64474249,
+    "avg_pnl_pct": 0.012081109348914858,
+    "total_trades": 2396,
+    "winning_trades": 1186,
+    "win_rate": 0.494991652754591,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2398
+}
+----
+ts=2026-02-19T16:48:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64499223,
+    "avg_pnl_pct": 0.012120682102628285,
+    "total_trades": 2397,
+    "winning_trades": 1187,
+    "win_rate": 0.4952023362536504,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2399
+}
+----
+ts=2026-02-19T16:53:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64518312,
+    "avg_pnl_pct": 0.012149699749791493,
+    "total_trades": 2398,
+    "winning_trades": 1188,
+    "win_rate": 0.4954128440366973,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2400
+}
+----
+ts=2026-02-19T16:58:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64516877,
+    "avg_pnl_pct": 0.012142074614422677,
+    "total_trades": 2399,
+    "winning_trades": 1188,
+    "win_rate": 0.4952063359733222,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2401
+}
+----
+ts=2026-02-19T17:03:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T13:08:15.014100+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64550297,
+    "avg_pnl_pct": 0.012196661666666667,
+    "total_trades": 2400,
+    "winning_trades": 1189,
+    "win_rate": 0.49541666666666667,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2402
+}
+----
+ts=2026-02-19T17:08:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64548764,
+    "avg_pnl_pct": 0.012188851311953353,
+    "total_trades": 2401,
+    "winning_trades": 1189,
+    "win_rate": 0.495210329029571,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2403
+}
+----
+ts=2026-02-19T17:13:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64542712,
+    "avg_pnl_pct": 0.012172992089925063,
+    "total_trades": 2402,
+    "winning_trades": 1189,
+    "win_rate": 0.49500416319733553,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2404
+}
+----
+ts=2026-02-19T17:18:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64570953,
+    "avg_pnl_pct": 0.012218263836870578,
+    "total_trades": 2403,
+    "winning_trades": 1190,
+    "win_rate": 0.49521431543903455,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2405
+}
+----
+ts=2026-02-19T17:23:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64556346,
+    "avg_pnl_pct": 0.012187143926788685,
+    "total_trades": 2404,
+    "winning_trades": 1190,
+    "win_rate": 0.4950083194675541,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2406
+}
+----
+ts=2026-02-19T17:28:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64574331,
+    "avg_pnl_pct": 0.012214195426195427,
+    "total_trades": 2405,
+    "winning_trades": 1191,
+    "win_rate": 0.49521829521829525,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2407
+}
+----
+ts=2026-02-19T17:33:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64562414,
+    "avg_pnl_pct": 0.01218784995843724,
+    "total_trades": 2406,
+    "winning_trades": 1191,
+    "win_rate": 0.49501246882793015,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2408
+}
+----
+ts=2026-02-19T17:38:59+03:00
+{
+  "policy": {
+    "version": "2026-02-19T14:08:16.074045+00:00",
+    "architecture": "lstm_actor_critic",
+    "threshold": 0.7,
+    "input_size": 37,
+    "hidden_size": 64,
+    "action_size": 3
+  },
+  "latest": {
+    "timestamp": "2026-02-18T18:39:20.468996Z",
+    "total_trades": 22,
+    "win_rate": 0.3181818181818182,
+    "sharpe_ratio": -0.33962741555402665,
+    "max_drawdown": -0.46055999999999997,
+    "losses_last_window": 15,
+    "last_trade_pnl_pct": -0.091881,
+    "last_trade_reward": -0.5459405
+  },
+  "closed": {
+    "total_pnl_usdt": 8.64531033,
+    "avg_pnl_pct": 0.012126819277108434,
+    "total_trades": 2407,
+    "winning_trades": 1191,
+    "win_rate": 0.4948068134607395,
+    "avg_rr": 7.700088616959064
+  },
+  "exp": 2409
+}
+----
+ts=2026-02-19T17:44:38+03:00
+{
+  "policy": "2026-02-19T14:08:16.074045+00:00",
+  "last_trained_at": "2026-02-19T14:08:16.083408Z",
+  "exp": 2410,
+  "last_close": "2026-02-19T14:44:19.374012Z",
+  "closed": {
+    "total_pnl_usdt": 8.64554857,
+    "avg_pnl_pct": 0.012159161892901619,
+    "total_trades": 2409,
+    "winning_trades": 1192,
+    "win_rate": 0.49481112494811125,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T17:49:38+03:00
+{
+  "policy": "2026-02-19T14:08:16.074045+00:00",
+  "last_trained_at": "2026-02-19T14:08:16.083408Z",
+  "exp": 2411,
+  "last_close": "2026-02-19T14:49:19.880893Z",
+  "closed": {
+    "total_pnl_usdt": 8.64550066,
+    "avg_pnl_pct": 0.012145585892116183,
+    "total_trades": 2410,
+    "winning_trades": 1192,
+    "win_rate": 0.4946058091286307,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T17:54:38+03:00
+{
+  "policy": "2026-02-19T14:08:16.074045+00:00",
+  "last_trained_at": "2026-02-19T14:08:16.083408Z",
+  "exp": 2412,
+  "last_close": "2026-02-19T14:54:19.909281Z",
+  "closed": {
+    "total_pnl_usdt": 8.64577927,
+    "avg_pnl_pct": 0.012190130236416425,
+    "total_trades": 2411,
+    "winning_trades": 1193,
+    "win_rate": 0.4948154292824554,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T17:59:38+03:00
+{
+  "policy": "2026-02-19T14:08:16.074045+00:00",
+  "last_trained_at": "2026-02-19T14:08:16.083408Z",
+  "exp": 2413,
+  "last_close": "2026-02-19T14:59:19.310853Z",
+  "closed": {
+    "total_pnl_usdt": 8.64575753,
+    "avg_pnl_pct": 0.012181214344941956,
+    "total_trades": 2412,
+    "winning_trades": 1193,
+    "win_rate": 0.49461028192371476,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:04:38+03:00
+{
+  "policy": "2026-02-19T14:08:16.074045+00:00",
+  "last_trained_at": "2026-02-19T14:08:16.083408Z",
+  "exp": 2414,
+  "last_close": "2026-02-19T15:04:19.733016Z",
+  "closed": {
+    "total_pnl_usdt": 8.64608559,
+    "avg_pnl_pct": 0.012234478657273104,
+    "total_trades": 2413,
+    "winning_trades": 1194,
+    "win_rate": 0.49481972648155825,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:09:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2415,
+  "last_close": "2026-02-19T15:09:19.275270Z",
+  "closed": {
+    "total_pnl_usdt": 8.64611503,
+    "avg_pnl_pct": 0.012234634631317316,
+    "total_trades": 2414,
+    "winning_trades": 1195,
+    "win_rate": 0.49502899751449875,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:14:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2416,
+  "last_close": "2026-02-19T15:14:19.249685Z",
+  "closed": {
+    "total_pnl_usdt": 8.64610943,
+    "avg_pnl_pct": 0.012228574741200829,
+    "total_trades": 2415,
+    "winning_trades": 1195,
+    "win_rate": 0.494824016563147,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:19:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2417,
+  "last_close": "2026-02-19T15:19:19.898950Z",
+  "closed": {
+    "total_pnl_usdt": 8.64617895,
+    "avg_pnl_pct": 0.012235859271523179,
+    "total_trades": 2416,
+    "winning_trades": 1196,
+    "win_rate": 0.49503311258278143,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:24:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2418,
+  "last_close": "2026-02-19T15:24:19.284220Z",
+  "closed": {
+    "total_pnl_usdt": 8.64616726,
+    "avg_pnl_pct": 0.012228723210591642,
+    "total_trades": 2417,
+    "winning_trades": 1196,
+    "win_rate": 0.4948282995448904,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:29:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2419,
+  "last_close": "2026-02-19T15:29:19.376971Z",
+  "closed": {
+    "total_pnl_usdt": 8.64623099,
+    "avg_pnl_pct": 0.012234953680727875,
+    "total_trades": 2418,
+    "winning_trades": 1197,
+    "win_rate": 0.49503722084367247,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:34:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2420,
+  "last_close": "2026-02-19T15:34:19.289918Z",
+  "closed": {
+    "total_pnl_usdt": 8.64628381,
+    "avg_pnl_pct": 0.012239257131045888,
+    "total_trades": 2419,
+    "winning_trades": 1198,
+    "win_rate": 0.49524596940884663,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:39:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2421,
+  "last_close": "2026-02-19T15:39:19.288794Z",
+  "closed": {
+    "total_pnl_usdt": 8.64643064,
+    "avg_pnl_pct": 0.012260247107438017,
+    "total_trades": 2420,
+    "winning_trades": 1199,
+    "win_rate": 0.4954545454545455,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:44:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2422,
+  "last_close": "2026-02-19T15:44:19.309455Z",
+  "closed": {
+    "total_pnl_usdt": 8.64637573,
+    "avg_pnl_pct": 0.012245447748864106,
+    "total_trades": 2421,
+    "winning_trades": 1199,
+    "win_rate": 0.4952498967368856,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:49:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2423,
+  "last_close": "2026-02-19T15:49:19.345184Z",
+  "closed": {
+    "total_pnl_usdt": 8.64647634,
+    "avg_pnl_pct": 0.012258203550784476,
+    "total_trades": 2422,
+    "winning_trades": 1200,
+    "win_rate": 0.495458298926507,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:54:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2424,
+  "last_close": "2026-02-19T15:54:19.286009Z",
+  "closed": {
+    "total_pnl_usdt": 8.64655747,
+    "avg_pnl_pct": 0.012267506397028477,
+    "total_trades": 2423,
+    "winning_trades": 1201,
+    "win_rate": 0.49566652909616177,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T18:59:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2425,
+  "last_close": "2026-02-19T15:59:19.983331Z",
+  "closed": {
+    "total_pnl_usdt": 8.64647341,
+    "avg_pnl_pct": 0.012247593646864686,
+    "total_trades": 2424,
+    "winning_trades": 1201,
+    "win_rate": 0.4954620462046205,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:04:38+03:00
+{
+  "policy": "2026-02-19T15:08:19.442741+00:00",
+  "last_trained_at": "2026-02-19T15:08:19.453446Z",
+  "exp": 2426,
+  "last_close": "2026-02-19T16:04:19.300233Z",
+  "closed": {
+    "total_pnl_usdt": 8.64649321,
+    "avg_pnl_pct": 0.012246037113402062,
+    "total_trades": 2425,
+    "winning_trades": 1202,
+    "win_rate": 0.49567010309278353,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:09:38+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2427,
+  "last_close": "2026-02-19T16:09:19.643410Z",
+  "closed": {
+    "total_pnl_usdt": 8.64642305,
+    "avg_pnl_pct": 0.01222862283594394,
+    "total_trades": 2426,
+    "winning_trades": 1202,
+    "win_rate": 0.49546578730420443,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:14:38+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2428,
+  "last_close": "2026-02-19T16:14:19.312389Z",
+  "closed": {
+    "total_pnl_usdt": 8.64639115,
+    "avg_pnl_pct": 0.012217969921714051,
+    "total_trades": 2427,
+    "winning_trades": 1202,
+    "win_rate": 0.49526163988463123,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:19:38+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2429,
+  "last_close": "2026-02-19T16:19:19.295843Z",
+  "closed": {
+    "total_pnl_usdt": 8.64626323,
+    "avg_pnl_pct": 0.012190411449752882,
+    "total_trades": 2428,
+    "winning_trades": 1202,
+    "win_rate": 0.4950576606260296,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:24:38+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2430,
+  "last_close": "2026-02-19T16:24:19.378151Z",
+  "closed": {
+    "total_pnl_usdt": 8.64613032,
+    "avg_pnl_pct": 0.012162016467682174,
+    "total_trades": 2429,
+    "winning_trades": 1202,
+    "win_rate": 0.4948538493207081,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:29:38+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2431,
+  "last_close": "2026-02-19T16:29:19.338412Z",
+  "closed": {
+    "total_pnl_usdt": 8.64598286,
+    "avg_pnl_pct": 0.012131052263374485,
+    "total_trades": 2430,
+    "winning_trades": 1202,
+    "win_rate": 0.49465020576131685,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:34:38+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2432,
+  "last_close": "2026-02-19T16:34:19.323965Z",
+  "closed": {
+    "total_pnl_usdt": 8.64601688,
+    "avg_pnl_pct": 0.012132032085561498,
+    "total_trades": 2431,
+    "winning_trades": 1203,
+    "win_rate": 0.4948580830933772,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:39:39+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2433,
+  "last_close": "2026-02-19T16:39:19.727610Z",
+  "closed": {
+    "total_pnl_usdt": 8.64609556,
+    "avg_pnl_pct": 0.012140862253289473,
+    "total_trades": 2432,
+    "winning_trades": 1204,
+    "win_rate": 0.49506578947368424,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:44:39+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2434,
+  "last_close": "2026-02-19T16:44:19.606003Z",
+  "closed": {
+    "total_pnl_usdt": 8.64629859,
+    "avg_pnl_pct": 0.01217153473078504,
+    "total_trades": 2433,
+    "winning_trades": 1205,
+    "win_rate": 0.4952733251130292,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:49:39+03:00
+----
+ts=2026-02-19T19:54:39+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2436,
+  "last_close": "2026-02-19T16:54:08.714097Z",
+  "closed": {
+    "total_pnl_usdt": 8.64757518,
+    "avg_pnl_pct": 0.013367797041906326,
+    "total_trades": 2434,
+    "winning_trades": 1206,
+    "win_rate": 0.49548069022185703,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T19:59:39+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2437,
+  "last_close": "2026-02-19T16:55:45.252233Z",
+  "closed": {
+    "total_pnl_usdt": 8.6475457,
+    "avg_pnl_pct": 0.013335366324435318,
+    "total_trades": 2435,
+    "winning_trades": 1206,
+    "win_rate": 0.4952772073921971,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:04:39+03:00
+{
+  "policy": "2026-02-19T16:08:19.886053+00:00",
+  "last_trained_at": "2026-02-19T16:08:19.896103Z",
+  "exp": 2438,
+  "last_close": "2026-02-19T17:00:45.771135Z",
+  "closed": {
+    "total_pnl_usdt": 8.64753357,
+    "avg_pnl_pct": 0.013318796798029556,
+    "total_trades": 2436,
+    "winning_trades": 1206,
+    "win_rate": 0.49507389162561577,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:09:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2439,
+  "last_close": "2026-02-19T17:05:45.246806Z",
+  "closed": {
+    "total_pnl_usdt": 8.6475662,
+    "avg_pnl_pct": 0.01334317890849405,
+    "total_trades": 2437,
+    "winning_trades": 1207,
+    "win_rate": 0.4952810832991383,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:14:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2440,
+  "last_close": "2026-02-19T17:10:45.243780Z",
+  "closed": {
+    "total_pnl_usdt": 8.64751307,
+    "avg_pnl_pct": 0.01328900164068909,
+    "total_trades": 2438,
+    "winning_trades": 1207,
+    "win_rate": 0.4950779327317473,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:19:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2441,
+  "last_close": "2026-02-19T17:15:45.902403Z",
+  "closed": {
+    "total_pnl_usdt": 8.64749407,
+    "avg_pnl_pct": 0.013266119311193113,
+    "total_trades": 2439,
+    "winning_trades": 1207,
+    "win_rate": 0.4948749487494875,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:24:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2442,
+  "last_close": "2026-02-19T17:20:45.244760Z",
+  "closed": {
+    "total_pnl_usdt": 8.64747008,
+    "avg_pnl_pct": 0.013238645901639345,
+    "total_trades": 2440,
+    "winning_trades": 1207,
+    "win_rate": 0.494672131147541,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:29:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2443,
+  "last_close": "2026-02-19T17:25:45.282993Z",
+  "closed": {
+    "total_pnl_usdt": 8.64749711,
+    "avg_pnl_pct": 0.013258075788611224,
+    "total_trades": 2441,
+    "winning_trades": 1208,
+    "win_rate": 0.4948791478902089,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:34:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2444,
+  "last_close": "2026-02-19T17:30:45.277843Z",
+  "closed": {
+    "total_pnl_usdt": 8.64754163,
+    "avg_pnl_pct": 0.013293542178542178,
+    "total_trades": 2442,
+    "winning_trades": 1209,
+    "win_rate": 0.4950859950859951,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:39:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2445,
+  "last_close": "2026-02-19T17:35:45.282386Z",
+  "closed": {
+    "total_pnl_usdt": 8.64757338,
+    "avg_pnl_pct": 0.013317295947605404,
+    "total_trades": 2443,
+    "winning_trades": 1210,
+    "win_rate": 0.49529267294310275,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:44:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2446,
+  "last_close": "2026-02-19T17:40:45.297898Z",
+  "closed": {
+    "total_pnl_usdt": 8.64749879,
+    "avg_pnl_pct": 0.013243306873977087,
+    "total_trades": 2444,
+    "winning_trades": 1210,
+    "win_rate": 0.4950900163666121,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:49:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2447,
+  "last_close": "2026-02-19T17:45:45.320067Z",
+  "closed": {
+    "total_pnl_usdt": 8.64752562,
+    "avg_pnl_pct": 0.013262503476482617,
+    "total_trades": 2445,
+    "winning_trades": 1211,
+    "win_rate": 0.4952965235173824,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:54:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2448,
+  "last_close": "2026-02-19T17:50:45.439012Z",
+  "closed": {
+    "total_pnl_usdt": 8.64746659,
+    "avg_pnl_pct": 0.013202892886345054,
+    "total_trades": 2446,
+    "winning_trades": 1211,
+    "win_rate": 0.49509403107113653,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T20:59:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2449,
+  "last_close": "2026-02-19T17:55:45.238588Z",
+  "closed": {
+    "total_pnl_usdt": 8.64744198,
+    "avg_pnl_pct": 0.013174973028197793,
+    "total_trades": 2447,
+    "winning_trades": 1211,
+    "win_rate": 0.49489170412750305,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T21:04:39+03:00
+{
+  "policy": "2026-02-19T17:08:22.298018+00:00",
+  "last_trained_at": "2026-02-19T17:08:22.313046Z",
+  "exp": 2450,
+  "last_close": "2026-02-19T18:00:45.462308Z",
+  "closed": {
+    "total_pnl_usdt": 8.64747619,
+    "avg_pnl_pct": 0.013200950980392158,
+    "total_trades": 2448,
+    "winning_trades": 1212,
+    "win_rate": 0.4950980392156863,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T21:09:39+03:00
+{
+  "policy": "2026-02-19T18:08:29.729539+00:00",
+  "last_trained_at": "2026-02-19T18:08:29.741823Z",
+  "exp": 2451,
+  "last_close": "2026-02-19T18:08:12.225804Z",
+  "closed": {
+    "total_pnl_usdt": 8.64603021,
+    "avg_pnl_pct": 0.011867180481829318,
+    "total_trades": 2449,
+    "winning_trades": 1212,
+    "win_rate": 0.4948958758677011,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T21:14:39+03:00
+{
+  "policy": "2026-02-19T18:08:29.729539+00:00",
+  "last_trained_at": "2026-02-19T18:08:29.741823Z",
+  "exp": 2452,
+  "last_close": "2026-02-19T18:09:48.929770Z",
+  "closed": {
+    "total_pnl_usdt": 8.6460023,
+    "avg_pnl_pct": 0.011835846938775511,
+    "total_trades": 2450,
+    "winning_trades": 1212,
+    "win_rate": 0.4946938775510204,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T21:19:40+03:00
+{
+  "policy": "2026-02-19T18:08:29.729539+00:00",
+  "last_trained_at": "2026-02-19T18:08:29.741823Z",
+  "exp": 2453,
+  "last_close": "2026-02-19T18:18:33.750728Z",
+  "closed": {
+    "total_pnl_usdt": 8.64596002,
+    "avg_pnl_pct": 0.011786034665579119,
+    "total_trades": 2452,
+    "winning_trades": 1213,
+    "win_rate": 0.4946982055464927,
+    "avg_rr": 7.700088616959064
+  }
+}
+----
+ts=2026-02-19T21:24:40+03:00
+{
+  "policy": "2026-02-19T18:08:29.729539+00:00",
+  "last_trained_at": "2026-02-19T18:08:29.741823Z",
+  "exp": 2454,
+  "last_close": "2026-02-19T18:23:32.644968Z",
+  "closed": {
+    "total_pnl_usdt": 8.64599924,
+    "avg_pnl_pct": 0.011817976355483081,
+    "total_trades": 2453,
+    "winning_trades": 1214,
+    "win_rate": 0.49490419894007337,
+    "avg_rr": 7.700088616959064
+  }
+}
+----

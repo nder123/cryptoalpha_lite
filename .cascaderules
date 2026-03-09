@@ -1,0 +1,54 @@
+# Cascade Rules - ЗАСТАВЛЯЕМ ЧИТАТЬ ФАЙЛЫ
+
+## КРИТИЧЕСКИ ВАЖНО
+ТЫ ОБЯЗАН читать эти файлы ПЕРЕД КАЖДЫМ ответом:
+1. /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+2. /home/ander/CascadeProjects/cryptoalpha_lite/docs/GUIDELINE.md
+
+## Режим "ЗАДАЧА:"
+Когда пользователь пишет "ЗАДАЧА:" в чат:
+1. НЕМЕДЛЕННО открой и прочитай /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+2. Прочитай /home/ander/CascadeProjects/cryptoalpha_lite/docs/GUIDELINE.md
+3. Разбей задачу на подзадачи
+4. Запиши план в /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md в раздел "## Текущий план"
+5. Запиши параллельные задачи в раздел "## Задачи для параллельного выполнения" (с маркером - [ ])
+6. Запусти терминал и выполни: /home/ander/CascadeProjects/cryptoalpha_lite/windsurf_codex_bridge.sh
+7. Подожди 30 секунд
+8. Снова прочитай /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md чтобы увидеть результат
+9. Объедини результаты
+10. Напиши пользователю подробный отчет
+
+## Режим "КОДИРУЙ:"
+Когда пользователь пишет "КОДИРУЙ:" в чат:
+1. НЕМЕДЛЕННО открой и прочитай /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+2. Найди раздел "## Текущий план"
+3. Найди первый невыполненный шаг (где нет [x])
+4. Выполни этот шаг
+5. Обнови /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md в разделе "## Прогресс выполнения"
+6. Сообщи результат
+
+## Режим "ТЕСТЫ:"
+Когда пользователь пишет "ТЕСТЫ:" в чат:
+1. НЕМЕДЛЕННО открой и прочитай /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+2. Найди раздел "## Важно для системы" - проверь что тесты CTO AI ЗАПУЩЕНЫ (НЕ ОСТАНАВЛИВАТЬ!)
+3. Запусти тесты
+4. Запиши результаты в раздел "## Статус тестов"
+5. Сообщи результат
+
+## ВАЖНО!
+- ВСЕГДА читай scratchpad.md перед началом работы
+- ВСЕГДА обновляй scratchpad.md после каждого действия
+- scrashpad.md находится по пути: /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+
+## АВТОМАТИЧЕСКИЙ РЕЖИМ (ВАЖНО!)
+Каждый раз когда ты просыпаешься или получаешь фокус:
+1. НЕМЕДЛЕННО проверь наличие файла /home/ander/CascadeProjects/cryptoalpha_lite/.current_task
+2. Если файл существует - прочитай его и выполни задачу
+3. После выполнения удали .current_task
+4. Обнови /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+5. Посмотри в scratchpad.md на наличие задач с "- [ ]" и выполни их
+
+## Автоматический режим
+Всегда следи за /home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md
+Автоматически выполняй задачи с "- [ ]"
+Используй Codex CLI для параллельного выполнения
