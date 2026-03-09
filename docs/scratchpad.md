@@ -135,6 +135,31 @@
   - `bash -lc 'set -euo pipefail; cd /home/ander/CascadeProjects/cryptoalpha_lite/backend; poetry run pytest -q; poetry run ruff check app/services/rl_*.py scripts/rl_promotion_recommender.py scripts/rl_status.py scripts/rl_snapshots_collect.py scripts/rl_snapshots_report.py scripts/rl_baseline_watchdog.py scripts/rl_baseline_helper.py; poetry run black --check app/services/rl_*.py scripts/rl_promotion_recommender.py scripts/rl_status.py scripts/rl_snapshots_collect.py scripts/rl_snapshots_report.py scripts/rl_baseline_watchdog.py scripts/rl_baseline_helper.py; poetry run isort --check-only app/services/rl_*.py scripts/rl_promotion_recommender.py scripts/rl_status.py scripts/rl_snapshots_collect.py scripts/rl_snapshots_report.py scripts/rl_baseline_watchdog.py scripts/rl_baseline_helper.py; poetry run bandit -q -s B101,B112,B310,B404,B603,B607 app/services/rl_*.py scripts/rl_promotion_recommender.py scripts/rl_status.py scripts/rl_snapshots_collect.py scripts/rl_snapshots_report.py scripts/rl_baseline_watchdog.py scripts/rl_baseline_helper.py; curl -fsS http://127.0.0.1:8000/api/health >/dev/null; curl -fsS http://127.0.0.1:8000/api/rl/status >/dev/null; echo OK'
 (Здесь Кодер будет отмечать, что сделано)
 
+## Git / GitHub (bootstrap)
+
+- Репозиторий ведём только в `/home/ander/CascadeProjects/cryptoalpha_lite`.
+- pre-commit стабилизирован: `poetry run pre-commit run -a` должен проходить без модификаций файлов.
+- Runtime-артефакты/логи не коммитим (см. `.gitignore`; из индекса убраны `backend/.codex_out/*`, `frontend/.vite.*`).
+
+- GitHub repo:
+  - `https://github.com/andersen-123/cryptoalpha_lite`
+  - `origin` (SSH): `git@github.com:andersen-123/cryptoalpha_lite.git`
+
+- SSH setup (если после нового терминала снова спрашивает passphrase):
+  - `eval "$(ssh-agent -s)"`
+  - `ssh-add ~/.ssh/id_ed25519`
+  - `ssh -T git@github.com` -> `Hi andersen-123! ...`
+
+- Основные git-команды (обычный цикл):
+  - `git status -sb`
+  - `git pull --rebase`
+  - `poetry run pre-commit run -a`
+  - `git add -A && git commit -m "..."`
+  - `git push`
+
+- Важно:
+  - Если когда-либо был засвечен GitHub PAT (строка вида `ghp_...`) — его нужно отозвать в GitHub Settings -> Developer settings -> Personal access tokens.
+
 ## Задачи для параллельного выполнения
 (Здесь Планировщик отмечает задачи, которые можно делегировать Codex CLI)
 - [x] тест настроить автопроверку работоспособности каждые 20 минут: `crontab -e` и добавить строку `*/20 * * * * curl http://localhost:8000/api/health`
