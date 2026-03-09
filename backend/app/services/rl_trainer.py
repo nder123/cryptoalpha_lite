@@ -869,7 +869,20 @@ class RLTrainer:
         )
 
     async def _load_existing_policy(self) -> None:
-        raw = await self._redis.get(POLICY_KEY)
+        redis_key = POLICY_KEY
+        raw: str | None = None
+
+        active_version = await self._redis.get(ACTIVE_VERSION_KEY)
+        if active_version:
+            candidate_key = f"{POLICY_BY_VERSION_PREFIX}{active_version}"
+            raw = await self._redis.get(candidate_key)
+            if raw:
+                redis_key = candidate_key
+            else:
+                raw = await self._redis.get(POLICY_KEY)
+        else:
+            raw = await self._redis.get(POLICY_KEY)
+
         if not raw:
             return
         try:
@@ -891,7 +904,7 @@ class RLTrainer:
             LOGGER.info(
                 "rl_trainer_policy_loaded",
                 version=payload.get("version"),
-                redis_key=POLICY_KEY,
+                redis_key=redis_key,
                 architecture=payload.get("architecture"),
                 input_size=payload.get("input_size"),
                 hidden_size=payload.get("hidden_size"),
