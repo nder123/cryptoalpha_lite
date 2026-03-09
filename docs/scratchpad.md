@@ -114,10 +114,10 @@
     - `curl -fsS http://127.0.0.1:8000/api/config/runtime | grep -E 'rl_enabled|rl_autopilot_enabled|max_symbol_allocation_pct|max_portfolio_exposure_usdt'`
   - Recommender events (за последние 30ч):
     - `journalctl --user -u cryptoalpha-recommender.service --since "30 hours ago" --no-pager | grep -E "PROMOTE_RECOMMENDED|PROMOTE_NOT_ACTIONABLE|NOT_RECOMMENDED|new_policy_version" | tail -n 200`
-  - Backend RL usage (логи пишутся в файл, не в journald):
-    - `tail -n 2000 /home/ander/CascadeProjects/cryptoalpha_lite/backend/.uvicorn.log | grep -E 'rl_policy_loaded|directive_adjusted_by_rl' | tail -n 200`
-  - Быстрая сверка: `active_policy_version` == `rl_policy_version` в свежих RL-логах:
-    - `v=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get("active_policy_version") or "")'); echo "active_policy_version=$v"; tail -n 30000 /home/ander/CascadeProjects/cryptoalpha_lite/backend/.uvicorn.log | grep -F "\"rl_policy_version\": \"$v\"" | tail -n 5`
+  - Backend RL usage (логи в journald):
+    - `journalctl --user -u cryptoalpha-backend.service --since "30 hours ago" --no-pager | grep -E 'rl_trainer_policy_loaded|rl_policy_loaded|directive_adjusted_by_rl' | tail -n 200`
+  - Быстрая сверка: backend грузит именно `active_policy_version`:
+    - `v=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get("active_policy_version") or "")'); echo "active_policy_version=$v"; journalctl --user -u cryptoalpha-backend.service --since "30 hours ago" --no-pager | grep -F "rl_policy:by_version:$v" | tail -n 5`
 
 - Ежедневно (или после retrain) проверять события recommender:
   - `journalctl --user -u cryptoalpha-recommender.service --since "30 hours ago" --no-pager | grep -E "PROMOTE_RECOMMENDED|PROMOTE_NOT_ACTIONABLE|NOT_RECOMMENDED|new_policy_version" | tail -n 200`
@@ -207,3 +207,23 @@
 - `app/services/rl_trainer.py` — RL training loop: собирает опыт, считает награды, обучает, публикует метрики и сохраняет policy в Redis.
 - `app/services/rl_policy.py` — загрузка policy из Redis и применение (оценка фич -> решение/скор).
 - `app/services/rl_autopilot.py` — dry-run автопилот, генерирует OPEN/CLOSE циклы для накопления трейдов/опыта (включается runtime config флагами).
+
+## RL promotion rules (current)
+
+- В `/api/rl/status`:
+  - `policy.version` = последняя обученная политика (redis key `rl_policy:latest`).
+  - `active_policy_version` = промоутнутая политика (redis key `rl_policy:active_version`).
+  - Норма: `policy.version` может отличаться от `active_policy_version`.
+  - Инвариант: backend должен загружать именно `active_policy_version` (ключ `rl_policy:by_version:<active>`).
+
+- Recommender (`cryptoalpha-recommender.service`) сравнивает версии по окнам через `rl_snapshots_report.py` (mode=trades).
+  - Окно: `--hours 12`.
+  - Eligibility: версия участвует в сравнении, если `trades >= --min-trades 72`.
+  - Primary metric: `max_drawdown` (чем ближе к 0 / больше, тем лучше; значения обычно отрицательные).
+  - Primary pass: `current_dd >= leader_dd - primary_epsilon`.
+    - Сейчас для окна A: `--primary-epsilon-a 0.0022`.
+  - Secondary floor: `p50_pnl_pct >= --secondary-floor` и `avg_pnl_pct >= --secondary-floor`.
+    - Сейчас: `--secondary-floor -0.0002`.
+  - Not recommended gap: если разница по primary хуже, чем `--not-recommended-gap`.
+    - Сейчас: `--not-recommended-gap 0.005`.
+  - Confirm streak: рекомендация `PROMOTE_RECOMMENDED` только после `--confirm-streak 2` окон подряд.
