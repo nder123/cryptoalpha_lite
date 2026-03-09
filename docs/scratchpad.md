@@ -228,3 +228,22 @@
     - Сейчас: `--not-recommended-gap 0.005`.
   - Confirm streak: рекомендация `PROMOTE_RECOMMENDED` только после `--confirm-streak 2` окон подряд.
   - Проверка promotable (`/api/rl/policy/exists`) должна URL-энкодить `version` (символ `+` в `+00:00`), иначе `exists` может стать false.
+
+## RL promote / rollback (operator workflow)
+
+- Перед promote (зафиксировать точку отката):
+  - `prev_active=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get("active_policy_version") or "")'); echo "prev_active=$prev_active"`
+  - Вставить строку `prev_active=<...>` в scratchpad (или в commit message), чтобы откат был быстрым.
+
+- Promote latest -> active (ручной promote):
+  - `latest=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(((json.load(sys.stdin).get("policy") or {}).get("version")) or "")'); echo "latest=$latest"`
+  - `curl -fsS -X POST http://127.0.0.1:8000/api/rl/policy/promote -H 'Content-Type: application/json' -d '{"version":"'$latest'"}' | python -m json.tool`
+
+- Verify after promote:
+  - `curl -fsS http://127.0.0.1:8000/api/rl/status | python -m json.tool | grep -E 'active_policy_version|"policy"|"active_policy"' -n | head -n 60`
+  - `v=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get("active_policy_version") or "")'); echo "active_policy_version=$v"; journalctl --user -u cryptoalpha-backend.service --since "30 minutes ago" --no-pager | grep -F "rl_policy:by_version:$v" | tail -n 5`
+
+- Rollback (ручной):
+  - Использовать сохранённый `prev_active=<...>` и выполнить promote на него:
+    - `curl -fsS -X POST http://127.0.0.1:8000/api/rl/policy/promote -H 'Content-Type: application/json' -d '{"version":"<PREV_ACTIVE>"}' | python -m json.tool`
+  - Затем повторить Verify (см. выше).
