@@ -26,7 +26,9 @@ def _payload(denylist: list[str]) -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(description="Set safe RuntimeConfig values for testnet warm-up")
+    parser = argparse.ArgumentParser(
+        description="Set safe RuntimeConfig values for testnet warm-up"
+    )
     parser.add_argument("--base-url", default="http://127.0.0.1:8000")
     parser.add_argument(
         "--deny",
@@ -34,10 +36,14 @@ def main(argv: list[str] | None = None) -> None:
         default=[],
         help="Add symbol to denylist (repeatable). Example: --deny FARTCOINUSDT",
     )
-    parser.add_argument("--live", action="store_true", help="Set dry_run=false and tighter limits")
+    parser.add_argument(
+        "--live", action="store_true", help="Set dry_run=false and tighter limits"
+    )
     args = parser.parse_args(argv)
 
-    denylist = [item.strip().upper() for item in (args.deny or []) if item and item.strip()]
+    denylist = [
+        item.strip().upper() for item in (args.deny or []) if item and item.strip()
+    ]
 
     payload = _payload(denylist)
     if args.live:

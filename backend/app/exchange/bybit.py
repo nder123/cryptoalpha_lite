@@ -1,4 +1,5 @@
 """Bybit USDT-M futures exchange adapter."""
+
 from __future__ import annotations
 
 import asyncio
@@ -7,19 +8,18 @@ import hmac
 import json
 import time
 import urllib.parse
-from datetime import datetime, timezone
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation, ROUND_DOWN, ROUND_HALF_UP
-from functools import lru_cache
+from datetime import datetime, timezone
+from decimal import ROUND_DOWN, ROUND_HALF_UP, Decimal, InvalidOperation
 from typing import Any, Dict, List, Optional, Tuple
 
 import httpx
 
-from app.repositories.models import ExchangeTrade
 from app.core.config import get_settings
 from app.core.logging import get_logger
 
 IGNORED_TRANSACTION_TYPES = {"SETTLEMENT"}
+
 
 @dataclass(slots=True)
 class SymbolTicker:
@@ -64,7 +64,9 @@ class BybitClient:
         self._logger = get_logger(__name__)
         limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
         timeout = httpx.Timeout(20.0, connect=10.0)
-        self._client = httpx.AsyncClient(base_url=self._settings.bybit_base_url, limits=limits, timeout=timeout)
+        self._client = httpx.AsyncClient(
+            base_url=self._settings.bybit_base_url, limits=limits, timeout=timeout
+        )
         self._account_client = httpx.AsyncClient(
             base_url=self._settings.bybit_base_url,
             limits=limits,
@@ -97,7 +99,12 @@ class BybitClient:
                 attempt += 1
                 if attempt >= max_attempts:
                     raise
-                self._logger.warning("bybit_public_timeout_retry", path=path, attempt=attempt, max_attempts=max_attempts)
+                self._logger.warning(
+                    "bybit_public_timeout_retry",
+                    path=path,
+                    attempt=attempt,
+                    max_attempts=max_attempts,
+                )
                 await asyncio.sleep(min(2.0 * attempt, 5.0))
             except httpx.RequestError as exc:
                 attempt += 1
@@ -175,7 +182,11 @@ class BybitClient:
             params={"category": "linear", "limit": 200},
         )
         instruments = result.get("list", [])
-        symbols = [entry["symbol"] for entry in instruments if entry.get("contractType") == "LinearPerpetual"]
+        symbols = [
+            entry["symbol"]
+            for entry in instruments
+            if entry.get("contractType") == "LinearPerpetual"
+        ]
         return symbols
 
     async def get_symbol_filters(self, symbol: str) -> SymbolFilters:
@@ -199,7 +210,11 @@ class BybitClient:
             min_order_qty=self._to_decimal(lot_filter.get("minOrderQty", "0")),
             qty_step=self._to_decimal(lot_filter.get("qtyStep", "1")),
             tick_size=self._to_decimal(price_filter.get("tickSize", "0.5")),
-            min_notional=self._to_decimal(lot_filter.get("minOrderAmt")) if lot_filter.get("minOrderAmt") else None,
+            min_notional=(
+                self._to_decimal(lot_filter.get("minOrderAmt"))
+                if lot_filter.get("minOrderAmt")
+                else None
+            ),
         )
         self._instrument_cache[symbol] = filters
         return filters
@@ -243,10 +258,17 @@ class BybitClient:
             turnover_24h=self._to_float(entry.get("turnover24h")),
         )
 
-    async def fetch_kline(self, symbol: str, interval: str = "60", limit: int = 24) -> List[dict[str, Any]]:
+    async def fetch_kline(
+        self, symbol: str, interval: str = "60", limit: int = 24
+    ) -> List[dict[str, Any]]:
         result = await self._get(
             "/derivatives/v3/public/kline",
-            params={"category": "linear", "symbol": symbol, "interval": interval, "limit": limit},
+            params={
+                "category": "linear",
+                "symbol": symbol,
+                "interval": interval,
+                "limit": limit,
+            },
         )
         return result.get("list", [])
 
@@ -283,7 +305,9 @@ class BybitClient:
             price_decimal = self._to_decimal(price)
             if price_decimal <= 0:
                 raise RuntimeError("Order price must be positive")
-            normalized_price = price_decimal.quantize(filters.tick_size, rounding=ROUND_HALF_UP)
+            normalized_price = price_decimal.quantize(
+                filters.tick_size, rounding=ROUND_HALF_UP
+            )
             if normalized_price <= 0:
                 raise RuntimeError("Order price must be positive after rounding")
 
@@ -299,7 +323,9 @@ class BybitClient:
             tp_decimal = self._to_decimal(take_profit)
             if tp_decimal <= 0:
                 raise RuntimeError("Take-profit price must be positive")
-            normalized_tp = tp_decimal.quantize(filters.tick_size, rounding=ROUND_HALF_UP)
+            normalized_tp = tp_decimal.quantize(
+                filters.tick_size, rounding=ROUND_HALF_UP
+            )
             if normalized_tp <= 0:
                 raise RuntimeError("Take-profit price must be positive after rounding")
 
@@ -308,7 +334,9 @@ class BybitClient:
             sl_decimal = self._to_decimal(stop_loss)
             if sl_decimal <= 0:
                 raise RuntimeError("Stop-loss price must be positive")
-            normalized_sl = sl_decimal.quantize(filters.tick_size, rounding=ROUND_HALF_UP)
+            normalized_sl = sl_decimal.quantize(
+                filters.tick_size, rounding=ROUND_HALF_UP
+            )
             if normalized_sl <= 0:
                 raise RuntimeError("Stop-loss price must be positive after rounding")
 
@@ -361,7 +389,9 @@ class BybitClient:
             )
         response.raise_for_status()
 
-    async def get_order_status(self, symbol: str, order_id: str) -> Optional[OrderStatusInfo]:
+    async def get_order_status(
+        self, symbol: str, order_id: str
+    ) -> Optional[OrderStatusInfo]:
         payload = {"category": "linear", "symbol": symbol, "orderId": order_id}
         params, headers = self._prepare_private_query(payload)
         async with self._lock:
@@ -393,7 +423,9 @@ class BybitClient:
         updated_at: Optional[datetime] = None
         if isinstance(updated_raw, str) and updated_raw.isdigit():
             try:
-                updated_at = datetime.fromtimestamp(int(updated_raw) / 1000, tz=timezone.utc)
+                updated_at = datetime.fromtimestamp(
+                    int(updated_raw) / 1000, tz=timezone.utc
+                )
             except (OverflowError, ValueError):
                 updated_at = None
         return OrderStatusInfo(
@@ -404,7 +436,9 @@ class BybitClient:
             updated_at=updated_at,
         )
 
-    async def get_order_status_raw(self, symbol: str, order_id: str) -> Optional[dict[str, Any]]:
+    async def get_order_status_raw(
+        self, symbol: str, order_id: str
+    ) -> Optional[dict[str, Any]]:
         payload = {"category": "linear", "symbol": symbol, "orderId": order_id}
         params, headers = self._prepare_private_query(payload)
         async with self._lock:
@@ -423,7 +457,9 @@ class BybitClient:
             return None
         return entries[0]
 
-    async def fetch_positions(self, *, settle_coin: str | None = "USDT", symbol: str | None = None) -> List[dict[str, Any]]:
+    async def fetch_positions(
+        self, *, settle_coin: str | None = "USDT", symbol: str | None = None
+    ) -> List[dict[str, Any]]:
         payload = {"category": "linear", "settleCoin": settle_coin, "symbol": symbol}
         response = await self._private_get("/v5/position/list", payload)
         response.raise_for_status()
@@ -442,7 +478,11 @@ class BybitClient:
                 entry_price = self._to_optional_float(entry.get("avgPrice"))
             mark_price = self._to_optional_float(entry.get("markPrice"))
             side_raw = (entry.get("side") or "").lower()
-            side = "long" if side_raw == "buy" else "short" if side_raw == "sell" else "flat"
+            side = (
+                "long"
+                if side_raw == "buy"
+                else "short" if side_raw == "sell" else "flat"
+            )
             unrealized = self._to_optional_float(entry.get("unrealisedPnl"))
             notional = self._to_optional_float(entry.get("positionValue"))
             leverage = self._to_optional_float(entry.get("leverage"))
@@ -451,7 +491,9 @@ class BybitClient:
             updated_iso: str | None = None
             if isinstance(updated_at, str) and updated_at.isdigit():
                 try:
-                    updated_iso = datetime.fromtimestamp(int(updated_at) / 1000, tz=timezone.utc).isoformat()
+                    updated_iso = datetime.fromtimestamp(
+                        int(updated_at) / 1000, tz=timezone.utc
+                    ).isoformat()
                 except (OverflowError, ValueError):
                     updated_iso = None
 
@@ -481,7 +523,9 @@ class BybitClient:
             positions.append(position)
         return positions
 
-    async def fetch_wallet_balance(self, coin: str = "USDT", account_type: str = "UNIFIED") -> dict[str, float]:
+    async def fetch_wallet_balance(
+        self, coin: str = "USDT", account_type: str = "UNIFIED"
+    ) -> dict[str, float]:
         payload: dict[str, Any] = {"accountType": account_type}
         if coin:
             payload["coin"] = coin
@@ -509,7 +553,9 @@ class BybitClient:
             "available_to_withdraw": available,
         }
 
-    async def fetch_wallet_balance_raw(self, coin: str = "USDT", account_type: str = "UNIFIED") -> dict[str, Any]:
+    async def fetch_wallet_balance_raw(
+        self, coin: str = "USDT", account_type: str = "UNIFIED"
+    ) -> dict[str, Any]:
         payload: dict[str, Any] = {"accountType": account_type}
         if coin:
             payload["coin"] = coin
@@ -619,7 +665,8 @@ class BybitClient:
                     "avg_entry_price": self._to_float(entry.get("avgEntryPrice")),
                     "avg_exit_price": self._to_float(entry.get("avgExitPrice")),
                     "realized_pnl": self._to_float(entry.get("closedPnl")),
-                    "cum_fee": self._to_float(entry.get("cumRealisedPnl")) - self._to_float(entry.get("closedPnl")),
+                    "cum_fee": self._to_float(entry.get("cumRealisedPnl"))
+                    - self._to_float(entry.get("closedPnl")),
                 }
             )
 
@@ -687,7 +734,9 @@ class BybitClient:
 
         return normalized, result.get("nextPageCursor")
 
-    async def set_leverage(self, symbol: str, leverage: float, *, category: str = "linear") -> None:
+    async def set_leverage(
+        self, symbol: str, leverage: float, *, category: str = "linear"
+    ) -> None:
         leverage_decimal = self._to_decimal(leverage, "1")
         leverage_str = self._decimal_to_str(leverage_decimal)
         payload = {
@@ -710,22 +759,32 @@ class BybitClient:
         if data.get("retCode") not in (0, "0"):
             raise RuntimeError(f"Bybit leverage error: {data}")
 
-    def _prepare_private_request(self, payload: Dict[str, Any]) -> Tuple[str, Dict[str, str]]:
+    def _prepare_private_request(
+        self, payload: Dict[str, Any]
+    ) -> Tuple[str, Dict[str, str]]:
         body = json.dumps(payload, separators=(",", ":"), sort_keys=True)
         headers = self._build_auth_headers(body)
         return body, headers
 
-    def _prepare_private_query(self, params: Dict[str, Any]) -> Tuple[str, Dict[str, str]]:
-        filtered_items = {key: value for key, value in params.items() if value is not None}
+    def _prepare_private_query(
+        self, params: Dict[str, Any]
+    ) -> Tuple[str, Dict[str, str]]:
+        filtered_items = {
+            key: value for key, value in params.items() if value is not None
+        }
         if not filtered_items:
             encoded_query = ""
         else:
             sorted_items = sorted(filtered_items.items(), key=lambda item: item[0])
-            encoded_query = urllib.parse.urlencode(sorted_items, doseq=True, quote_via=urllib.parse.quote)
+            encoded_query = urllib.parse.urlencode(
+                sorted_items, doseq=True, quote_via=urllib.parse.quote
+            )
         headers = self._build_auth_headers(encoded_query)
         return encoded_query, headers
 
-    async def _private_get(self, path: str, payload: Dict[str, Any], *, max_attempts: int = 5) -> httpx.Response:
+    async def _private_get(
+        self, path: str, payload: Dict[str, Any], *, max_attempts: int = 5
+    ) -> httpx.Response:
         attempt = 0
         while True:
             query, headers = self._prepare_private_query(payload)
@@ -738,7 +797,12 @@ class BybitClient:
                 attempt += 1
                 if attempt >= max_attempts:
                     raise
-                self._logger.warning("bybit_private_timeout_retry", path=path, attempt=attempt, max_attempts=max_attempts)
+                self._logger.warning(
+                    "bybit_private_timeout_retry",
+                    path=path,
+                    attempt=attempt,
+                    max_attempts=max_attempts,
+                )
                 await asyncio.sleep(min(2.0 * attempt, 5.0))
 
     def _build_auth_headers(self, body: str) -> Dict[str, str]:

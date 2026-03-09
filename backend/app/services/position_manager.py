@@ -1,4 +1,5 @@
 """Autonomous position management service."""
+
 from __future__ import annotations
 
 import asyncio
@@ -137,10 +138,14 @@ class PositionManager:
             try:
                 config = await self._config_manager.get_config()
             except Exception as exc:  # noqa: BLE001
-                self._logger.warning("position_manager_config_unavailable", error=str(exc))
+                self._logger.warning(
+                    "position_manager_config_unavailable", error=str(exc)
+                )
                 interval = 10.0
             else:
-                interval = max(1.0, float(config.position_manager_poll_interval_seconds))
+                interval = max(
+                    1.0, float(config.position_manager_poll_interval_seconds)
+                )
             try:
                 await asyncio.wait_for(stop_event.wait(), timeout=interval)
             except asyncio.TimeoutError:
@@ -149,12 +154,17 @@ class PositionManager:
     async def _handle_execution(self, report: ExecutionReport) -> None:
         directive = self._directive_cache.get(report.directive_id)
         if directive is None:
-            self._logger.debug("position_manager_unknown_directive", directive_id=report.directive_id)
+            self._logger.debug(
+                "position_manager_unknown_directive", directive_id=report.directive_id
+            )
             return
 
         action = directive.action
         if action is TradeAction.OPEN:
-            if report.status not in {ExecutionStatus.FILLED, ExecutionStatus.PARTIALLY_FILLED}:
+            if report.status not in {
+                ExecutionStatus.FILLED,
+                ExecutionStatus.PARTIALLY_FILLED,
+            }:
                 return
             await self._register_open_fill(directive, report)
         elif action is TradeAction.CLOSE:
@@ -162,7 +172,9 @@ class PositionManager:
                 await self._register_close_submitted(directive, report)
             await self._register_close_update(directive, report)
 
-    async def _register_close_submitted(self, directive: TradeDirective, report: ExecutionReport) -> None:
+    async def _register_close_submitted(
+        self, directive: TradeDirective, report: ExecutionReport
+    ) -> None:
         open_id = self._close_map.get(directive.directive_id)
         candidate = self._positions.get(open_id) if open_id else None
         if candidate is None:
@@ -211,7 +223,9 @@ class PositionManager:
         )
         await self._bus.publish(streams.POSITION_EVENTS, event)
 
-    async def _register_open_fill(self, directive: TradeDirective, report: ExecutionReport) -> None:
+    async def _register_open_fill(
+        self, directive: TradeDirective, report: ExecutionReport
+    ) -> None:
         tracker = self._positions.get(directive.directive_id)
         fill_qty = report.quantity or 0.0
         quantity = max(fill_qty, directive.quantity or 0.0)
@@ -262,7 +276,9 @@ class PositionManager:
         tracker.last_price_event = None
         await self._notifier.broadcast(await self._store.build_dashboard_state())
 
-    async def _register_close_update(self, directive: TradeDirective, report: ExecutionReport) -> None:
+    async def _register_close_update(
+        self, directive: TradeDirective, report: ExecutionReport
+    ) -> None:
         open_id = self._close_map.get(directive.directive_id)
         candidate = self._positions.get(open_id) if open_id else None
         if candidate is None:
@@ -275,7 +291,12 @@ class PositionManager:
             )
             return
 
-        if report.status in {ExecutionStatus.FILLED, ExecutionStatus.CANCELLED, ExecutionStatus.FAILED, ExecutionStatus.REJECTED}:
+        if report.status in {
+            ExecutionStatus.FILLED,
+            ExecutionStatus.CANCELLED,
+            ExecutionStatus.FAILED,
+            ExecutionStatus.REJECTED,
+        }:
             if report.status is ExecutionStatus.FILLED:
                 self._positions.pop(candidate.directive_id, None)
             else:
@@ -324,9 +345,14 @@ class PositionManager:
         except (TypeError, ValueError):
             return 0.0
 
-    def _find_position_for_close(self, directive: TradeDirective) -> Optional[TrackedPosition]:
+    def _find_position_for_close(
+        self, directive: TradeDirective
+    ) -> Optional[TrackedPosition]:
         for tracker in self._positions.values():
-            if tracker.symbol == directive.symbol and tracker.direction == directive.direction:
+            if (
+                tracker.symbol == directive.symbol
+                and tracker.direction == directive.direction
+            ):
                 return tracker
         return None
 
@@ -348,17 +374,31 @@ class PositionManager:
             self._logger.debug("position_manager_budget_unavailable", error=str(exc))
             risk_budget = {}
 
-        portfolio_limit = self._safe_float(risk_budget.get("portfolio_limit")) if risk_budget else 0.0
+        portfolio_limit = (
+            self._safe_float(risk_budget.get("portfolio_limit")) if risk_budget else 0.0
+        )
         symbol_limits = (risk_budget or {}).get("symbol_limits") or {}
-        base_portfolio_limit = self._safe_float(getattr(config, "max_portfolio_exposure_usdt", 0.0))
-        effective_portfolio_limit = portfolio_limit if portfolio_limit > 0 else base_portfolio_limit
+        base_portfolio_limit = self._safe_float(
+            getattr(config, "max_portfolio_exposure_usdt", 0.0)
+        )
+        effective_portfolio_limit = (
+            portfolio_limit if portfolio_limit > 0 else base_portfolio_limit
+        )
         fallback_symbol_limit = 0.0
         if effective_portfolio_limit > 0:
-            fallback_symbol_limit = effective_portfolio_limit * self._safe_float(getattr(config, "max_symbol_allocation_pct", 0.0))
+            fallback_symbol_limit = effective_portfolio_limit * self._safe_float(
+                getattr(config, "max_symbol_allocation_pct", 0.0)
+            )
         elif base_portfolio_limit > 0:
-            fallback_symbol_limit = base_portfolio_limit * self._safe_float(getattr(config, "max_symbol_allocation_pct", 0.0))
+            fallback_symbol_limit = base_portfolio_limit * self._safe_float(
+                getattr(config, "max_symbol_allocation_pct", 0.0)
+            )
 
-        trackers = [tracker for tracker in self._positions.values() if not tracker.close_requested]
+        trackers = [
+            tracker
+            for tracker in self._positions.values()
+            if not tracker.close_requested
+        ]
         if not trackers:
             return
 
@@ -374,8 +414,15 @@ class PositionManager:
                 price = float(ticker.last_price)
                 tracker.last_price_event = None
             except Exception as exc:  # noqa: BLE001
-                self._logger.debug("position_manager_price_fetch_failed", symbol=tracker.symbol, error=str(exc))
-                if tracker.last_price_event is None or now - tracker.last_price_event >= timedelta(minutes=1):
+                self._logger.debug(
+                    "position_manager_price_fetch_failed",
+                    symbol=tracker.symbol,
+                    error=str(exc),
+                )
+                if (
+                    tracker.last_price_event is None
+                    or now - tracker.last_price_event >= timedelta(minutes=1)
+                ):
                     await self._publish_event(
                         PositionEventType.PRICE_FETCH_FAILED,
                         directive_id=tracker.directive_id,
@@ -389,7 +436,9 @@ class PositionManager:
             symbol_key = tracker.symbol.upper()
             symbol_limit_raw = symbol_limits.get(symbol_key)
             symbol_limit = self._safe_float(symbol_limit_raw)
-            effective_symbol_limit = symbol_limit if symbol_limit > 0 else fallback_symbol_limit
+            effective_symbol_limit = (
+                symbol_limit if symbol_limit > 0 else fallback_symbol_limit
+            )
 
             reference_price = price
             if reference_price is None or reference_price <= 0:
@@ -409,7 +458,9 @@ class PositionManager:
                     elif tracker.stop_price and price >= tracker.stop_price:
                         reasons.append("stop_loss")
 
-            max_age = timedelta(minutes=float(config.position_manager_force_close_minutes))
+            max_age = timedelta(
+                minutes=float(config.position_manager_force_close_minutes)
+            )
             if tracker.opened_at and now - tracker.opened_at >= max_age:
                 reasons.append("timeout")
 
@@ -431,7 +482,9 @@ class PositionManager:
 
         if effective_portfolio_limit > 0 and total_exposure > effective_portfolio_limit:
             excess = total_exposure - effective_portfolio_limit
-            for obs in sorted(observations, key=lambda item: item["notional"], reverse=True):
+            for obs in sorted(
+                observations, key=lambda item: item["notional"], reverse=True
+            ):
                 if excess <= 0:
                     break
                 notional = obs["notional"]
@@ -455,7 +508,9 @@ class PositionManager:
                 config,
                 notional=float(obs.get("notional") or 0.0),
                 effective_symbol_limit=float(obs.get("effective_symbol_limit") or 0.0),
-                effective_portfolio_limit=float(obs.get("effective_portfolio_limit") or 0.0),
+                effective_portfolio_limit=float(
+                    obs.get("effective_portfolio_limit") or 0.0
+                ),
             )
 
     async def _dispatch_close(
@@ -472,7 +527,9 @@ class PositionManager:
         tracker.close_requested = True
         directive_id = uuid4().hex
 
-        use_market_exit = bool(getattr(config, "position_manager_use_market_exit", True))
+        use_market_exit = bool(
+            getattr(config, "position_manager_use_market_exit", True)
+        )
         order_type = "market"
         limit_price: Optional[float] = None
         if reason in {"stop_loss", "target_hit"} and not use_market_exit:
@@ -488,7 +545,10 @@ class PositionManager:
                 # Ensure we don't place an obviously unfillable limit far away from the market.
                 ref = market_price or tracker.entry_price
                 if ref and ref > 0:
-                    slip = max(0.001, float(getattr(config, "default_stop_loss_pct", 0.005)) * 2)
+                    slip = max(
+                        0.001,
+                        float(getattr(config, "default_stop_loss_pct", 0.005)) * 2,
+                    )
                     if tracker.direction == "long":
                         cap = ref * (1 - slip)
                         limit_price = min(limit_price, cap)
@@ -512,7 +572,8 @@ class PositionManager:
             time_in_force="GTC",
             leverage=1.0,
             reduce_only=True,
-            notional_usdt=(market_price or tracker.entry_price or 0.0) * tracker.quantity,
+            notional_usdt=(market_price or tracker.entry_price or 0.0)
+            * tracker.quantity,
             take_profit_price=None,
             stop_loss_price=None,
         )
@@ -549,17 +610,31 @@ class PositionManager:
             symbol=tracker.symbol,
             reason=reason,
             quantity=round(float(tracker.quantity or 0.0), 12),
-            market_price=round(float(market_price or 0.0), 8) if market_price is not None else None,
-            entry_price=round(float(tracker.entry_price or 0.0), 8) if tracker.entry_price is not None else None,
+            market_price=(
+                round(float(market_price or 0.0), 8)
+                if market_price is not None
+                else None
+            ),
+            entry_price=(
+                round(float(tracker.entry_price or 0.0), 8)
+                if tracker.entry_price is not None
+                else None
+            ),
             notional=round(float(notional or 0.0), 8),
             effective_symbol_limit=round(float(effective_symbol_limit or 0.0), 8),
             effective_portfolio_limit=round(float(effective_portfolio_limit or 0.0), 8),
-            max_portfolio_exposure_usdt=float(getattr(config, "max_portfolio_exposure_usdt", 0.0) or 0.0),
-            max_symbol_allocation_pct=float(getattr(config, "max_symbol_allocation_pct", 0.0) or 0.0),
+            max_portfolio_exposure_usdt=float(
+                getattr(config, "max_portfolio_exposure_usdt", 0.0) or 0.0
+            ),
+            max_symbol_allocation_pct=float(
+                getattr(config, "max_symbol_allocation_pct", 0.0) or 0.0
+            ),
         )
 
     async def _enforce_limit_exit_timeouts(self, config) -> None:
-        timeout_seconds = float(getattr(config, "position_manager_limit_exit_timeout_seconds", 0.0) or 0.0)
+        timeout_seconds = float(
+            getattr(config, "position_manager_limit_exit_timeout_seconds", 0.0) or 0.0
+        )
         if timeout_seconds <= 0:
             return
 
@@ -581,7 +656,9 @@ class PositionManager:
                 continue
 
             try:
-                await self._client.cancel_order(tracker.symbol, tracker.last_close_order_id)
+                await self._client.cancel_order(
+                    tracker.symbol, tracker.last_close_order_id
+                )
             except Exception as exc:  # noqa: BLE001
                 self._logger.warning(
                     "position_manager_limit_close_cancel_failed",

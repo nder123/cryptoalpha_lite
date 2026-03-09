@@ -22,7 +22,9 @@ async def _run(symbol: str, order_id: str) -> int:
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(description="Dump raw /v5/order/realtime entry for an order")
+    parser = argparse.ArgumentParser(
+        description="Dump raw /v5/order/realtime entry for an order"
+    )
     parser.add_argument("--symbol", required=True)
     parser.add_argument("--order-id", required=True)
     args = parser.parse_args(argv)

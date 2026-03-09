@@ -1,4 +1,5 @@
 """Automatic research manager that keeps the hypothesis pipeline busy."""
+
 from __future__ import annotations
 
 import asyncio
@@ -144,7 +145,9 @@ class AutoResearchManager:
 
             await self._bus.publish(streams.MARKET_SNAPSHOTS, snapshot)
             await self._redis.hset(LAST_RUN_HASH, symbol, now.isoformat())
-            await self._redis.zadd(BACKLOG_KEY, {symbol: snapshot_data.get("score", 0.0)})
+            await self._redis.zadd(
+                BACKLOG_KEY, {symbol: snapshot_data.get("score", 0.0)}
+            )
             dispatched += 1
 
         return dispatched
@@ -158,7 +161,11 @@ class AutoResearchManager:
         score = float(payload.get("score", 0.0) or 0.0)
         timestamp_raw = payload.get("timestamp")
         try:
-            timestamp = datetime.fromisoformat(timestamp_raw) if timestamp_raw else fallback_time
+            timestamp = (
+                datetime.fromisoformat(timestamp_raw)
+                if timestamp_raw
+                else fallback_time
+            )
         except ValueError:
             timestamp = fallback_time
 
@@ -171,7 +178,9 @@ class AutoResearchManager:
                 continue
 
         rationale_raw = payload.get("rationale") or []
-        rationale = [str(item) for item in rationale_raw if isinstance(item, (str, int, float))]
+        rationale = [
+            str(item) for item in rationale_raw if isinstance(item, (str, int, float))
+        ]
 
         return MarketSnapshot(
             symbol=symbol,

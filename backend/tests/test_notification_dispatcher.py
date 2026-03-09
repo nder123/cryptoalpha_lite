@@ -1,13 +1,12 @@
 from __future__ import annotations
 
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
 import pytest
-
-import sys
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 BACKEND_PATH = str(BACKEND_ROOT)
@@ -35,7 +34,9 @@ class _StubRedis:
 
 
 class _StubHTTPClient:
-    async def post(self, *args: Any, **kwargs: Any) -> Any:  # pragma: no cover - notifications bypass network
+    async def post(
+        self, *args: Any, **kwargs: Any
+    ) -> Any:  # pragma: no cover - notifications bypass network
         class _Response:
             @staticmethod
             def raise_for_status() -> None:
@@ -66,7 +67,9 @@ class _CapturingHTTPClient:
 
 
 class _DummyConfigManager:
-    async def get_config(self) -> SimpleNamespace:  # pragma: no cover - not used in tests here
+    async def get_config(
+        self,
+    ) -> SimpleNamespace:  # pragma: no cover - not used in tests here
         return SimpleNamespace()
 
 
@@ -101,7 +104,11 @@ async def test_auto_research_backlog_alert(monkeypatch: pytest.MonkeyPatch) -> N
     dispatcher._send = _capture  # type: ignore[assignment]
     dispatcher._redis = stub_redis  # ensure our stub is used directly
 
-    config = SimpleNamespace(auto_research_enabled=True, auto_research_batch_size=5, auto_research_interval_minutes=5)
+    config = SimpleNamespace(
+        auto_research_enabled=True,
+        auto_research_batch_size=5,
+        auto_research_interval_minutes=5,
+    )
 
     await dispatcher._handle_auto_research_alert(config)
 
@@ -110,7 +117,9 @@ async def test_auto_research_backlog_alert(monkeypatch: pytest.MonkeyPatch) -> N
 
 
 @pytest.mark.asyncio
-async def test_auto_research_stale_and_recovery(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_auto_research_stale_and_recovery(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     stub_redis = _StubRedis()
     stale_age = timedelta(minutes=5)
     stale_timestamp = datetime.now(timezone.utc) - stale_age
@@ -130,7 +139,11 @@ async def test_auto_research_stale_and_recovery(monkeypatch: pytest.MonkeyPatch)
     dispatcher._send = _capture  # type: ignore[assignment]
     dispatcher._redis = stub_redis
 
-    config = SimpleNamespace(auto_research_enabled=True, auto_research_batch_size=5, auto_research_interval_minutes=1)
+    config = SimpleNamespace(
+        auto_research_enabled=True,
+        auto_research_batch_size=5,
+        auto_research_interval_minutes=1,
+    )
 
     await dispatcher._handle_auto_research_alert(config)
 
@@ -145,7 +158,9 @@ async def test_auto_research_stale_and_recovery(monkeypatch: pytest.MonkeyPatch)
 
 
 @pytest.mark.asyncio
-async def test_send_dispatches_webhook_and_telegram(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_send_dispatches_webhook_and_telegram(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     capturing_http = _CapturingHTTPClient()
 
     monkeypatch.setattr(nd.redis, "from_url", lambda *args, **kwargs: _StubRedis())

@@ -1,4 +1,5 @@
 """Application configuration using Pydantic settings."""
+
 from __future__ import annotations
 
 from functools import lru_cache
@@ -7,7 +8,6 @@ from typing import Literal, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 
 _BACKEND_ROOT = Path(__file__).resolve().parents[2]
 
@@ -30,7 +30,9 @@ class Settings(BaseSettings):
     api_port: int = Field(default=8000)
 
     redis_dsn: str = Field(default="redis://redis:6379/0")
-    postgres_dsn: str = Field(default="postgresql+asyncpg://ctoai:ctoai@postgres:5432/ctoai")
+    postgres_dsn: str = Field(
+        default="postgresql+asyncpg://ctoai:ctoai@postgres:5432/ctoai"
+    )
 
     bybit_api_key: Optional[str] = None
     bybit_api_secret: Optional[str] = None
@@ -45,7 +47,9 @@ class Settings(BaseSettings):
     execution_retry_attempts: int = Field(default=3, ge=0, le=10)
     execution_retry_backoff_seconds: float = Field(default=1.0, ge=0.0, le=30.0)
     execution_degraded_threshold: int = Field(default=3, ge=1, le=20)
-    execution_degraded_cooldown_seconds: float = Field(default=120.0, ge=10.0, le=3600.0)
+    execution_degraded_cooldown_seconds: float = Field(
+        default=120.0, ge=10.0, le=3600.0
+    )
     market_concurrency: int = Field(default=4)
     research_window_minutes: int = Field(default=60)
     funding_threshold: float = Field(default=0.005)

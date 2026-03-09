@@ -33,7 +33,9 @@ class AutoExposureManager:
         self._store = store
         self._notifier = notifier
         self._client = BybitClient()
-        self._redis = redis.from_url(self._settings.redis_dsn, encoding="utf-8", decode_responses=True)
+        self._redis = redis.from_url(
+            self._settings.redis_dsn, encoding="utf-8", decode_responses=True
+        )
         self._interval_seconds = 30.0
         self._credentials_missing_logged = False
         self._equity_high_watermark = 0.0
@@ -48,7 +50,9 @@ class AutoExposureManager:
                 except Exception as exc:  # noqa: BLE001
                     self._logger.exception("auto_exposure_tick_failed", exc_info=exc)
                 try:
-                    await asyncio.wait_for(stop_event.wait(), timeout=self._interval_seconds)
+                    await asyncio.wait_for(
+                        stop_event.wait(), timeout=self._interval_seconds
+                    )
                 except asyncio.TimeoutError:
                     continue
         finally:
@@ -71,15 +75,25 @@ class AutoExposureManager:
             self._logger.warning("auto_exposure_empty_equity", details=wallet_totals)
             return
 
-        available_equity = self._coerce_float(wallet_totals.get("available_to_withdraw"))
+        available_equity = self._coerce_float(
+            wallet_totals.get("available_to_withdraw")
+        )
         if available_equity <= 0:
             available_equity = total_equity
 
         candidates, volatility_index = await self._collect_market_context()
-        portfolio_limit, volatility_factor = self._derive_portfolio_limit(config, total_equity, volatility_index)
-        portfolio_limit, guard_state, drawdown_pct = self._apply_equity_guard(config, portfolio_limit, total_equity)
-        portfolio_limit, volatility_state = self._apply_volatility_guard(config, portfolio_limit, volatility_index, total_equity)
-        symbol_limits = self._allocate_symbol_limits(config, portfolio_limit, candidates)
+        portfolio_limit, volatility_factor = self._derive_portfolio_limit(
+            config, total_equity, volatility_index
+        )
+        portfolio_limit, guard_state, drawdown_pct = self._apply_equity_guard(
+            config, portfolio_limit, total_equity
+        )
+        portfolio_limit, volatility_state = self._apply_volatility_guard(
+            config, portfolio_limit, volatility_index, total_equity
+        )
+        symbol_limits = self._allocate_symbol_limits(
+            config, portfolio_limit, candidates
+        )
 
         rounded_total_equity = round(total_equity, 2)
         rounded_portfolio_limit = round(portfolio_limit, 2)
@@ -110,7 +124,9 @@ class AutoExposureManager:
         derived_symbol_pct = config.max_symbol_allocation_pct
         if portfolio_limit > 0 and symbol_limits:
             max_symbol_notional = max(symbol_limits.values())
-            derived_symbol_pct = min(1.0, max(0.01, max_symbol_notional / portfolio_limit))
+            derived_symbol_pct = min(
+                1.0, max(0.01, max_symbol_notional / portfolio_limit)
+            )
             derived_symbol_pct = round(derived_symbol_pct, 4)
 
         if abs(config.max_symbol_allocation_pct - derived_symbol_pct) > 1e-4:
@@ -143,7 +159,9 @@ class AutoExposureManager:
         if should_broadcast:
             await self._notifier.broadcast(await self._store.build_dashboard_state())
 
-    async def _collect_market_context(self) -> Tuple[List[Tuple[str, Dict[str, Any]]], float]:
+    async def _collect_market_context(
+        self,
+    ) -> Tuple[List[Tuple[str, Dict[str, Any]]], float]:
         try:
             overview = await self._store.list_market()
         except Exception as exc:  # noqa: BLE001
@@ -154,7 +172,9 @@ class AutoExposureManager:
         if not candidates:
             return [], 0.0
 
-        candidates.sort(key=lambda item: self._coerce_float(item[1].get("score")), reverse=True)
+        candidates.sort(
+            key=lambda item: self._coerce_float(item[1].get("score")), reverse=True
+        )
         top_candidates = candidates[: min(len(candidates), 20)]
 
         volatility_samples = []
@@ -164,10 +184,16 @@ class AutoExposureManager:
             if sample > 0:
                 volatility_samples.append(sample)
 
-        volatility_index = sum(volatility_samples) / len(volatility_samples) if volatility_samples else 0.0
+        volatility_index = (
+            sum(volatility_samples) / len(volatility_samples)
+            if volatility_samples
+            else 0.0
+        )
         return top_candidates, volatility_index
 
-    def _derive_portfolio_limit(self, config, total_equity: float, volatility_index: float) -> Tuple[float, float]:
+    def _derive_portfolio_limit(
+        self, config, total_equity: float, volatility_index: float
+    ) -> Tuple[float, float]:
         if total_equity <= 0:
             return 0.0, 1.0
 
@@ -191,13 +217,17 @@ class AutoExposureManager:
 
         final_limit = max(config.min_trade_notional_usdt, raw_limit)
 
-        manual_cap = AutoExposureManager._coerce_float(getattr(config, "max_portfolio_exposure_usdt", 0.0))
+        manual_cap = AutoExposureManager._coerce_float(
+            getattr(config, "max_portfolio_exposure_usdt", 0.0)
+        )
         if manual_cap > 0.0:
             final_limit = min(final_limit, manual_cap)
 
         return final_limit, volatility_factor
 
-    def _apply_equity_guard(self, config, portfolio_limit: float, total_equity: float) -> Tuple[float, str, float]:
+    def _apply_equity_guard(
+        self, config, portfolio_limit: float, total_equity: float
+    ) -> Tuple[float, str, float]:
         if total_equity <= 0:
             return config.min_trade_notional_usdt, "halt", 1.0
 
@@ -206,7 +236,11 @@ class AutoExposureManager:
 
         drawdown_pct = 0.0
         if self._equity_high_watermark > 0:
-            drawdown_pct = max(0.0, (self._equity_high_watermark - total_equity) / self._equity_high_watermark)
+            drawdown_pct = max(
+                0.0,
+                (self._equity_high_watermark - total_equity)
+                / self._equity_high_watermark,
+            )
 
         max_daily_loss_pct = getattr(config, "max_daily_loss_pct", 0.03) or 0.03
         caution_threshold = max(0.03, min(0.12, max_daily_loss_pct * 2))
@@ -325,7 +359,10 @@ class AutoExposureManager:
         total_assigned = sum(symbol_limits.values())
         if portfolio_limit > 0 and total_assigned > portfolio_limit:
             scale = portfolio_limit / total_assigned
-            symbol_limits = {symbol: round(limit * scale, 2) for symbol, limit in symbol_limits.items()}
+            symbol_limits = {
+                symbol: round(limit * scale, 2)
+                for symbol, limit in symbol_limits.items()
+            }
 
         return symbol_limits
 
@@ -342,7 +379,13 @@ class AutoExposureManager:
             return True
 
         for key in ("portfolio_limit", "total_equity", "available_equity"):
-            if abs(AutoExposureManager._coerce_float(previous.get(key)) - AutoExposureManager._coerce_float(current.get(key))) > 0.5:
+            if (
+                abs(
+                    AutoExposureManager._coerce_float(previous.get(key))
+                    - AutoExposureManager._coerce_float(current.get(key))
+                )
+                > 0.5
+            ):
                 return True
 
         prev_limits = previous.get("symbol_limits") or {}
@@ -352,11 +395,21 @@ class AutoExposureManager:
             return True
 
         for symbol, value in curr_limits.items():
-            if abs(AutoExposureManager._coerce_float(prev_limits.get(symbol)) - AutoExposureManager._coerce_float(value)) > 0.5:
+            if (
+                abs(
+                    AutoExposureManager._coerce_float(prev_limits.get(symbol))
+                    - AutoExposureManager._coerce_float(value)
+                )
+                > 0.5
+            ):
                 return True
 
-        prev_vol_index = AutoExposureManager._coerce_float(previous.get("volatility_index"))
-        curr_vol_index = AutoExposureManager._coerce_float(current.get("volatility_index"))
+        prev_vol_index = AutoExposureManager._coerce_float(
+            previous.get("volatility_index")
+        )
+        curr_vol_index = AutoExposureManager._coerce_float(
+            current.get("volatility_index")
+        )
         if abs(prev_vol_index - curr_vol_index) > 0.01:
             return True
 
@@ -372,10 +425,16 @@ class AutoExposureManager:
 
     @staticmethod
     def _pick_equity(payload: Dict[str, float]) -> float:
-        candidates = [payload.get("total_equity"), payload.get("available_to_withdraw"), payload.get("wallet_balance")]
-        return max(value for value in candidates if isinstance(value, (int, float))) if any(
-            isinstance(value, (int, float)) for value in candidates
-        ) else 0.0
+        candidates = [
+            payload.get("total_equity"),
+            payload.get("available_to_withdraw"),
+            payload.get("wallet_balance"),
+        ]
+        return (
+            max(value for value in candidates if isinstance(value, (int, float)))
+            if any(isinstance(value, (int, float)) for value in candidates)
+            else 0.0
+        )
 
 
 async def run_auto_exposure_manager(

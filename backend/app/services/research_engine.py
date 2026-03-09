@@ -1,16 +1,17 @@
 """Pair selection and research engine."""
+
 from __future__ import annotations
 
 import asyncio
 from collections import deque
 from datetime import datetime, timezone
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Deque, Dict, Optional
 from uuid import uuid4
 
 from app.core.config import get_settings
-from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.core.logging import get_logger
+from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.domain import streams
 from app.domain.events import MarketSnapshot, RejectedHypothesis, TradeHypothesis
 from app.exchange.bybit import BybitClient
@@ -53,7 +54,9 @@ class ResearchEngine:
                 try:
                     await self._handle_snapshot(snapshot)
                 except Exception as exc:  # noqa: BLE001
-                    self._logger.exception("research_engine_error", symbol=snapshot.symbol, error=str(exc))
+                    self._logger.exception(
+                        "research_engine_error", symbol=snapshot.symbol, error=str(exc)
+                    )
                 finally:
                     await self._bus.ack(message.stream, "research", message.message_id)
                 if stop_event.is_set():
@@ -65,7 +68,11 @@ class ResearchEngine:
         if snapshot.category not in {snapshot.category.CANDIDATE}:
             return
 
-        denylist = {symbol.strip().upper() for symbol in (self._config.symbol_denylist or []) if symbol and symbol.strip()}
+        denylist = {
+            symbol.strip().upper()
+            for symbol in (self._config.symbol_denylist or [])
+            if symbol and symbol.strip()
+        }
         if snapshot.symbol.strip().upper() in denylist:
             return
 
@@ -74,7 +81,10 @@ class ResearchEngine:
             timestamp = timestamp.replace(tzinfo=timezone.utc)
         snap_ts = timestamp.timestamp()
         last_ts = self._last_processed.get(snapshot.symbol)
-        if last_ts and snap_ts - last_ts < self._config.research_refresh_interval_seconds:
+        if (
+            last_ts
+            and snap_ts - last_ts < self._config.research_refresh_interval_seconds
+        ):
             return
 
         if not self._can_emit(snap_ts):
@@ -113,19 +123,27 @@ class ResearchEngine:
         self._recent_emit.append(current_ts)
         return True
 
-    async def _build_hypothesis(self, snapshot: MarketSnapshot) -> Optional[TradeHypothesis]:
+    async def _build_hypothesis(
+        self, snapshot: MarketSnapshot
+    ) -> Optional[TradeHypothesis]:
         metrics = snapshot.metrics
 
         risk_budget = await self._store.get_risk_budget()
         symbol_key = snapshot.symbol.upper()
-        portfolio_limit = self._safe_float(risk_budget.get("portfolio_limit")) if risk_budget else 0.0
+        portfolio_limit = (
+            self._safe_float(risk_budget.get("portfolio_limit")) if risk_budget else 0.0
+        )
         symbol_limits = (risk_budget or {}).get("symbol_limits") or {}
-        symbol_limit = self._safe_float(symbol_limits.get(symbol_key)) if symbol_limits else 0.0
+        symbol_limit = (
+            self._safe_float(symbol_limits.get(symbol_key)) if symbol_limits else 0.0
+        )
 
         try:
             filters = await self._client.get_symbol_filters(snapshot.symbol)
         except Exception as exc:  # noqa: BLE001
-            self._logger.debug("symbol_filters_failed", symbol=snapshot.symbol, error=str(exc))
+            self._logger.debug(
+                "symbol_filters_failed", symbol=snapshot.symbol, error=str(exc)
+            )
             return None
 
         tick_size = filters.tick_size if filters.tick_size > 0 else Decimal("0.01")
@@ -135,9 +153,13 @@ class ResearchEngine:
         try:
             ticker = await self._client.get_symbol_ticker(snapshot.symbol)
             if ticker.last_price > 0:
-                ticker_price_dec = self._quantize_decimal(Decimal(str(ticker.last_price)), tick_size)
+                ticker_price_dec = self._quantize_decimal(
+                    Decimal(str(ticker.last_price)), tick_size
+                )
         except Exception as exc:  # noqa: BLE001
-            self._logger.debug("ticker_fetch_failed", symbol=snapshot.symbol, error=str(exc))
+            self._logger.debug(
+                "ticker_fetch_failed", symbol=snapshot.symbol, error=str(exc)
+            )
 
         source_price = ticker_price_dec or Decimal(str(snapshot_price))
         if source_price <= 0:
@@ -169,8 +191,12 @@ class ResearchEngine:
         stop_price_dec = self._quantize_decimal(stop_price_dec, tick_size)
         target_price_dec = self._quantize_decimal(target_price_dec, tick_size)
 
-        stop_price_dec = self._ensure_stop_distance(direction, entry_price_dec, stop_price_dec, tick_size)
-        target_price_dec = self._ensure_target_distance(direction, entry_price_dec, target_price_dec, tick_size)
+        stop_price_dec = self._ensure_stop_distance(
+            direction, entry_price_dec, stop_price_dec, tick_size
+        )
+        target_price_dec = self._ensure_target_distance(
+            direction, entry_price_dec, target_price_dec, tick_size
+        )
 
         stop_price_dec = self._ensure_stop_vs_base(
             direction,
@@ -188,17 +214,31 @@ class ResearchEngine:
         )
 
         if stop_price_dec <= 0 or target_price_dec <= 0:
-            self._logger.debug("invalid_prices", symbol=snapshot.symbol, direction=direction)
+            self._logger.debug(
+                "invalid_prices", symbol=snapshot.symbol, direction=direction
+            )
             return None
 
         stop_price = float(stop_price_dec)
         target_price = float(target_price_dec)
 
         base_portfolio_limit = self._config.max_portfolio_exposure_usdt
-        effective_portfolio_limit = portfolio_limit if portfolio_limit > 0 else base_portfolio_limit
-        max_symbol_alloc = symbol_limit if symbol_limit > 0 else effective_portfolio_limit * self._config.max_symbol_allocation_pct
-        derived_cap = effective_portfolio_limit / 3 if effective_portfolio_limit > 0 else base_portfolio_limit / 3
-        notional = min(max_symbol_alloc, derived_cap if derived_cap > 0 else max_symbol_alloc)
+        effective_portfolio_limit = (
+            portfolio_limit if portfolio_limit > 0 else base_portfolio_limit
+        )
+        max_symbol_alloc = (
+            symbol_limit
+            if symbol_limit > 0
+            else effective_portfolio_limit * self._config.max_symbol_allocation_pct
+        )
+        derived_cap = (
+            effective_portfolio_limit / 3
+            if effective_portfolio_limit > 0
+            else base_portfolio_limit / 3
+        )
+        notional = min(
+            max_symbol_alloc, derived_cap if derived_cap > 0 else max_symbol_alloc
+        )
         notional = max(notional, self._config.min_trade_notional_usdt)
         if entry_price <= 0:
             return None
@@ -240,7 +280,9 @@ class ResearchEngine:
         return value.quantize(tick_size, rounding=ROUND_HALF_UP)
 
     @staticmethod
-    def _ensure_stop_distance(direction: str, entry: Decimal, stop: Decimal, tick_size: Decimal) -> Decimal:
+    def _ensure_stop_distance(
+        direction: str, entry: Decimal, stop: Decimal, tick_size: Decimal
+    ) -> Decimal:
         if tick_size <= 0:
             return stop
         if direction == "long" and stop >= entry:
@@ -251,7 +293,9 @@ class ResearchEngine:
         return stop
 
     @staticmethod
-    def _ensure_target_distance(direction: str, entry: Decimal, target: Decimal, tick_size: Decimal) -> Decimal:
+    def _ensure_target_distance(
+        direction: str, entry: Decimal, target: Decimal, tick_size: Decimal
+    ) -> Decimal:
         if tick_size <= 0:
             return target
         if direction == "long" and target <= entry:

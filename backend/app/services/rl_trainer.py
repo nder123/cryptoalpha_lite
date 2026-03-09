@@ -17,8 +17,12 @@ from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.domain import streams
-from app.domain.events import (ExecutionReport, ExecutionStatus, TradeAction,
-                               TradeDirective)
+from app.domain.events import (
+    ExecutionReport,
+    ExecutionStatus,
+    TradeAction,
+    TradeDirective,
+)
 from app.infrastructure.event_bus import EventBus, EventMessage
 from app.repositories.trade_stats import TradeStatsRepository
 from app.services.rl_state_builder import FEATURE_NAMES

@@ -1,4 +1,5 @@
 """Repository for persisting runtime configuration overrides."""
+
 from __future__ import annotations
 
 import asyncio
@@ -22,7 +23,9 @@ class RuntimeSettingsRepository:
 
     def __init__(self, storage_path: str | None = None) -> None:
         settings = get_settings()
-        fallback_path = storage_path or settings.runtime_overrides_path or "runtime_overrides.json"
+        fallback_path = (
+            storage_path or settings.runtime_overrides_path or "runtime_overrides.json"
+        )
         path = Path(fallback_path).expanduser().resolve()
         path.parent.mkdir(parents=True, exist_ok=True)
         self._storage_path = path
@@ -68,7 +71,9 @@ class RuntimeSettingsRepository:
             try:
                 setting = result.scalar_one()
             except NoResultFound:
-                setting = RuntimeSetting(key=key, value=value, updated_at=datetime.now(timezone.utc))
+                setting = RuntimeSetting(
+                    key=key, value=value, updated_at=datetime.now(timezone.utc)
+                )
                 session.add(setting)
             else:
                 setting.value = value

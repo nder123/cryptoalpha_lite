@@ -1,8 +1,9 @@
 """Audit logger service that persists key events."""
+
 from __future__ import annotations
 
 import asyncio
-from typing import Any, Dict, Iterable, Tuple, Type
+from typing import Any, Dict, Type
 
 from app.core.logging import get_logger
 from app.domain import streams
@@ -50,7 +51,9 @@ class AuditLogger:
                 task.cancel()
             raise
 
-    async def _consume(self, stream: str, event_type: EventType, stop_event: asyncio.Event) -> None:
+    async def _consume(
+        self, stream: str, event_type: EventType, stop_event: asyncio.Event
+    ) -> None:
         group = "audit"
         async for message in self._bus.listen(
             stream,
@@ -61,7 +64,9 @@ class AuditLogger:
             try:
                 payload = message.payload
                 payload_dict = self._normalize_payload(payload)
-                await self._repository.record(stream, payload.__class__.__name__, payload_dict)
+                await self._repository.record(
+                    stream, payload.__class__.__name__, payload_dict
+                )
             except Exception as exc:  # noqa: BLE001
                 self._logger.error("audit_log_failed", stream=stream, error=str(exc))
             finally:
@@ -78,6 +83,8 @@ class AuditLogger:
         raise TypeError(f"Unsupported payload type: {type(payload)!r}")
 
 
-async def run_audit_logger(stop_event: asyncio.Event, bus: EventBus, repository: EventLogRepository) -> None:
+async def run_audit_logger(
+    stop_event: asyncio.Event, bus: EventBus, repository: EventLogRepository
+) -> None:
     logger = AuditLogger(bus, repository)
     await logger.run(stop_event)

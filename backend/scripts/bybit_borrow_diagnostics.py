@@ -32,7 +32,9 @@ def _to_float(value: object) -> float | None:
 async def _run(coin: str, account_type: str, dump_raw: bool) -> int:
     client = BybitClient()
     try:
-        raw = await client.fetch_wallet_balance_raw(coin=coin, account_type=account_type)
+        raw = await client.fetch_wallet_balance_raw(
+            coin=coin, account_type=account_type
+        )
         if dump_raw:
             print(json.dumps(raw, indent=2, sort_keys=True))
 
@@ -59,11 +61,23 @@ async def _run(coin: str, account_type: str, dump_raw: bool) -> int:
                 {
                     "walletBalance": _to_float(item.get("walletBalance")),
                     "availableToWithdraw": _to_float(item.get("availableToWithdraw")),
-                    "availableToBorrow": _to_float(_pick_first(item, ["availableToBorrow", "availableToBorrowed"])),
-                    "borrowAmount": _to_float(_pick_first(item, ["borrowAmount", "borrowedAmount", "totalBorrow"])),
-                    "liability": _to_float(_pick_first(item, ["liability", "totalLiability"])),
-                    "unrealisedPnl": _to_float(_pick_first(item, ["unrealisedPnl", "unrealizedPnl"])),
-                    "cumRealisedPnl": _to_float(_pick_first(item, ["cumRealisedPnl", "cumRealizedPnl"])),
+                    "availableToBorrow": _to_float(
+                        _pick_first(item, ["availableToBorrow", "availableToBorrowed"])
+                    ),
+                    "borrowAmount": _to_float(
+                        _pick_first(
+                            item, ["borrowAmount", "borrowedAmount", "totalBorrow"]
+                        )
+                    ),
+                    "liability": _to_float(
+                        _pick_first(item, ["liability", "totalLiability"])
+                    ),
+                    "unrealisedPnl": _to_float(
+                        _pick_first(item, ["unrealisedPnl", "unrealizedPnl"])
+                    ),
+                    "cumRealisedPnl": _to_float(
+                        _pick_first(item, ["cumRealisedPnl", "cumRealizedPnl"])
+                    ),
                     "coin_item_keys": sorted(list(item.keys())),
                 }
             )
@@ -72,19 +86,30 @@ async def _run(coin: str, account_type: str, dump_raw: bool) -> int:
         if entry0:
             summary.update(
                 {
-                    "entry_totalEquity": _to_float(_pick_first(entry0, ["totalEquity"])),
-                    "entry_totalWalletBalance": _to_float(_pick_first(entry0, ["totalWalletBalance"])),
-                    "entry_totalMarginBalance": _to_float(_pick_first(entry0, ["totalMarginBalance"])),
-                    "entry_totalAvailableBalance": _to_float(_pick_first(entry0, ["totalAvailableBalance"])),
-                    "entry_totalLiability": _to_float(_pick_first(entry0, ["totalLiability", "totalLiabilityValue"])),
-                    "entry_totalBorrow": _to_float(_pick_first(entry0, ["totalBorrow", "totalBorrowAmount"])),
+                    "entry_totalEquity": _to_float(
+                        _pick_first(entry0, ["totalEquity"])
+                    ),
+                    "entry_totalWalletBalance": _to_float(
+                        _pick_first(entry0, ["totalWalletBalance"])
+                    ),
+                    "entry_totalMarginBalance": _to_float(
+                        _pick_first(entry0, ["totalMarginBalance"])
+                    ),
+                    "entry_totalAvailableBalance": _to_float(
+                        _pick_first(entry0, ["totalAvailableBalance"])
+                    ),
+                    "entry_totalLiability": _to_float(
+                        _pick_first(entry0, ["totalLiability", "totalLiabilityValue"])
+                    ),
+                    "entry_totalBorrow": _to_float(
+                        _pick_first(entry0, ["totalBorrow", "totalBorrowAmount"])
+                    ),
                     "entry_keys": sorted(list(entry0.keys())),
                 }
             )
 
         # Positions snapshot
         positions = await client.fetch_positions()
-        positions = _normalize_positions(positions)
 
         print("\n=== WALLET SUMMARY ===")
         print(json.dumps(summary, indent=2, sort_keys=True))
@@ -98,10 +123,16 @@ async def _run(coin: str, account_type: str, dump_raw: bool) -> int:
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(description="Bybit UNIFIED borrow/liability diagnostics")
+    parser = argparse.ArgumentParser(
+        description="Bybit UNIFIED borrow/liability diagnostics"
+    )
     parser.add_argument("--coin", default="USDT")
     parser.add_argument("--account-type", default="UNIFIED")
-    parser.add_argument("--dump-raw", action="store_true", help="Print raw /wallet-balance response JSON")
+    parser.add_argument(
+        "--dump-raw",
+        action="store_true",
+        help="Print raw /wallet-balance response JSON",
+    )
     parser.add_argument(
         "--mode",
         choices=["summary", "full"],
@@ -116,7 +147,9 @@ def main(argv: list[str] | None = None) -> None:
     async def _entry() -> int:
         client = BybitClient()
         try:
-            raw = await client.fetch_wallet_balance_raw(coin=args.coin, account_type=args.account_type)
+            raw = await client.fetch_wallet_balance_raw(
+                coin=args.coin, account_type=args.account_type
+            )
             if args.dump_raw:
                 print(json.dumps(raw, indent=2, sort_keys=True))
 
@@ -141,24 +174,54 @@ def main(argv: list[str] | None = None) -> None:
                 summary.update(
                     {
                         "walletBalance": _to_float(item.get("walletBalance")),
-                        "availableToWithdraw": _to_float(item.get("availableToWithdraw")),
-                        "availableToBorrow": _to_float(_pick_first(item, ["availableToBorrow", "availableToBorrowed"])),
-                        "borrowAmount": _to_float(_pick_first(item, ["borrowAmount", "borrowedAmount", "totalBorrow"])),
-                        "liability": _to_float(_pick_first(item, ["liability", "totalLiability"])),
-                        "unrealisedPnl": _to_float(_pick_first(item, ["unrealisedPnl", "unrealizedPnl"])),
-                        "cumRealisedPnl": _to_float(_pick_first(item, ["cumRealisedPnl", "cumRealizedPnl"])),
+                        "availableToWithdraw": _to_float(
+                            item.get("availableToWithdraw")
+                        ),
+                        "availableToBorrow": _to_float(
+                            _pick_first(
+                                item, ["availableToBorrow", "availableToBorrowed"]
+                            )
+                        ),
+                        "borrowAmount": _to_float(
+                            _pick_first(
+                                item, ["borrowAmount", "borrowedAmount", "totalBorrow"]
+                            )
+                        ),
+                        "liability": _to_float(
+                            _pick_first(item, ["liability", "totalLiability"])
+                        ),
+                        "unrealisedPnl": _to_float(
+                            _pick_first(item, ["unrealisedPnl", "unrealizedPnl"])
+                        ),
+                        "cumRealisedPnl": _to_float(
+                            _pick_first(item, ["cumRealisedPnl", "cumRealizedPnl"])
+                        ),
                         "coin_item_keys": sorted(list(item.keys())),
                     }
                 )
             if entry0:
                 summary.update(
                     {
-                        "entry_totalEquity": _to_float(_pick_first(entry0, ["totalEquity"])),
-                        "entry_totalWalletBalance": _to_float(_pick_first(entry0, ["totalWalletBalance"])),
-                        "entry_totalMarginBalance": _to_float(_pick_first(entry0, ["totalMarginBalance"])),
-                        "entry_totalAvailableBalance": _to_float(_pick_first(entry0, ["totalAvailableBalance"])),
-                        "entry_totalLiability": _to_float(_pick_first(entry0, ["totalLiability", "totalLiabilityValue"])),
-                        "entry_totalBorrow": _to_float(_pick_first(entry0, ["totalBorrow", "totalBorrowAmount"])),
+                        "entry_totalEquity": _to_float(
+                            _pick_first(entry0, ["totalEquity"])
+                        ),
+                        "entry_totalWalletBalance": _to_float(
+                            _pick_first(entry0, ["totalWalletBalance"])
+                        ),
+                        "entry_totalMarginBalance": _to_float(
+                            _pick_first(entry0, ["totalMarginBalance"])
+                        ),
+                        "entry_totalAvailableBalance": _to_float(
+                            _pick_first(entry0, ["totalAvailableBalance"])
+                        ),
+                        "entry_totalLiability": _to_float(
+                            _pick_first(
+                                entry0, ["totalLiability", "totalLiabilityValue"]
+                            )
+                        ),
+                        "entry_totalBorrow": _to_float(
+                            _pick_first(entry0, ["totalBorrow", "totalBorrowAmount"])
+                        ),
                         "entry_keys": sorted(list(entry0.keys())),
                     }
                 )
@@ -179,7 +242,9 @@ def main(argv: list[str] | None = None) -> None:
                     end_time=now,
                     limit=int(args.executions_limit),
                 )
-                print(f"\n=== LAST EXECUTIONS ({args.executions_hours}h, normalized) ===")
+                print(
+                    f"\n=== LAST EXECUTIONS ({args.executions_hours}h, normalized) ==="
+                )
                 print(json.dumps(executions, indent=2, sort_keys=True))
 
             return 0

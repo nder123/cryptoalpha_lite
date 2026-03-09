@@ -12,14 +12,18 @@ from __future__ import annotations
 import asyncio
 import math
 import random
-from datetime import datetime, timezone
 from dataclasses import dataclass
-from typing import Optional
+from datetime import datetime, timezone
 
 from app.core.logging import get_logger
 from app.core.runtime_config import RuntimeConfigManager
 from app.domain import streams
-from app.domain.events import ExecutionReport, ExecutionStatus, TradeAction, TradeDirective
+from app.domain.events import (
+    ExecutionReport,
+    ExecutionStatus,
+    TradeAction,
+    TradeDirective,
+)
 from app.exchange.bybit import BybitClient
 from app.infrastructure.event_bus import EventBus
 from app.state.store import GlobalAppState
@@ -32,7 +36,9 @@ class _SymbolMarket:
 
 
 class DryRunFillSimulator:
-    def __init__(self, bus: EventBus, config_manager: RuntimeConfigManager, store: GlobalAppState) -> None:
+    def __init__(
+        self, bus: EventBus, config_manager: RuntimeConfigManager, store: GlobalAppState
+    ) -> None:
         self._logger = get_logger(__name__)
         self._bus = bus
         self._config_manager = config_manager
@@ -53,7 +59,11 @@ class DryRunFillSimulator:
             try:
                 await self._maybe_simulate_fill(report)
             except Exception as exc:  # noqa: BLE001
-                self._logger.warning("dry_run_fill_simulator_error", directive_id=report.directive_id, error=str(exc))
+                self._logger.warning(
+                    "dry_run_fill_simulator_error",
+                    directive_id=report.directive_id,
+                    error=str(exc),
+                )
             finally:
                 await self._bus.ack(message.stream, group, message.message_id)
             if stop_event.is_set():
@@ -79,13 +89,19 @@ class DryRunFillSimulator:
             return
         self._seen.add(key)
 
-        delay = float(getattr(config, "dry_run_fill_simulator_delay_seconds", 0.0) or 0.0)
+        delay = float(
+            getattr(config, "dry_run_fill_simulator_delay_seconds", 0.0) or 0.0
+        )
         if delay > 0:
             await asyncio.sleep(delay)
 
         directive = await self._fetch_directive(report.directive_id)
         fill_price = await self._simulate_fill_price(report, directive)
-        fees_paid = self._simulate_fees(report.quantity or 0.0, fill_price, float(getattr(config, "dry_run_fill_simulator_fee_bps", 0.0) or 0.0))
+        fees_paid = self._simulate_fees(
+            report.quantity or 0.0,
+            fill_price,
+            float(getattr(config, "dry_run_fill_simulator_fee_bps", 0.0) or 0.0),
+        )
 
         action = report.action
         if directive is not None:
@@ -122,7 +138,9 @@ class DryRunFillSimulator:
         try:
             ticker = await self._client.get_symbol_ticker(symbol)
         except Exception as exc:  # noqa: BLE001
-            self._logger.debug("dry_run_fill_simulator_ticker_failed", symbol=symbol, error=str(exc))
+            self._logger.debug(
+                "dry_run_fill_simulator_ticker_failed", symbol=symbol, error=str(exc)
+            )
             return None
 
         base = float(ticker.last_price) if ticker and ticker.last_price else 0.0
@@ -133,7 +151,9 @@ class DryRunFillSimulator:
         self._markets[symbol] = market
         return market
 
-    async def _simulate_fill_price(self, report: ExecutionReport, directive: TradeDirective | None) -> float:
+    async def _simulate_fill_price(
+        self, report: ExecutionReport, directive: TradeDirective | None
+    ) -> float:
         config = await self._config_manager.get_config()
         symbol = str(report.symbol or "").upper()
         now = datetime.now(timezone.utc)
@@ -146,17 +166,31 @@ class DryRunFillSimulator:
         dt_seconds = max(0.0, (now - market.updated_at).total_seconds())
         if dt_seconds > 0:
             # Drift is specified as bps per minute; volatility as bps (std-dev) per minute.
-            drift_bps_per_min = float(getattr(config, "dry_run_fill_simulator_drift_bps_per_minute", 0.0) or 0.0)
-            vol_bps = float(getattr(config, "dry_run_fill_simulator_volatility_bps", 0.0) or 0.0)
+            drift_bps_per_min = float(
+                getattr(config, "dry_run_fill_simulator_drift_bps_per_minute", 0.0)
+                or 0.0
+            )
+            vol_bps = float(
+                getattr(config, "dry_run_fill_simulator_volatility_bps", 0.0) or 0.0
+            )
             dt_min = dt_seconds / 60.0
             mu = drift_bps_per_min / 10_000.0
-            sigma = (vol_bps / 10_000.0)
+            sigma = vol_bps / 10_000.0
             # Simple log-normal step.
             shock = random.gauss(0.0, 1.0)
-            market.mid = max(0.0001, market.mid * math.exp((mu - 0.5 * sigma * sigma) * dt_min + sigma * math.sqrt(max(dt_min, 0.0)) * shock))
+            market.mid = max(
+                0.0001,
+                market.mid
+                * math.exp(
+                    (mu - 0.5 * sigma * sigma) * dt_min
+                    + sigma * math.sqrt(max(dt_min, 0.0)) * shock
+                ),
+            )
             market.updated_at = now
 
-        spread_bps = max(0.0, float(getattr(config, "dry_run_fill_simulator_spread_bps", 0.0) or 0.0))
+        spread_bps = max(
+            0.0, float(getattr(config, "dry_run_fill_simulator_spread_bps", 0.0) or 0.0)
+        )
         half_spread = (spread_bps / 10_000.0) / 2.0
         bid = market.mid * (1.0 - half_spread)
         ask = market.mid * (1.0 + half_spread)
@@ -171,7 +205,10 @@ class DryRunFillSimulator:
 
         base = ask if is_buy else bid
 
-        slippage_bps = max(0.0, float(getattr(config, "dry_run_fill_simulator_slippage_bps", 0.0) or 0.0))
+        slippage_bps = max(
+            0.0,
+            float(getattr(config, "dry_run_fill_simulator_slippage_bps", 0.0) or 0.0),
+        )
         slip = slippage_bps / 10_000.0
         # Adverse slippage: buy -> higher, sell -> lower.
         filled = base * (1.0 + slip if is_buy else 1.0 - slip)

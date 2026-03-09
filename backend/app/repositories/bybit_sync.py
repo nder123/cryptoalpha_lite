@@ -7,10 +7,13 @@ from typing import Any, Iterable, Optional
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 
-from app.infrastructure.database import db_session
 from app.core.logging import get_logger
-from app.repositories.models import AccountEquitySnapshot, AccountTransaction, ExchangeTrade
-
+from app.infrastructure.database import db_session
+from app.repositories.models import (
+    AccountEquitySnapshot,
+    AccountTransaction,
+    ExchangeTrade,
+)
 
 MAX_TRANSACTION_ABS_AMOUNT = Decimal("1000")
 LOGGER = get_logger(__name__)
@@ -72,7 +75,11 @@ class ExchangeDataRepository:
                 LOGGER.debug(
                     "exchange_trade_duplicate_in_batch",
                     exec_id=exec_id,
-                    previous_trade_time=previous["trade_time"].isoformat() if previous["trade_time"] else None,
+                    previous_trade_time=(
+                        previous["trade_time"].isoformat()
+                        if previous["trade_time"]
+                        else None
+                    ),
                     new_trade_time=trade_time.isoformat() if trade_time else None,
                 )
             unique_payloads[exec_id] = payload
@@ -113,7 +120,9 @@ class ExchangeDataRepository:
             "quantity": float(row.quantity) if row.quantity is not None else None,
             "fee": float(row.fee) if row.fee is not None else None,
             "fee_currency": row.fee_currency,
-            "realized_pnl": float(row.realized_pnl) if row.realized_pnl is not None else None,
+            "realized_pnl": (
+                float(row.realized_pnl) if row.realized_pnl is not None else None
+            ),
             "trade_time": row.trade_time.isoformat() if row.trade_time else None,
         }
 
@@ -182,14 +191,11 @@ class ExchangeDataRepository:
         if symbol:
             filters.append(ExchangeTrade.symbol == symbol)
 
-        stmt = (
-            select(
-                func.count().label("count"),
-                func.sum(ExchangeTrade.realized_pnl).label("realized"),
-                func.sum(ExchangeTrade.fee).label("fees"),
-            )
-            .select_from(ExchangeTrade)
-        )
+        stmt = select(
+            func.count().label("count"),
+            func.sum(ExchangeTrade.realized_pnl).label("realized"),
+            func.sum(ExchangeTrade.fee).label("fees"),
+        ).select_from(ExchangeTrade)
         if filters:
             stmt = stmt.where(*filters)
 
@@ -258,14 +264,11 @@ class ExchangeDataRepository:
         if tx_type:
             filters.append(AccountTransaction.type == tx_type)
 
-        stmt = (
-            select(
-                func.count().label("count"),
-                func.sum(AccountTransaction.amount).label("amount"),
-                func.sum(AccountTransaction.fee).label("fees"),
-            )
-            .select_from(AccountTransaction)
-        )
+        stmt = select(
+            func.count().label("count"),
+            func.sum(AccountTransaction.amount).label("amount"),
+            func.sum(AccountTransaction.fee).label("fees"),
+        ).select_from(AccountTransaction)
         if filters:
             stmt = stmt.where(*filters)
 
@@ -323,19 +326,27 @@ class ExchangeDataRepository:
             return 0
         payloads = []
         for entry in transactions:
-            created_time = _ensure_datetime(entry.get("trade_time") or entry.get("created_time"))
+            created_time = _ensure_datetime(
+                entry.get("trade_time") or entry.get("created_time")
+            )
             if created_time is None:
                 continue
             amount_decimal = _to_decimal(entry.get("amount"))
             fee_decimal = _to_decimal(entry.get("fee"))
-            if amount_decimal is not None and amount_decimal.copy_abs() > MAX_TRANSACTION_ABS_AMOUNT:
+            if (
+                amount_decimal is not None
+                and amount_decimal.copy_abs() > MAX_TRANSACTION_ABS_AMOUNT
+            ):
                 LOGGER.warning(
                     "exchange_tx_amount_out_of_range",
                     transaction_id=entry.get("transaction_id") or entry.get("id"),
                     amount=str(amount_decimal),
                 )
                 continue
-            if fee_decimal is not None and fee_decimal.copy_abs() > MAX_TRANSACTION_ABS_AMOUNT:
+            if (
+                fee_decimal is not None
+                and fee_decimal.copy_abs() > MAX_TRANSACTION_ABS_AMOUNT
+            ):
                 LOGGER.warning(
                     "exchange_tx_fee_out_of_range",
                     transaction_id=entry.get("transaction_id") or entry.get("id"),
@@ -378,14 +389,22 @@ class ExchangeDataRepository:
 
     async def last_trade_time(self) -> datetime | None:
         async with db_session() as session:
-            stmt = select(ExchangeTrade.trade_time).order_by(ExchangeTrade.trade_time.desc()).limit(1)
+            stmt = (
+                select(ExchangeTrade.trade_time)
+                .order_by(ExchangeTrade.trade_time.desc())
+                .limit(1)
+            )
             result = await session.execute(stmt)
             row = result.scalar_one_or_none()
         return row
 
     async def last_transaction_time(self) -> datetime | None:
         async with db_session() as session:
-            stmt = select(AccountTransaction.created_time).order_by(AccountTransaction.created_time.desc()).limit(1)
+            stmt = (
+                select(AccountTransaction.created_time)
+                .order_by(AccountTransaction.created_time.desc())
+                .limit(1)
+            )
             result = await session.execute(stmt)
             row = result.scalar_one_or_none()
         return row
@@ -416,9 +435,19 @@ class ExchangeDataRepository:
         return [
             {
                 "captured_at": row.captured_at.isoformat() if row.captured_at else None,
-                "total_equity": float(row.total_equity) if row.total_equity is not None else None,
-                "wallet_balance": float(row.wallet_balance) if row.wallet_balance is not None else None,
-                "available_balance": float(row.available_balance) if row.available_balance is not None else None,
+                "total_equity": (
+                    float(row.total_equity) if row.total_equity is not None else None
+                ),
+                "wallet_balance": (
+                    float(row.wallet_balance)
+                    if row.wallet_balance is not None
+                    else None
+                ),
+                "available_balance": (
+                    float(row.available_balance)
+                    if row.available_balance is not None
+                    else None
+                ),
                 "currency": row.currency,
             }
             for row in rows
@@ -436,8 +465,16 @@ class ExchangeDataRepository:
             return None
         return {
             "captured_at": row.captured_at.isoformat() if row.captured_at else None,
-            "total_equity": float(row.total_equity) if row.total_equity is not None else None,
-            "wallet_balance": float(row.wallet_balance) if row.wallet_balance is not None else None,
-            "available_balance": float(row.available_balance) if row.available_balance is not None else None,
+            "total_equity": (
+                float(row.total_equity) if row.total_equity is not None else None
+            ),
+            "wallet_balance": (
+                float(row.wallet_balance) if row.wallet_balance is not None else None
+            ),
+            "available_balance": (
+                float(row.available_balance)
+                if row.available_balance is not None
+                else None
+            ),
             "currency": row.currency,
         }

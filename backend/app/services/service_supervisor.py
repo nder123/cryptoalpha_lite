@@ -1,4 +1,5 @@
 """Supervisor responsible for running background services."""
+
 from __future__ import annotations
 
 import asyncio
@@ -16,7 +17,11 @@ BackgroundTaskFactory = Callable[[asyncio.Event], Awaitable[None]]
 class ServiceSupervisor:
     """Manage lifecycle of background services and expose health state."""
 
-    def __init__(self, store: GlobalAppState | None = None, notifier: BroadcastManager | None = None) -> None:
+    def __init__(
+        self,
+        store: GlobalAppState | None = None,
+        notifier: BroadcastManager | None = None,
+    ) -> None:
         self._tasks: Dict[str, asyncio.Task[None]] = {}
         self._stop_event = asyncio.Event()
         self._exit_stack = AsyncExitStack()

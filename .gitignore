@@ -15,6 +15,9 @@ backend/.uvicorn.log
 backend/.health_cron.log
 backend/rl_status_snapshots.jsonl
 backend/.promotion_recommender_state.json
+backend/.codex_out/
+backend/logs/*.log
+backend/*.pid
 
 # Local environment
 .env
@@ -26,6 +29,10 @@ frontend/dist/
 frontend/.next/
 frontend/.nuxt/
 frontend/.cache/
+frontend/.vite.log
+frontend/.vite.pid
+frontend/tsconfig.tsbuildinfo
+frontend/tsconfig.*.tsbuildinfo
 
 # OS
 .DS_Store

@@ -1,4 +1,5 @@
 """Monitor Bybit orders to emit filled execution reports."""
+
 from __future__ import annotations
 
 import asyncio
@@ -12,7 +13,6 @@ from app.domain import streams
 from app.domain.events import ExecutionReport, ExecutionStatus
 from app.exchange.bybit import BybitClient, OrderStatusInfo
 from app.infrastructure.event_bus import EventBus
-
 
 _PENDING_MAX = 512
 
@@ -67,12 +67,17 @@ class ExecutionFillMonitor:
                 break
 
     async def _handle_report(self, report: ExecutionReport) -> None:
-        if report.status not in {ExecutionStatus.SUBMITTED, ExecutionStatus.PARTIALLY_FILLED}:
+        if report.status not in {
+            ExecutionStatus.SUBMITTED,
+            ExecutionStatus.PARTIALLY_FILLED,
+        }:
             return
 
         order_id = self._extract_order_id(report)
         if not order_id:
-            self._logger.debug("fill_monitor_missing_order_id", directive_id=report.directive_id)
+            self._logger.debug(
+                "fill_monitor_missing_order_id", directive_id=report.directive_id
+            )
             return
 
         pending_key = report.directive_id
@@ -118,37 +123,65 @@ class ExecutionFillMonitor:
 
             normalized = (info.status or "").lower()
             status_changed = normalized != (pending.last_status or "").lower()
-            qty_changed = info.cum_exec_qty is not None and info.cum_exec_qty != pending.last_qty
-            price_changed = info.avg_price is not None and info.avg_price != pending.last_avg_price
-            fee_changed = info.cum_exec_fee is not None and info.cum_exec_fee != pending.last_fee
+            qty_changed = (
+                info.cum_exec_qty is not None and info.cum_exec_qty != pending.last_qty
+            )
+            price_changed = (
+                info.avg_price is not None and info.avg_price != pending.last_avg_price
+            )
+            fee_changed = (
+                info.cum_exec_fee is not None and info.cum_exec_fee != pending.last_fee
+            )
 
             if not (status_changed or qty_changed or price_changed or fee_changed):
                 continue
 
             if normalized in {"filled"}:
-                await self._publish_update(pending, info, ExecutionStatus.FILLED, "filled")
+                await self._publish_update(
+                    pending, info, ExecutionStatus.FILLED, "filled"
+                )
                 to_remove.append(directive_id)
             elif normalized in {"partiallyfilled"}:
-                await self._publish_update(pending, info, ExecutionStatus.PARTIALLY_FILLED, "partial")
+                await self._publish_update(
+                    pending, info, ExecutionStatus.PARTIALLY_FILLED, "partial"
+                )
                 pending.last_status = normalized
                 pending.last_qty = info.cum_exec_qty
                 pending.last_avg_price = info.avg_price
                 pending.last_fee = info.cum_exec_fee
                 pending.last_update = datetime.now(tz=timezone.utc)
             elif normalized in {"cancelled", "canceled"}:
-                await self._publish_update(pending, info, ExecutionStatus.CANCELLED, "cancelled")
+                await self._publish_update(
+                    pending, info, ExecutionStatus.CANCELLED, "cancelled"
+                )
                 to_remove.append(directive_id)
             elif normalized in {"rejected"}:
-                await self._publish_update(pending, info, ExecutionStatus.REJECTED, "rejected")
+                await self._publish_update(
+                    pending, info, ExecutionStatus.REJECTED, "rejected"
+                )
                 to_remove.append(directive_id)
             elif normalized in {"failed", "deactivated"}:
-                await self._publish_update(pending, info, ExecutionStatus.FAILED, "failed")
+                await self._publish_update(
+                    pending, info, ExecutionStatus.FAILED, "failed"
+                )
                 to_remove.append(directive_id)
             else:
                 pending.last_status = normalized
-                pending.last_qty = info.cum_exec_qty if info.cum_exec_qty is not None else pending.last_qty
-                pending.last_avg_price = info.avg_price if info.avg_price is not None else pending.last_avg_price
-                pending.last_fee = info.cum_exec_fee if info.cum_exec_fee is not None else pending.last_fee
+                pending.last_qty = (
+                    info.cum_exec_qty
+                    if info.cum_exec_qty is not None
+                    else pending.last_qty
+                )
+                pending.last_avg_price = (
+                    info.avg_price
+                    if info.avg_price is not None
+                    else pending.last_avg_price
+                )
+                pending.last_fee = (
+                    info.cum_exec_fee
+                    if info.cum_exec_fee is not None
+                    else pending.last_fee
+                )
                 pending.last_update = datetime.now(tz=timezone.utc)
 
         for directive_id in to_remove:
@@ -184,12 +217,27 @@ class ExecutionFillMonitor:
         status: ExecutionStatus,
         tag: str,
     ) -> None:
-        reported_at = info.updated_at.astimezone(timezone.utc) if info.updated_at else datetime.now(timezone.utc)
-        quantity = info.cum_exec_qty if info.cum_exec_qty is not None else pending.last_qty or 0.0
-        avg_price = info.avg_price if info.avg_price is not None else pending.last_avg_price
+        reported_at = (
+            info.updated_at.astimezone(timezone.utc)
+            if info.updated_at
+            else datetime.now(timezone.utc)
+        )
+        quantity = (
+            info.cum_exec_qty
+            if info.cum_exec_qty is not None
+            else pending.last_qty or 0.0
+        )
+        avg_price = (
+            info.avg_price if info.avg_price is not None else pending.last_avg_price
+        )
         fees = info.cum_exec_fee if info.cum_exec_fee is not None else pending.last_fee
-        if status in {ExecutionStatus.FILLED, ExecutionStatus.PARTIALLY_FILLED} and fees is None:
-            fees = await self._fallback_fetch_order_fee(pending.symbol, pending.order_id)
+        if (
+            status in {ExecutionStatus.FILLED, ExecutionStatus.PARTIALLY_FILLED}
+            and fees is None
+        ):
+            fees = await self._fallback_fetch_order_fee(
+                pending.symbol, pending.order_id
+            )
 
         report = ExecutionReport(
             directive_id=pending.directive_id,
@@ -207,7 +255,9 @@ class ExecutionFillMonitor:
         )
         await self._bus.publish(streams.EXECUTION_REPORTS, report)
 
-    async def _fallback_fetch_order_fee(self, symbol: str, order_id: str) -> Optional[float]:
+    async def _fallback_fetch_order_fee(
+        self, symbol: str, order_id: str
+    ) -> Optional[float]:
         now = datetime.now(timezone.utc)
         try:
             executions, _ = await self._client.fetch_executions(
@@ -217,7 +267,12 @@ class ExecutionFillMonitor:
                 limit=200,
             )
         except Exception as exc:  # noqa: BLE001
-            self._logger.debug("fill_monitor_fee_fallback_failed", symbol=symbol, order_id=order_id, error=str(exc))
+            self._logger.debug(
+                "fill_monitor_fee_fallback_failed",
+                symbol=symbol,
+                order_id=order_id,
+                error=str(exc),
+            )
             return None
 
         fee_sum = 0.0
@@ -243,6 +298,8 @@ class ExecutionFillMonitor:
         return None
 
 
-async def run_execution_fill_monitor(stop_event: asyncio.Event, bus: EventBus, poll_interval: float = 3.0) -> None:
+async def run_execution_fill_monitor(
+    stop_event: asyncio.Event, bus: EventBus, poll_interval: float = 3.0
+) -> None:
     monitor = ExecutionFillMonitor(bus, poll_interval=poll_interval)
     await monitor.run(stop_event)

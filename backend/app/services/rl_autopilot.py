@@ -20,8 +20,7 @@ from sqlalchemy import func, select
 from app.core.logging import get_logger
 from app.core.runtime_config import RuntimeConfigManager
 from app.domain import streams
-from app.domain.events import (CTOAiDecision, TradeAction, TradeDirective,
-                               TradingMode)
+from app.domain.events import CTOAiDecision, TradeAction, TradeDirective, TradingMode
 from app.infrastructure.database import db_session
 from app.infrastructure.event_bus import EventBus
 from app.repositories.models import TradeSession

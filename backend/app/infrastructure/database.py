@@ -1,9 +1,15 @@
 """Database session management using SQLAlchemy and asyncpg."""
+
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
 
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from app.core.config import get_settings
 
@@ -40,7 +46,9 @@ async def db_session() -> AsyncSession:
 
 async def init_models() -> None:
     engine = get_engine()
-    from app.repositories.models import Base  # local import to avoid circular dependency
+    from app.repositories.models import (  # local import to avoid circular dependency
+        Base,
+    )
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

@@ -1,4 +1,5 @@
-import asyncio
+# Ensure the backend package is importable when tests run without installation.
+import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -7,9 +8,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import pytest
-
-# Ensure the backend package is importable when tests run without installation.
-import sys
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 BACKEND_PATH = str(BACKEND_ROOT)
@@ -35,7 +33,7 @@ from app.domain.events import (
 )
 from app.infrastructure.event_bus import EventMessage
 from app.services.position_manager import PositionManager
-from app.services.rl_state_builder import RLStateBuilder, STATE_KEY_PREFIX
+from app.services.rl_state_builder import STATE_KEY_PREFIX, RLStateBuilder
 from app.services.trade_stats_recorder import TradeStatsRecorder
 from app.state.cto_ai import CTOAIOrchestrator
 from app.state.notifier import BroadcastManager
@@ -50,7 +48,10 @@ class FakeEventBus:
 
     async def publish(self, stream: str, event: Any, *, id: str | None = None) -> str:
         self._counter += 1
-        message_id = id or f"{int(datetime.now(timezone.utc).timestamp() * 1000)}-{self._counter}"
+        message_id = (
+            id
+            or f"{int(datetime.now(timezone.utc).timestamp() * 1000)}-{self._counter}"
+        )
         self.published[stream].append(event)
         return message_id
 
@@ -157,7 +158,11 @@ class InMemoryTradeStatsRepository:
 
     async def get_open_session(self, symbol: str, direction: str) -> Optional[_Session]:
         for session in self.sessions.values():
-            if session.symbol == symbol and session.direction == direction and session.closed_at is None:
+            if (
+                session.symbol == symbol
+                and session.direction == direction
+                and session.closed_at is None
+            ):
                 return session
         return None
 
@@ -208,19 +213,55 @@ class InMemoryTradeStatsRepository:
                     "direction": session.direction,
                     "mode": session.mode,
                     "opened_at": session.opened_at.isoformat(),
-                    "closed_at": session.closed_at.isoformat() if session.closed_at else None,
-                    "entry_price": float(session.entry_price) if session.entry_price is not None else None,
-                    "entry_qty": float(session.entry_qty) if session.entry_qty is not None else None,
-                    "exit_price": float(session.exit_price) if session.exit_price is not None else None,
-                    "exit_qty": float(session.exit_qty) if session.exit_qty is not None else None,
-                    "target_price": float(session.target_price) if session.target_price is not None else None,
-                    "stop_price": float(session.stop_price) if session.stop_price is not None else None,
-                    "pnl_usdt": float(session.pnl_usdt) if session.pnl_usdt is not None else None,
-                    "pnl_pct": float(session.pnl_pct) if session.pnl_pct is not None else None,
+                    "closed_at": (
+                        session.closed_at.isoformat() if session.closed_at else None
+                    ),
+                    "entry_price": (
+                        float(session.entry_price)
+                        if session.entry_price is not None
+                        else None
+                    ),
+                    "entry_qty": (
+                        float(session.entry_qty)
+                        if session.entry_qty is not None
+                        else None
+                    ),
+                    "exit_price": (
+                        float(session.exit_price)
+                        if session.exit_price is not None
+                        else None
+                    ),
+                    "exit_qty": (
+                        float(session.exit_qty)
+                        if session.exit_qty is not None
+                        else None
+                    ),
+                    "target_price": (
+                        float(session.target_price)
+                        if session.target_price is not None
+                        else None
+                    ),
+                    "stop_price": (
+                        float(session.stop_price)
+                        if session.stop_price is not None
+                        else None
+                    ),
+                    "pnl_usdt": (
+                        float(session.pnl_usdt)
+                        if session.pnl_usdt is not None
+                        else None
+                    ),
+                    "pnl_pct": (
+                        float(session.pnl_pct) if session.pnl_pct is not None else None
+                    ),
                     "tp_hit": session.tp_hit,
                     "sl_hit": session.sl_hit,
                     "duration_seconds": session.duration_seconds,
-                    "risk_reward_ratio": float(session.risk_reward_ratio) if session.risk_reward_ratio is not None else None,
+                    "risk_reward_ratio": (
+                        float(session.risk_reward_ratio)
+                        if session.risk_reward_ratio is not None
+                        else None
+                    ),
                     "entry_directive_id": session.entry_directive_id,
                     "exit_directive_id": session.exit_directive_id,
                     "comment": session.comment,
@@ -274,16 +315,26 @@ class InMemoryTradeStatsRepository:
                 stats["total_pct"] += Decimal(pnl_pct)
                 stats["count_pct"] += 1
             closed_at = session.get("closed_at")
-            if closed_at is not None and (stats["last_closed_at"] is None or closed_at > stats["last_closed_at"]):
+            if closed_at is not None and (
+                stats["last_closed_at"] is None or closed_at > stats["last_closed_at"]
+            ):
                 stats["last_closed_at"] = closed_at
 
         rows: List[dict[str, Any]] = []
         for payload in grouped.values():
             count_pct = payload.pop("count_pct")
             total_pct = payload.pop("total_pct")
-            payload["total_pnl_usdt"] = float(payload["total_pnl_usdt"]) if payload["total_pnl_usdt"] is not None else None
+            payload["total_pnl_usdt"] = (
+                float(payload["total_pnl_usdt"])
+                if payload["total_pnl_usdt"] is not None
+                else None
+            )
             payload["avg_pnl_pct"] = float(total_pct / count_pct) if count_pct else None
-            payload["last_closed_at"] = payload["last_closed_at"].isoformat() if payload["last_closed_at"] else None
+            payload["last_closed_at"] = (
+                payload["last_closed_at"].isoformat()
+                if payload["last_closed_at"]
+                else None
+            )
             rows.append(payload)
 
         rows.sort(key=lambda item: item.get("total_pnl_usdt") or 0.0, reverse=True)
@@ -304,7 +355,9 @@ async def test_full_trade_cycle_updates_stats_and_rl_state() -> None:
     trade_stats_recorder = TradeStatsRecorder(bus, stats_repo)
     fake_redis = FakeRedis()
     rl_builder = RLStateBuilder(bus, fake_redis, config_manager, stats_repo)
-    position_manager = PositionManager(bus, orchestrator, store, notifier, config_manager)
+    position_manager = PositionManager(
+        bus, orchestrator, store, notifier, config_manager
+    )
 
     now = datetime.now(timezone.utc)
     symbol = "BTCUSDT"
@@ -371,12 +424,16 @@ async def test_full_trade_cycle_updates_stats_and_rl_state() -> None:
     )
 
     await position_manager._register_open_fill(directive, open_report)
-    await rl_builder._handle_execution(EventMessage("1-4", streams.EXECUTION_REPORTS, open_report))
+    await rl_builder._handle_execution(
+        EventMessage("1-4", streams.EXECUTION_REPORTS, open_report)
+    )
     await trade_stats_recorder._handle_execution(open_report)
 
     tracker = position_manager._positions[directive.directive_id]
     config = await config_manager.get_config()
-    await position_manager._dispatch_close(tracker, tracker.entry_price, "timeout", config)
+    await position_manager._dispatch_close(
+        tracker, tracker.entry_price, "timeout", config
+    )
 
     close_directive = bus.published[streams.CTOAI_DIRECTIVES][-1]
     assert isinstance(close_directive, TradeDirective)
@@ -396,8 +453,12 @@ async def test_full_trade_cycle_updates_stats_and_rl_state() -> None:
     )
 
     await position_manager._register_close_update(close_directive, close_report)
-    await rl_builder._handle_directive(EventMessage("1-5", streams.CTOAI_DIRECTIVES, close_directive))
-    await rl_builder._handle_execution(EventMessage("1-6", streams.EXECUTION_REPORTS, close_report))
+    await rl_builder._handle_directive(
+        EventMessage("1-5", streams.CTOAI_DIRECTIVES, close_directive)
+    )
+    await rl_builder._handle_execution(
+        EventMessage("1-6", streams.EXECUTION_REPORTS, close_report)
+    )
     await trade_stats_recorder._handle_execution(close_report)
 
     await rl_builder._update_portfolio(symbol)

@@ -1,4 +1,5 @@
 """Notification dispatcher that pushes important alerts to an external webhook."""
+
 from __future__ import annotations
 
 import asyncio
@@ -12,7 +13,12 @@ import redis.asyncio as redis
 from app.core.config import get_settings
 from app.core.logging import get_logger
 from app.core.runtime_config import RuntimeConfigManager
-from app.services.rl_trainer import EXPERIENCE_KEY, FORCE_TRAIN_QUEUE, LAST_TRAIN_KEY, LATEST_METRICS_KEY
+from app.services.rl_trainer import (
+    EXPERIENCE_KEY,
+    FORCE_TRAIN_QUEUE,
+    LAST_TRAIN_KEY,
+    LATEST_METRICS_KEY,
+)
 
 AUTO_RESEARCH_BACKLOG_KEY = "auto_research:backlog"
 AUTO_RESEARCH_LAST_RUN_HASH = "auto_research:last_run"
@@ -29,7 +35,9 @@ class NotificationDispatcher:
         self._settings = get_settings()
         self._webhook_url = self._settings.notification_webhook_url
         self._channel = self._settings.notification_channel or "default"
-        self._redis = redis.from_url(self._settings.redis_dsn, encoding="utf-8", decode_responses=True)
+        self._redis = redis.from_url(
+            self._settings.redis_dsn, encoding="utf-8", decode_responses=True
+        )
         self._http = httpx.AsyncClient(timeout=10.0)
         self._telegram_token = self._settings.telegram_bot_token
         self._telegram_chat_id = self._settings.telegram_chat_id
@@ -51,7 +59,9 @@ class NotificationDispatcher:
         await self._http.aclose()
 
     async def run(self, stop_event: asyncio.Event) -> None:
-        if not self._webhook_url and not (self._telegram_token and self._telegram_chat_id):
+        if not self._webhook_url and not (
+            self._telegram_token and self._telegram_chat_id
+        ):
             LOGGER.info("notification_dispatcher_disabled_no_webhook")
             await stop_event.wait()
             return
@@ -62,10 +72,14 @@ class NotificationDispatcher:
                 try:
                     await self._tick()
                 except Exception as exc:  # noqa: BLE001
-                    LOGGER.exception("notification_dispatcher_tick_failed", exc_info=exc)
+                    LOGGER.exception(
+                        "notification_dispatcher_tick_failed", exc_info=exc
+                    )
 
                 try:
-                    await asyncio.wait_for(asyncio.shield(stop_event.wait()), timeout=HEARTBEAT_SECONDS)
+                    await asyncio.wait_for(
+                        asyncio.shield(stop_event.wait()), timeout=HEARTBEAT_SECONDS
+                    )
                 except asyncio.TimeoutError:
                     continue
         except asyncio.CancelledError:
@@ -102,7 +116,9 @@ class NotificationDispatcher:
             guard_snapshot,
         )
 
-    async def _handle_buffer_alert(self, buffer_ready: bool, experience_count: int, min_batch: int) -> None:
+    async def _handle_buffer_alert(
+        self, buffer_ready: bool, experience_count: int, min_batch: int
+    ) -> None:
         if self._last_buffer_ready is None:
             self._last_buffer_ready = buffer_ready
             return
@@ -128,10 +144,14 @@ class NotificationDispatcher:
                 f"В очереди принудительного обучения {queue_size} запрос(ов).",
             )
         elif queue_size == 0 and self._last_queue_size > 0:
-            await self._send("rl_training_queue_cleared", "Очередь принудительного обучения очищена.")
+            await self._send(
+                "rl_training_queue_cleared", "Очередь принудительного обучения очищена."
+            )
         self._last_queue_size = queue_size
 
-    async def _handle_stale_training_alert(self, last_train_at: Optional[datetime], interval: timedelta) -> None:
+    async def _handle_stale_training_alert(
+        self, last_train_at: Optional[datetime], interval: timedelta
+    ) -> None:
         if interval.total_seconds() <= 0:
             return
 
@@ -139,7 +159,9 @@ class NotificationDispatcher:
         threshold = interval * STALE_MULTIPLIER
         if last_train_at is None:
             if not self._last_stale_alert:
-                await self._send("rl_training_never_run", "RL тренер ещё ни разу не запускался.")
+                await self._send(
+                    "rl_training_never_run", "RL тренер ещё ни разу не запускался."
+                )
                 self._last_stale_alert = now
             return
 
@@ -152,8 +174,15 @@ class NotificationDispatcher:
                 )
                 self._last_stale_alert = now
         else:
-            if self._last_stale_alert and (not self._last_recovery or now - self._last_recovery >= timedelta(seconds=RECOVERY_COOLDOWN_SECONDS)):
-                await self._send("rl_training_recovered", "RL тренер снова выполняет обучения в срок.")
+            if self._last_stale_alert and (
+                not self._last_recovery
+                or now - self._last_recovery
+                >= timedelta(seconds=RECOVERY_COOLDOWN_SECONDS)
+            ):
+                await self._send(
+                    "rl_training_recovered",
+                    "RL тренер снова выполняет обучения в срок.",
+                )
                 self._last_stale_alert = None
                 self._last_recovery = now
 
@@ -169,7 +198,9 @@ class NotificationDispatcher:
                 response = await self._http.post(self._webhook_url, json=payload)
                 response.raise_for_status()
             except httpx.HTTPError as exc:
-                LOGGER.error("notification_dispatch_failed", event=event, error=str(exc))
+                LOGGER.error(
+                    "notification_dispatch_failed", event=event, error=str(exc)
+                )
             else:
                 LOGGER.info("notification_dispatch_sent", event=event)
         if self._telegram_token and self._telegram_chat_id:
@@ -225,8 +256,16 @@ class NotificationDispatcher:
                         self._format_number(portfolio_limit),
                     ),
                 )
-            elif guard_state == "normal" and self._last_guard_state in {"caution", "halt"}:
-                await self._send("equity_guard_recovered", "Equity guard вернулся в NORMAL. Лимит портфеля {0}.".format(self._format_number(portfolio_limit)))
+            elif guard_state == "normal" and self._last_guard_state in {
+                "caution",
+                "halt",
+            }:
+                await self._send(
+                    "equity_guard_recovered",
+                    "Equity guard вернулся в NORMAL. Лимит портфеля {0}.".format(
+                        self._format_number(portfolio_limit)
+                    ),
+                )
             self._last_guard_state = guard_state
 
         if volatility_state and volatility_state != self._last_volatility_state:
@@ -235,8 +274,17 @@ class NotificationDispatcher:
                     "volatility_guard_alert",
                     f"Волатильность {volatility_state.upper()}. Пересчитанные лимиты: {self._format_number(portfolio_limit)} портфель, equity {self._format_number(total_equity)}.",
                 )
-            elif volatility_state in {"calm", "choppy"} and self._last_volatility_state in {"elevated", "turbulent"}:
-                await self._send("volatility_guard_normalized", "Волатильность вернулась к {volatility_state}. Лимиты восстановления: {0}.".format(self._format_number(portfolio_limit)))
+            elif volatility_state in {
+                "calm",
+                "choppy",
+            } and self._last_volatility_state in {"elevated", "turbulent"}:
+                await self._send(
+                    "volatility_guard_normalized",
+                    "Волатильность вернулась к {volatility_state}. Лимиты восстановления: {limit}.".format(
+                        volatility_state=volatility_state,
+                        limit=self._format_number(portfolio_limit),
+                    ),
+                )
             self._last_volatility_state = volatility_state
 
         if snapshot_ts:
@@ -250,7 +298,9 @@ class NotificationDispatcher:
         elif enabled != self._auto_research_enabled_last:
             await self._send(
                 "auto_research_enabled" if enabled else "auto_research_disabled",
-                "Auto-research {state}.".format(state="включён" if enabled else "выключен"),
+                "Auto-research {state}.".format(
+                    state="включён" if enabled else "выключен"
+                ),
             )
             self._auto_research_enabled_last = enabled
 
@@ -277,11 +327,15 @@ class NotificationDispatcher:
         elif self._auto_research_backlog_high and backlog_size <= recovery_threshold:
             await self._send(
                 "auto_research_backlog_normalized",
-                "Бэклог авто-исследования снизился до {size}. Возвращаемся к нормальному режиму.".format(size=backlog_size),
+                "Бэклог авто-исследования снизился до {size}. Возвращаемся к нормальному режиму.".format(
+                    size=backlog_size
+                ),
             )
             self._auto_research_backlog_high = False
 
-        interval_seconds = max(int(getattr(config, "auto_research_interval_minutes", 5.0) * 60), 60)
+        interval_seconds = max(
+            int(getattr(config, "auto_research_interval_minutes", 5.0) * 60), 60
+        )
         stale_threshold = timedelta(seconds=interval_seconds * 4)
         last_run_values = await self._redis.hvals(AUTO_RESEARCH_LAST_RUN_HASH)
         latest_run = None
@@ -298,11 +352,18 @@ class NotificationDispatcher:
             if not self._auto_research_stale:
                 await self._send(
                     "auto_research_stale",
-                    "Auto-research не публикует снапшоты {age}. Проверьте сервис.".format(age=self._format_timedelta(now - latest_run)),
+                    "Auto-research не публикует снапшоты {age}. Проверьте сервис.".format(
+                        age=self._format_timedelta(now - latest_run)
+                    ),
                 )
                 self._auto_research_stale = True
         elif self._auto_research_stale:
-            await self._send("auto_research_recovered", "Auto-research снова активен. Последний запуск был {age} назад.".format(age=self._format_timedelta(now - latest_run)))
+            await self._send(
+                "auto_research_recovered",
+                "Auto-research снова активен. Последний запуск был {age} назад.".format(
+                    age=self._format_timedelta(now - latest_run)
+                ),
+            )
             self._auto_research_stale = False
 
     async def _maybe_send_daily_report(
@@ -320,12 +381,22 @@ class NotificationDispatcher:
             return
 
         metrics = await self._fetch_latest_metrics()
-        guard_state = guard_snapshot.get("equity_guard_state") if guard_snapshot else None
-        volatility_state = guard_snapshot.get("volatility_state") if guard_snapshot else None
-        drawdown_pct = guard_snapshot.get("equity_drawdown_pct") if guard_snapshot else None
-        portfolio_limit = guard_snapshot.get("portfolio_limit") if guard_snapshot else None
+        guard_state = (
+            guard_snapshot.get("equity_guard_state") if guard_snapshot else None
+        )
+        volatility_state = (
+            guard_snapshot.get("volatility_state") if guard_snapshot else None
+        )
+        drawdown_pct = (
+            guard_snapshot.get("equity_drawdown_pct") if guard_snapshot else None
+        )
+        portfolio_limit = (
+            guard_snapshot.get("portfolio_limit") if guard_snapshot else None
+        )
         total_equity = guard_snapshot.get("total_equity") if guard_snapshot else None
-        volatility_factor = guard_snapshot.get("volatility_factor") if guard_snapshot else None
+        volatility_factor = (
+            guard_snapshot.get("volatility_factor") if guard_snapshot else None
+        )
 
         lines = ["Ежедневный отчёт системы"]
         lines.append(
@@ -335,12 +406,12 @@ class NotificationDispatcher:
                 status="готов" if buffer_ready else "недостаточно",
             )
         )
-        lines.append(
-            "• Очередь обучения: {queue}".format(queue=queue_size)
-        )
+        lines.append("• Очередь обучения: {queue}".format(queue=queue_size))
         if last_train_at:
             lines.append(
-                "• Последнее обучение: {ago} назад".format(ago=self._format_timedelta(now - last_train_at))
+                "• Последнее обучение: {ago} назад".format(
+                    ago=self._format_timedelta(now - last_train_at)
+                )
             )
         else:
             lines.append("• Последнее обучение: ещё не выполнялось")
@@ -360,7 +431,11 @@ class NotificationDispatcher:
             lines.append(
                 "• Волатильность: {state}{suffix}".format(
                     state=volatility_state,
-                    suffix=f" (factor {volatility_factor:.2f})" if isinstance(volatility_factor, (int, float)) else "",
+                    suffix=(
+                        f" (factor {volatility_factor:.2f})"
+                        if isinstance(volatility_factor, (int, float))
+                        else ""
+                    ),
                 )
             )
 
@@ -374,7 +449,9 @@ class NotificationDispatcher:
             )
             last_pnl = metrics.get("last_trade_pnl_pct")
             if last_pnl is not None:
-                lines.append(f"• Последняя сделка: {self._format_percent(last_pnl)} PnL")
+                lines.append(
+                    f"• Последняя сделка: {self._format_percent(last_pnl)} PnL"
+                )
 
         await self._send("daily_status_report", "\n".join(lines))
         self._last_daily_report = report_key
@@ -431,7 +508,9 @@ class NotificationDispatcher:
             return str(value)
 
 
-async def run_notification_dispatcher(stop_event: asyncio.Event, config_manager: RuntimeConfigManager) -> None:
+async def run_notification_dispatcher(
+    stop_event: asyncio.Event, config_manager: RuntimeConfigManager
+) -> None:
     dispatcher = NotificationDispatcher(config_manager)
     try:
         await dispatcher.run(stop_event)

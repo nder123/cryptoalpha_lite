@@ -1,4 +1,5 @@
 """Redis Streams backed event bus."""
+
 from __future__ import annotations
 
 import asyncio
@@ -7,7 +8,7 @@ from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from json import dumps, loads
-from typing import Any, AsyncIterator, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, AsyncIterator, Dict, Generic, Type, TypeVar
 
 import redis.asyncio as redis
 from pydantic import BaseModel
@@ -22,7 +23,9 @@ def _json_default(value: Any) -> Any:
         return value.isoformat()
     if isinstance(value, Enum):
         return value.value
-    raise TypeError(f"Object of type {value.__class__.__name__} is not JSON serializable")
+    raise TypeError(
+        f"Object of type {value.__class__.__name__} is not JSON serializable"
+    )
 
 
 @dataclass(slots=True)
@@ -45,7 +48,9 @@ class EventBus:
     @classmethod
     async def create(cls) -> "EventBus":
         settings = get_settings()
-        client = redis.from_url(settings.redis_dsn, encoding="utf-8", decode_responses=True)
+        client = redis.from_url(
+            settings.redis_dsn, encoding="utf-8", decode_responses=True
+        )
         return cls(client, maxlen=settings.redis_stream_maxlen)
 
     async def publish(self, stream: str, event: Any, *, id: str | None = None) -> str:
@@ -56,7 +61,9 @@ class EventBus:
         else:
             raise TypeError(f"Unsupported event type: {event.__class__.__name__}")
 
-        payload = dumps({"type": event.__class__.__name__, "data": data}, default=_json_default)
+        payload = dumps(
+            {"type": event.__class__.__name__, "data": data}, default=_json_default
+        )
         xadd_kwargs: dict[str, Any] = {"fields": {"payload": payload}}
         if self._maxlen is not None:
             xadd_kwargs["maxlen"] = self._maxlen
@@ -113,11 +120,15 @@ class EventBus:
                 for message_id, fields in pending_messages:
                     payload = loads(fields["payload"])
                     data_payload = payload["data"]
-                    if isinstance(event_type, type) and issubclass(event_type, BaseModel):
+                    if isinstance(event_type, type) and issubclass(
+                        event_type, BaseModel
+                    ):
                         data = event_type.model_validate(data_payload)
                     else:
                         data = event_type(**data_payload)  # type: ignore[arg-type]
-                    yield EventMessage(message_id=message_id, stream=stream, payload=data)
+                    yield EventMessage(
+                        message_id=message_id, stream=stream, payload=data
+                    )
                 continue
 
             response = await self._redis.xreadgroup(
@@ -134,13 +145,19 @@ class EventBus:
                 for message_id, fields in messages:
                     payload = loads(fields["payload"])
                     data_payload = payload["data"]
-                    if isinstance(event_type, type) and issubclass(event_type, BaseModel):
+                    if isinstance(event_type, type) and issubclass(
+                        event_type, BaseModel
+                    ):
                         data = event_type.model_validate(data_payload)
                     else:
                         data = event_type(**data_payload)  # type: ignore[arg-type]
-                    yield EventMessage(message_id=message_id, stream=stream, payload=data)
+                    yield EventMessage(
+                        message_id=message_id, stream=stream, payload=data
+                    )
 
-    def _decode_raw_message(self, stream: str, message_id: str, fields: dict[str, Any]) -> dict[str, Any] | None:
+    def _decode_raw_message(
+        self, stream: str, message_id: str, fields: dict[str, Any]
+    ) -> dict[str, Any] | None:
         payload_raw = fields.get("payload")
         if not payload_raw:
             return None
@@ -157,7 +174,9 @@ class EventBus:
         except (ValueError, TypeError):
             timestamp = None
         else:
-            timestamp = datetime.fromtimestamp(millis / 1000.0, tz=timezone.utc).isoformat()
+            timestamp = datetime.fromtimestamp(
+                millis / 1000.0, tz=timezone.utc
+            ).isoformat()
         return {
             "id": message_id,
             "stream": stream,
@@ -166,7 +185,9 @@ class EventBus:
             "data": data_payload,
         }
 
-    async def fetch_recent(self, stream: str, *, limit: int = 100) -> list[dict[str, Any]]:
+    async def fetch_recent(
+        self, stream: str, *, limit: int = 100
+    ) -> list[dict[str, Any]]:
         """Return latest events from a Redis stream (newest first)."""
         if limit <= 0:
             return []
@@ -178,7 +199,9 @@ class EventBus:
                 events.append(decoded)
         return events
 
-    async def fetch_after(self, stream: str, after_id: str, *, limit: int = 100) -> list[dict[str, Any]]:
+    async def fetch_after(
+        self, stream: str, after_id: str, *, limit: int = 100
+    ) -> list[dict[str, Any]]:
         """Return events newer than the provided ID (oldest first)."""
         if limit <= 0:
             return []

@@ -1,4 +1,5 @@
 """WebSocket endpoint for real-time dashboard updates."""
+
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
@@ -10,7 +11,9 @@ ws_router = APIRouter()
 
 
 @ws_router.websocket("/ws/dashboard")
-async def dashboard_ws(websocket: WebSocket, notifier: BroadcastManager = Depends(get_notifier_ws)) -> None:
+async def dashboard_ws(
+    websocket: WebSocket, notifier: BroadcastManager = Depends(get_notifier_ws)
+) -> None:
     await notifier.connect(websocket)
     try:
         while True:

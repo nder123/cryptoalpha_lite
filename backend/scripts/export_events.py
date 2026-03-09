@@ -47,10 +47,27 @@ async def _run_async(args: argparse.Namespace) -> None:
 
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export event streams to JSONL files")
-    parser.add_argument("--days", type=int, default=30, help="How many days to export (default: 30)")
-    parser.add_argument("--snapshots", type=str, default="/tmp/snapshots.jsonl", help="Output file for MarketSnapshot stream")
-    parser.add_argument("--directives", type=str, default="/tmp/directives.jsonl", help="Output file for TradeDirective stream")
-    parser.add_argument("--executions", type=str, default="/tmp/executions.jsonl", help="Output file for ExecutionReport stream")
+    parser.add_argument(
+        "--days", type=int, default=30, help="How many days to export (default: 30)"
+    )
+    parser.add_argument(
+        "--snapshots",
+        type=str,
+        default="/tmp/snapshots.jsonl",
+        help="Output file for MarketSnapshot stream",
+    )
+    parser.add_argument(
+        "--directives",
+        type=str,
+        default="/tmp/directives.jsonl",
+        help="Output file for TradeDirective stream",
+    )
+    parser.add_argument(
+        "--executions",
+        type=str,
+        default="/tmp/executions.jsonl",
+        help="Output file for ExecutionReport stream",
+    )
     return parser.parse_args(argv)
 
 

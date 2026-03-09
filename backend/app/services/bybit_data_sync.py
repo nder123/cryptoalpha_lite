@@ -191,7 +191,9 @@ class BybitDataSynchronizer:
             return False
         return True
 
-    def _iter_windows(self, start: datetime, end: datetime) -> Iterable[tuple[datetime, datetime]]:
+    def _iter_windows(
+        self, start: datetime, end: datetime
+    ) -> Iterable[tuple[datetime, datetime]]:
         current_start = start
         window_delta = self._max_window
         while current_start < end:

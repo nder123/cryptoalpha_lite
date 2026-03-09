@@ -1,4 +1,5 @@
 """Service to record trade statistics from directives and execution reports."""
+
 from __future__ import annotations
 
 import asyncio
@@ -6,20 +7,25 @@ from collections import deque
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal
-from typing import Deque, Dict, Optional
+from typing import Dict, Optional
 
 from app.core.logging import get_logger
 from app.domain import streams
-from app.domain.events import ExecutionReport, ExecutionStatus, TradeAction, TradeDirective
+from app.domain.events import (
+    ExecutionReport,
+    ExecutionStatus,
+    TradeAction,
+    TradeDirective,
+)
 from app.infrastructure.event_bus import EventBus
-from app.state.notifier import BroadcastManager
-from app.state.store import GlobalAppState
 from app.repositories.trade_stats import (
     TradeCloseDTO,
     TradeFillDTO,
     TradeSessionDTO,
     TradeStatsRepository,
 )
+from app.state.notifier import BroadcastManager
+from app.state.store import GlobalAppState
 
 _DECIMAL_ZERO = Decimal("0")
 
@@ -122,7 +128,9 @@ class TradeStatsRecorder:
             if directive is not None:
                 self._remember_directive(directive)
         if directive is None:
-            self._logger.warning("trade_stats_missing_directive", directive_id=report.directive_id)
+            self._logger.warning(
+                "trade_stats_missing_directive", directive_id=report.directive_id
+            )
             return
         if directive.action not in {TradeAction.OPEN, TradeAction.CLOSE}:
             self._logger.debug(
@@ -137,8 +145,13 @@ class TradeStatsRecorder:
         elif directive.action is TradeAction.CLOSE:
             await self._handle_close_execution(directive, report)
 
-    async def _handle_open_execution(self, directive: TradeDirective, report: ExecutionReport) -> None:
-        if report.status not in {ExecutionStatus.FILLED, ExecutionStatus.PARTIALLY_FILLED}:
+    async def _handle_open_execution(
+        self, directive: TradeDirective, report: ExecutionReport
+    ) -> None:
+        if report.status not in {
+            ExecutionStatus.FILLED,
+            ExecutionStatus.PARTIALLY_FILLED,
+        }:
             return
 
         entry_price = _to_decimal(report.avg_price)
@@ -180,13 +193,24 @@ class TradeStatsRecorder:
         )
         await self._repo.add_fill(fill)
 
-    async def _handle_close_execution(self, directive: TradeDirective, report: ExecutionReport) -> None:
-        if report.status not in {ExecutionStatus.FILLED, ExecutionStatus.PARTIALLY_FILLED}:
+    async def _handle_close_execution(
+        self, directive: TradeDirective, report: ExecutionReport
+    ) -> None:
+        if report.status not in {
+            ExecutionStatus.FILLED,
+            ExecutionStatus.PARTIALLY_FILLED,
+        }:
             return
 
-        session = await self._repo.get_open_session(directive.symbol, directive.direction)
+        session = await self._repo.get_open_session(
+            directive.symbol, directive.direction
+        )
         if session is None:
-            self._logger.warning("trade_stats_no_open_session", directive_id=directive.directive_id, symbol=directive.symbol)
+            self._logger.warning(
+                "trade_stats_no_open_session",
+                directive_id=directive.directive_id,
+                symbol=directive.symbol,
+            )
             return
 
         exit_price = _to_decimal(report.avg_price)
@@ -205,7 +229,9 @@ class TradeStatsRecorder:
 
         duration_seconds: Optional[int] = None
         if session.opened_at and report.reported_at:
-            duration_seconds = int((report.reported_at - session.opened_at).total_seconds())
+            duration_seconds = int(
+                (report.reported_at - session.opened_at).total_seconds()
+            )
 
         rationale_text = " ".join(directive.rationale or []).lower()
         tp_hit = self._check_level_hit(session.target_price, exit_price)
@@ -216,7 +242,12 @@ class TradeStatsRecorder:
             sl_hit = True
 
         rr_ratio = None
-        if session.target_price and session.stop_price and entry_price and session.stop_price != entry_price:
+        if (
+            session.target_price
+            and session.stop_price
+            and entry_price
+            and session.stop_price != entry_price
+        ):
             reward = abs(session.target_price - entry_price)
             risk = abs(entry_price - session.stop_price)
             if risk != _DECIMAL_ZERO:
@@ -234,7 +265,11 @@ class TradeStatsRecorder:
             sl_hit=sl_hit,
             duration_seconds=duration_seconds,
             risk_reward_ratio=rr_ratio,
-            comment=", ".join(directive.rationale) if directive.rationale else session.comment,
+            comment=(
+                ", ".join(directive.rationale)
+                if directive.rationale
+                else session.comment
+            ),
         )
         await self._repo.close_session(close_dto)
         await self._repo.update_hypothesis_session_on_close(
@@ -264,7 +299,11 @@ class TradeStatsRecorder:
         return "Sell" if is_open else "Buy"
 
     @staticmethod
-    def _check_level_hit(level: Optional[Decimal], price: Optional[Decimal], tolerance: Decimal = Decimal("0.001")) -> bool:
+    def _check_level_hit(
+        level: Optional[Decimal],
+        price: Optional[Decimal],
+        tolerance: Decimal = Decimal("0.001"),
+    ) -> bool:
         if level is None or price is None:
             return False
         if level == _DECIMAL_ZERO:

@@ -1,4 +1,5 @@
 """Domain event definitions for message bus communication."""
+
 from __future__ import annotations
 
 from datetime import datetime

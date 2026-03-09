@@ -1,4 +1,5 @@
 """Repository helper for trade statistics storage and aggregation."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -90,12 +91,22 @@ class TradeStatsRepository:
             "stop_price": data.stop_price,
             "comment": data.comment,
         }
-        stmt = pg_insert(TradeSession).values(**payload).on_conflict_do_nothing(index_elements=["session_id"])
+        stmt = (
+            pg_insert(TradeSession)
+            .values(**payload)
+            .on_conflict_do_nothing(index_elements=["session_id"])
+        )
         async with db_session() as session:
             await session.execute(stmt)
 
-    async def get_session_by_exit_directive_id(self, exit_directive_id: str) -> Optional[TradeSession]:
-        stmt = select(TradeSession).where(TradeSession.exit_directive_id == exit_directive_id).limit(1)
+    async def get_session_by_exit_directive_id(
+        self, exit_directive_id: str
+    ) -> Optional[TradeSession]:
+        stmt = (
+            select(TradeSession)
+            .where(TradeSession.exit_directive_id == exit_directive_id)
+            .limit(1)
+        )
         async with db_session() as session:
             result = await session.execute(stmt)
             return result.scalar_one_or_none()
@@ -109,13 +120,17 @@ class TradeStatsRepository:
         direction: str,
         opened_at: datetime,
     ) -> None:
-        stmt = pg_insert(HypothesisSession).values(
-            hypothesis_id=hypothesis_id,
-            session_id=session_id,
-            symbol=symbol,
-            direction=direction,
-            opened_at=opened_at,
-        ).on_conflict_do_nothing(index_elements=[HypothesisSession.session_id])
+        stmt = (
+            pg_insert(HypothesisSession)
+            .values(
+                hypothesis_id=hypothesis_id,
+                session_id=session_id,
+                symbol=symbol,
+                direction=direction,
+                opened_at=opened_at,
+            )
+            .on_conflict_do_nothing(index_elements=[HypothesisSession.session_id])
+        )
         async with db_session() as session:
             await session.execute(stmt)
 
@@ -133,7 +148,9 @@ class TradeStatsRepository:
         async with db_session() as session:
             await session.execute(stmt)
 
-    async def get_open_session(self, symbol: str, direction: str) -> Optional[TradeSession]:
+    async def get_open_session(
+        self, symbol: str, direction: str
+    ) -> Optional[TradeSession]:
         stmt = (
             select(TradeSession)
             .where(
@@ -250,7 +267,9 @@ class TradeStatsRepository:
         ]
         return {"items": items, "total": total}
 
-    async def compute_summary(self, *, start: Optional[datetime] = None, end: Optional[datetime] = None) -> dict[str, Any]:
+    async def compute_summary(
+        self, *, start: Optional[datetime] = None, end: Optional[datetime] = None
+    ) -> dict[str, Any]:
         filters = [
             TradeSession.closed_at.isnot(None),
             TradeSession.exit_directive_id.isnot(None),
@@ -265,11 +284,17 @@ class TradeStatsRepository:
         agg_stmt = (
             select(
                 func.sum(TradeSession.pnl_usdt).label("total_pnl_usdt"),
-                func.coalesce(func.sum(fees_sq.c.fees_usdt), 0).label("total_fees_usdt"),
-                func.sum(TradeSession.pnl_usdt - fees_sq.c.fees_usdt).label("total_pnl_usdt_net"),
+                func.coalesce(func.sum(fees_sq.c.fees_usdt), 0).label(
+                    "total_fees_usdt"
+                ),
+                func.sum(TradeSession.pnl_usdt - fees_sq.c.fees_usdt).label(
+                    "total_pnl_usdt_net"
+                ),
                 func.avg(TradeSession.pnl_pct).label("avg_pnl_pct"),
                 func.count().label("total_trades"),
-                func.sum(case((TradeSession.pnl_usdt > 0, 1), else_=0)).label("winning_trades"),
+                func.sum(case((TradeSession.pnl_usdt > 0, 1), else_=0)).label(
+                    "winning_trades"
+                ),
                 func.avg(TradeSession.risk_reward_ratio).label("avg_rr"),
             )
             .select_from(TradeSession)
@@ -317,8 +342,12 @@ class TradeStatsRepository:
                 "session_id": session_row.session_id,
                 "symbol": session_row.symbol,
                 "direction": session_row.direction,
-                "opened_at": session_row.opened_at.isoformat() if session_row.opened_at else None,
-                "closed_at": session_row.closed_at.isoformat() if session_row.closed_at else None,
+                "opened_at": (
+                    session_row.opened_at.isoformat() if session_row.opened_at else None
+                ),
+                "closed_at": (
+                    session_row.closed_at.isoformat() if session_row.closed_at else None
+                ),
                 "pnl_usdt": _to_float(session_row.pnl_usdt),
                 "fees_usdt": float(fees_usdt or 0),
                 "pnl_usdt_net": _to_float(session_row.pnl_usdt - (fees_usdt or 0)),
@@ -351,7 +380,9 @@ class TradeStatsRepository:
         if symbol:
             filters.append(TradeSession.symbol == symbol)
 
-        net_expr = (TradeSession.pnl_usdt - func.coalesce(fees_sq.c.fees_usdt, 0)).label("pnl_usdt_net")
+        net_expr = (
+            TradeSession.pnl_usdt - func.coalesce(fees_sq.c.fees_usdt, 0)
+        ).label("pnl_usdt_net")
         stmt = (
             select(TradeSession, fees_sq.c.fees_usdt, net_expr)
             .select_from(TradeSession)
@@ -370,8 +401,12 @@ class TradeStatsRepository:
                 "symbol": session_row.symbol,
                 "direction": session_row.direction,
                 "mode": session_row.mode,
-                "opened_at": session_row.opened_at.isoformat() if session_row.opened_at else None,
-                "closed_at": session_row.closed_at.isoformat() if session_row.closed_at else None,
+                "opened_at": (
+                    session_row.opened_at.isoformat() if session_row.opened_at else None
+                ),
+                "closed_at": (
+                    session_row.closed_at.isoformat() if session_row.closed_at else None
+                ),
                 "entry_price": _to_float(session_row.entry_price),
                 "exit_price": _to_float(session_row.exit_price),
                 "pnl_usdt": _to_float(session_row.pnl_usdt),
@@ -410,7 +445,9 @@ class TradeStatsRepository:
         *,
         limit: int = 100,
     ) -> list[dict[str, Any]]:
-        total_pnl = func.coalesce(func.sum(HypothesisSession.pnl_usdt), 0).label("total_pnl_usdt")
+        total_pnl = func.coalesce(func.sum(HypothesisSession.pnl_usdt), 0).label(
+            "total_pnl_usdt"
+        )
         avg_pct = func.avg(HypothesisSession.pnl_pct).label("avg_pnl_pct")
         last_closed = func.max(HypothesisSession.closed_at).label("last_closed_at")
 
@@ -440,7 +477,9 @@ class TradeStatsRepository:
                 "trades": row.trades,
                 "total_pnl_usdt": _to_float(row.total_pnl_usdt),
                 "avg_pnl_pct": _to_float(row.avg_pnl_pct),
-                "last_closed_at": row.last_closed_at.isoformat() if row.last_closed_at else None,
+                "last_closed_at": (
+                    row.last_closed_at.isoformat() if row.last_closed_at else None
+                ),
             }
             for row in rows
         ]
@@ -463,14 +502,18 @@ class TradeStatsRepository:
             filters.append(TradeSession.opened_at <= end)
 
         fees_sq = self._fees_subquery()
-        period_expr = func.date_trunc(granularity, TradeSession.opened_at).label("period_start")
+        period_expr = func.date_trunc(granularity, TradeSession.opened_at).label(
+            "period_start"
+        )
 
         period_stmt = (
             select(
                 period_expr,
                 func.sum(TradeSession.pnl_usdt).label("pnl_usdt"),
                 func.coalesce(func.sum(fees_sq.c.fees_usdt), 0).label("fees_usdt"),
-                func.sum(TradeSession.pnl_usdt - fees_sq.c.fees_usdt).label("pnl_usdt_net"),
+                func.sum(TradeSession.pnl_usdt - fees_sq.c.fees_usdt).label(
+                    "pnl_usdt_net"
+                ),
                 func.avg(TradeSession.pnl_pct).label("avg_pnl_pct"),
                 func.count().label("trades"),
                 func.avg(TradeSession.risk_reward_ratio).label("avg_rr"),
@@ -487,7 +530,9 @@ class TradeStatsRepository:
 
         return [
             {
-                "period_start": row.period_start.isoformat() if row.period_start else None,
+                "period_start": (
+                    row.period_start.isoformat() if row.period_start else None
+                ),
                 "pnl_usdt": _to_float(row.pnl_usdt),
                 "fees_usdt": _to_float(row.fees_usdt),
                 "pnl_usdt_net": _to_float(row.pnl_usdt_net),
@@ -505,7 +550,9 @@ class TradeStatsRepository:
         end: Optional[datetime] = None,
         symbol: Optional[str] = None,
     ) -> list[list[str]]:
-        data = await self.list_sessions(start=start, end=end, symbol=symbol, limit=10_000, offset=0)
+        data = await self.list_sessions(
+            start=start, end=end, symbol=symbol, limit=10_000, offset=0
+        )
         headers = [
             "session_id",
             "symbol",

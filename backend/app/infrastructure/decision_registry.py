@@ -12,7 +12,9 @@ class DecisionRegistry:
 
     def __init__(self, ttl_seconds: int = 7 * 24 * 60 * 60) -> None:
         settings = get_settings()
-        self._redis = redis.from_url(settings.redis_dsn, encoding="utf-8", decode_responses=True)
+        self._redis = redis.from_url(
+            settings.redis_dsn, encoding="utf-8", decode_responses=True
+        )
         self._ttl_seconds = ttl_seconds
 
     async def register_if_new(self, decision_uid: Optional[str]) -> bool:

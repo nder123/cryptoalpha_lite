@@ -1,4 +1,5 @@
 """FastAPI dependency helpers."""
+
 from __future__ import annotations
 
 from typing import cast
@@ -6,8 +7,8 @@ from typing import cast
 from fastapi import Request, WebSocket
 
 from app.core.runtime_config import RuntimeConfigManager
-from app.repositories.runtime_settings import RuntimeSettingsRepository
 from app.infrastructure.event_bus import EventBus
+from app.repositories.runtime_settings import RuntimeSettingsRepository
 from app.state.cto_ai import CTOAIOrchestrator
 from app.state.notifier import BroadcastManager
 from app.state.store import GlobalAppState

@@ -1,4 +1,5 @@
 """Simple WebSocket broadcast manager for dashboard updates."""
+
 from __future__ import annotations
 
 import asyncio

@@ -1,11 +1,21 @@
 """SQLAlchemy models for audit logging."""
+
 from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, Numeric, String, UniqueConstraint
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    Numeric,
+    String,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -17,7 +27,11 @@ class EventLog(Base):
     stream = Column(String(64), nullable=False)
     event_type = Column(String(64), nullable=False)
     payload = Column(JSON, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
 
 
 class TradeSession(Base):
@@ -44,7 +58,11 @@ class TradeSession(Base):
     duration_seconds = Column(Integer, nullable=True)
     risk_reward_ratio = Column(Numeric(18, 6), nullable=True)
     comment = Column(String(512), nullable=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
     updated_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
@@ -52,14 +70,20 @@ class TradeSession(Base):
         nullable=False,
     )
 
-    fills = relationship("TradeFill", back_populates="session", cascade="all, delete-orphan")
+    fills = relationship(
+        "TradeFill", back_populates="session", cascade="all, delete-orphan"
+    )
 
 
 class TradeFill(Base):
     __tablename__ = "trade_fills"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    session_id = Column(String(64), ForeignKey("trade_sessions.session_id", ondelete="CASCADE"), nullable=False)
+    session_id = Column(
+        String(64),
+        ForeignKey("trade_sessions.session_id", ondelete="CASCADE"),
+        nullable=False,
+    )
     directive_id = Column(String(80), nullable=False)
     order_id = Column(String(80), nullable=True)
     side = Column(String(8), nullable=True)
@@ -67,7 +91,11 @@ class TradeFill(Base):
     quantity = Column(Numeric(18, 8), nullable=True)
     fees = Column(Numeric(18, 8), nullable=True)
     reported_at = Column(DateTime(timezone=True), nullable=False)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
 
     session = relationship("TradeSession", back_populates="fills")
 
@@ -77,14 +105,23 @@ class HypothesisSession(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     hypothesis_id = Column(String(80), nullable=False, index=True)
-    session_id = Column(String(64), ForeignKey("trade_sessions.session_id", ondelete="CASCADE"), nullable=False, unique=True)
+    session_id = Column(
+        String(64),
+        ForeignKey("trade_sessions.session_id", ondelete="CASCADE"),
+        nullable=False,
+        unique=True,
+    )
     symbol = Column(String(30), nullable=False)
     direction = Column(String(8), nullable=False)
     opened_at = Column(DateTime(timezone=True), nullable=False)
     closed_at = Column(DateTime(timezone=True), nullable=True)
     pnl_usdt = Column(Numeric(18, 8), nullable=True)
     pnl_pct = Column(Numeric(18, 6), nullable=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
     updated_at = Column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
@@ -99,7 +136,11 @@ class RuntimeSetting(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     key = Column(String(64), nullable=False)
     value = Column(JSON, nullable=False)
-    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
 
     __table_args__ = (UniqueConstraint("key", name="uq_runtime_settings_key"),)
 
@@ -119,7 +160,11 @@ class ExchangeTrade(Base):
     fee_currency = Column(String(16), nullable=True)
     realized_pnl = Column(Numeric(18, 8), nullable=True)
     trade_time = Column(DateTime(timezone=True), nullable=False, index=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
 
 
 class AccountEquitySnapshot(Base):
@@ -131,7 +176,11 @@ class AccountEquitySnapshot(Base):
     wallet_balance = Column(Numeric(18, 8), nullable=True)
     available_balance = Column(Numeric(18, 8), nullable=True)
     currency = Column(String(16), nullable=False, default="USDT")
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
 
 
 class AccountTransaction(Base):
@@ -146,5 +195,8 @@ class AccountTransaction(Base):
     currency = Column(String(16), nullable=False, default="USDT")
     fee = Column(Numeric(18, 8), nullable=True)
     created_time = Column(DateTime(timezone=True), nullable=False, index=True)
-    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
-
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )

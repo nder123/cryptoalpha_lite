@@ -1,4 +1,5 @@
 """Service that keeps the dashboard in sync with Bybit open positions."""
+
 from __future__ import annotations
 
 import asyncio
@@ -70,7 +71,9 @@ class ExchangePositionWatcher:
 
             if is_connect_error:
                 if not self._connection_failed_logged:
-                    self._logger.warning("position_watcher_bybit_unreachable", error=str(exc))
+                    self._logger.warning(
+                        "position_watcher_bybit_unreachable", error=str(exc)
+                    )
                     self._connection_failed_logged = True
                 metrics = self._calc_metrics([])
                 await self._ensure_state([], metrics)
@@ -85,9 +88,17 @@ class ExchangePositionWatcher:
         await self._ensure_state(positions, metrics)
 
     def _calc_metrics(self, positions: List[dict[str, Any]]) -> dict[str, Any]:
-        total_abs = sum(abs(float(position.get("notional_usdt") or 0.0)) for position in positions)
-        net = sum((float(position.get("notional_usdt") or 0.0)) * (1 if position.get("side") == "long" else -1) for position in positions)
-        unrealized = sum(float(position.get("unrealized_pnl") or 0.0) for position in positions)
+        total_abs = sum(
+            abs(float(position.get("notional_usdt") or 0.0)) for position in positions
+        )
+        net = sum(
+            (float(position.get("notional_usdt") or 0.0))
+            * (1 if position.get("side") == "long" else -1)
+            for position in positions
+        )
+        unrealized = sum(
+            float(position.get("unrealized_pnl") or 0.0) for position in positions
+        )
         from datetime import datetime, timezone
 
         return {
@@ -98,7 +109,9 @@ class ExchangePositionWatcher:
             "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
-    async def _ensure_state(self, positions: List[dict[str, Any]], metrics: dict[str, Any] | None = None) -> None:
+    async def _ensure_state(
+        self, positions: List[dict[str, Any]], metrics: dict[str, Any] | None = None
+    ) -> None:
         payload = {"positions": positions, "metrics": metrics}
         fingerprint = json.dumps(payload, sort_keys=True, default=str)
         if fingerprint == self._last_snapshot:

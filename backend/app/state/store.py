@@ -1,4 +1,5 @@
 """In-memory application state cache shared across API and services."""
+
 from __future__ import annotations
 
 import asyncio
@@ -6,7 +7,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
-from app.domain.events import MarketSnapshot, RejectedHypothesis, SymbolCategory, TradeDirective
+from app.core.runtime_config import RuntimeConfig
+from app.domain.events import (
+    MarketSnapshot,
+    RejectedHypothesis,
+    SymbolCategory,
+    TradeDirective,
+)
 
 
 @dataclass(slots=True)
@@ -104,7 +111,7 @@ class GlobalAppState:
             self._rejections.clear()
             return cleared
 
-    async def set_runtime_config(self, config: "RuntimeConfig" | dict[str, Any]) -> None:
+    async def set_runtime_config(self, config: RuntimeConfig | dict[str, Any]) -> None:
         data: dict[str, Any]
         if hasattr(config, "model_dump"):
             data = config.model_dump()
@@ -166,7 +173,9 @@ class GlobalAppState:
 
     async def get_service_health(self) -> dict[str, dict[str, Any]]:
         async with self._lock:
-            return {name: dict(payload) for name, payload in self._service_health.items()}
+            return {
+                name: dict(payload) for name, payload in self._service_health.items()
+            }
 
     async def build_dashboard_state(self) -> dict[str, object]:
         async with self._lock:
@@ -178,13 +187,18 @@ class GlobalAppState:
                     "active": self._market.active,
                 },
                 "ctoai": dict(self._ctoai_snapshot),
-                "directives": [directive.model_dump() for directive in self._directives.values()],
+                "directives": [
+                    directive.model_dump() for directive in self._directives.values()
+                ],
                 "rejections": list(self._rejections),
                 "positions": [dict(position) for position in self._positions],
                 "exposure": dict(self._exposure_metrics),
                 "risk_budget": dict(self._risk_budget),
                 "config": dict(self._runtime_config),
-                "services": {name: dict(payload) for name, payload in self._service_health.items()},
+                "services": {
+                    name: dict(payload)
+                    for name, payload in self._service_health.items()
+                },
                 "trade_stats": dict(self._trade_stats_overview),
             }
 

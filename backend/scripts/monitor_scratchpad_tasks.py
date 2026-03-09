@@ -9,8 +9,9 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 
-
-SCRATCHPAD_PATH = Path("/home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md")
+SCRATCHPAD_PATH = Path(
+    "/home/ander/CascadeProjects/cryptoalpha_lite/docs/scratchpad.md"
+)
 REPO_ROOT = Path("/home/ander/CascadeProjects/cryptoalpha_lite")
 CODEX_OUT_DIR = REPO_ROOT / "backend" / ".codex_out"
 POLL_SECONDS = 30
@@ -197,7 +198,9 @@ def main() -> None:
                         print(f"{ts}  scratchpad_new_task  {t}", flush=True)
                         out_path, returncode = _run_codex_for_task(t)
                         try:
-                            updated = SCRATCHPAD_PATH.read_text(encoding="utf-8", errors="replace")
+                            updated = SCRATCHPAD_PATH.read_text(
+                                encoding="utf-8", errors="replace"
+                            )
                             line = f"- [{ts}] codex: задача '{t}' -> {out_path}"
                             updated = _append_progress_line(updated, line)
                             updated = _checkoff_parallel_task(updated, t)
@@ -205,7 +208,9 @@ def main() -> None:
                             if returncode == 0:
                                 _notify("Codex: задача выполнена", f"{t}\n{out_path}")
                             else:
-                                _notify("Codex: ошибка", f"rc={returncode}\n{t}\n{out_path}")
+                                _notify(
+                                    "Codex: ошибка", f"rc={returncode}\n{t}\n{out_path}"
+                                )
                         except Exception as exc:  # noqa: BLE001
                             ts2 = datetime.now().isoformat(timespec="seconds")
                             print(

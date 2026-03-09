@@ -1,4 +1,5 @@
 """FastAPI router definitions."""
+
 from __future__ import annotations
 
 import asyncio
@@ -11,9 +12,9 @@ from uuid import uuid4
 
 import redis.asyncio as redis
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import delete
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, ValidationError
+from sqlalchemy import delete
 
 from app.api.deps import (
     get_app_state,
@@ -24,20 +25,25 @@ from app.api.deps import (
     get_runtime_settings_repo,
 )
 from app.core.config import Settings, get_settings
-from app.core.runtime_config import RuntimeConfig, RuntimeConfigUpdate
+from app.core.runtime_config import (
+    RuntimeConfig,
+    RuntimeConfigManager,
+    RuntimeConfigUpdate,
+)
 from app.domain import streams
 from app.domain.events import (
+    CTOAiDecision,
     ExecutionReport,
-    MarketSnapshot,
     PositionEvent,
     RiskAssessment,
-    CTOAiDecision,
     TradeAction,
     TradeDirective,
     TradeHypothesis,
     TradingMode,
 )
+from app.infrastructure.database import db_session
 from app.infrastructure.event_bus import EventBus
+from app.repositories.bybit_sync import ExchangeDataRepository
 from app.repositories.event_logs import EventLogRepository
 from app.repositories.models import (
     AccountEquitySnapshot,
@@ -49,12 +55,10 @@ from app.repositories.models import (
 )
 from app.repositories.runtime_settings import RuntimeSettingsRepository
 from app.repositories.trade_stats import TradeStatsRepository
-from app.infrastructure.database import db_session
-from app.repositories.bybit_sync import ExchangeDataRepository
+from app.services.rl_trainer import EXPERIENCE_KEY, FORCE_TRAIN_QUEUE, LAST_TRAIN_KEY
 from app.state.cto_ai import CTOAIOrchestrator
 from app.state.notifier import BroadcastManager
 from app.state.store import GlobalAppState
-from app.services.rl_trainer import EXPERIENCE_KEY, FORCE_TRAIN_QUEUE, LAST_TRAIN_KEY
 
 CLOSED_TRADES_KEY = "rl_metrics:closed_trades"
 ACTIVE_VERSION_KEY = "rl_policy:active_version"
@@ -216,7 +220,9 @@ async def read_runtime_config(
 
 
 @router.get("/config/risk-budget")
-async def read_risk_budget(store: GlobalAppState = Depends(get_app_state)) -> dict[str, Any]:
+async def read_risk_budget(
+    store: GlobalAppState = Depends(get_app_state),
+) -> dict[str, Any]:
     return await store.get_risk_budget()
 
 
@@ -242,7 +248,9 @@ async def update_runtime_config(
 
 
 @router.get("/market/overview", response_model=MarketOverview)
-async def market_overview(state: GlobalAppState = Depends(get_app_state)) -> MarketOverview:
+async def market_overview(
+    state: GlobalAppState = Depends(get_app_state),
+) -> MarketOverview:
     overview = await state.list_market()
     return MarketOverview(
         ignored=overview.ignored,
@@ -253,13 +261,17 @@ async def market_overview(state: GlobalAppState = Depends(get_app_state)) -> Mar
 
 
 @router.get("/services/health", response_model=dict[str, ServiceHealthEntry])
-async def services_health(state: GlobalAppState = Depends(get_app_state)) -> dict[str, ServiceHealthEntry]:
+async def services_health(
+    state: GlobalAppState = Depends(get_app_state),
+) -> dict[str, ServiceHealthEntry]:
     health = await state.get_service_health()
     return {name: ServiceHealthEntry(**payload) for name, payload in health.items()}
 
 
 @router.get("/ctoai/state")
-async def ctoai_state(cto_ai: CTOAIOrchestrator = Depends(get_cto_ai)) -> dict[str, object]:
+async def ctoai_state(
+    cto_ai: CTOAIOrchestrator = Depends(get_cto_ai),
+) -> dict[str, object]:
     return await cto_ai.snapshot()
 
 
@@ -292,12 +304,16 @@ class StreamEventResponse(BaseModel):
 
 
 @router.get("/ctoai/directives", response_model=list[TradeDirective])
-async def list_directives(state: GlobalAppState = Depends(get_app_state)) -> list[TradeDirective]:
+async def list_directives(
+    state: GlobalAppState = Depends(get_app_state),
+) -> list[TradeDirective]:
     return await state.list_directives()
 
 
 @router.get("/ctoai/rejections")
-async def list_rejections(state: GlobalAppState = Depends(get_app_state)) -> list[dict[str, object]]:
+async def list_rejections(
+    state: GlobalAppState = Depends(get_app_state),
+) -> list[dict[str, object]]:
     return await state.list_rejections()
 
 
@@ -312,7 +328,9 @@ async def clear_rejections(
 
 
 @router.get("/exchange/positions", response_model=list[PositionEntry])
-async def list_positions(state: GlobalAppState = Depends(get_app_state)) -> list[PositionEntry]:
+async def list_positions(
+    state: GlobalAppState = Depends(get_app_state),
+) -> list[PositionEntry]:
     entries = await state.list_positions()
     return [PositionEntry(**entry) for entry in entries]
 
@@ -339,9 +357,15 @@ async def create_manual_directive(
     orchestrator: CTOAIOrchestrator = Depends(get_cto_ai),
 ) -> TradeDirective:
     if payload.order_type == "limit" and payload.price is None:
-        raise HTTPException(status_code=400, detail="Price is required for limit orders")
+        raise HTTPException(
+            status_code=400, detail="Price is required for limit orders"
+        )
 
-    reduce_only = payload.reduce_only if payload.reduce_only is not None else payload.action == "close"
+    reduce_only = (
+        payload.reduce_only
+        if payload.reduce_only is not None
+        else payload.action == "close"
+    )
 
     price = payload.price if payload.order_type == "limit" else None
     take_profit = payload.take_profit_price if payload.action == "open" else None
@@ -392,8 +416,12 @@ async def create_manual_directive(
 
 @router.get("/stats/trades")
 async def list_trade_stats(
-    start: str | None = Query(default=None, description="ISO datetime inclusive lower bound"),
-    end: str | None = Query(default=None, description="ISO datetime inclusive upper bound"),
+    start: str | None = Query(
+        default=None, description="ISO datetime inclusive lower bound"
+    ),
+    end: str | None = Query(
+        default=None, description="ISO datetime inclusive upper bound"
+    ),
     symbol: str | None = Query(default=None, min_length=2, max_length=30),
     limit: int = Query(default=50, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
@@ -401,13 +429,19 @@ async def list_trade_stats(
     repo = TradeStatsRepository()
     start_dt = _parse_datetime(start)
     end_dt = _parse_datetime(end)
-    return await repo.list_sessions(start=start_dt, end=end_dt, symbol=symbol, limit=limit, offset=offset)
+    return await repo.list_sessions(
+        start=start_dt, end=end_dt, symbol=symbol, limit=limit, offset=offset
+    )
 
 
 @router.get("/stats/trades/summary")
 async def trade_stats_summary(
-    start: str | None = Query(default=None, description="ISO datetime inclusive lower bound"),
-    end: str | None = Query(default=None, description="ISO datetime inclusive upper bound"),
+    start: str | None = Query(
+        default=None, description="ISO datetime inclusive lower bound"
+    ),
+    end: str | None = Query(
+        default=None, description="ISO datetime inclusive upper bound"
+    ),
 ) -> dict[str, object]:
     repo = TradeStatsRepository()
     start_dt = _parse_datetime(start)
@@ -518,8 +552,12 @@ class HypothesisPnlEntry(BaseModel):
 
 @router.get("/stats/trades/dashboard", response_model=TradeDashboardOverview)
 async def trade_dashboard_overview(
-    start: str | None = Query(default=None, description="ISO datetime inclusive lower bound"),
-    end: str | None = Query(default=None, description="ISO datetime inclusive upper bound"),
+    start: str | None = Query(
+        default=None, description="ISO datetime inclusive lower bound"
+    ),
+    end: str | None = Query(
+        default=None, description="ISO datetime inclusive upper bound"
+    ),
     state: GlobalAppState = Depends(get_app_state),
 ) -> TradeDashboardOverview:
     overview = await state.get_trade_stats_overview()
@@ -536,8 +574,12 @@ async def trade_dashboard_overview(
 
 @router.get("/stats/trades/worst", response_model=list[WorstTradeSessionEntry])
 async def list_worst_closed_trades(
-    start: str | None = Query(default=None, description="ISO datetime inclusive lower bound"),
-    end: str | None = Query(default=None, description="ISO datetime inclusive upper bound"),
+    start: str | None = Query(
+        default=None, description="ISO datetime inclusive lower bound"
+    ),
+    end: str | None = Query(
+        default=None, description="ISO datetime inclusive upper bound"
+    ),
     symbol: str | None = Query(default=None, min_length=2, max_length=30),
     limit: int = Query(default=20, ge=1, le=200),
 ) -> list[WorstTradeSessionEntry]:
@@ -554,8 +596,16 @@ async def list_worst_closed_trades(
             symbol=item["symbol"],
             direction=item["direction"],
             mode=item.get("mode"),
-            opened_at=datetime.fromisoformat(item["opened_at"]) if item.get("opened_at") else None,
-            closed_at=datetime.fromisoformat(item["closed_at"]) if item.get("closed_at") else None,
+            opened_at=(
+                datetime.fromisoformat(item["opened_at"])
+                if item.get("opened_at")
+                else None
+            ),
+            closed_at=(
+                datetime.fromisoformat(item["closed_at"])
+                if item.get("closed_at")
+                else None
+            ),
             entry_price=item.get("entry_price"),
             exit_price=item.get("exit_price"),
             pnl_usdt=item.get("pnl_usdt"),
@@ -583,7 +633,9 @@ async def export_trade_stats(
     offset: int = Query(default=0, ge=0),
 ) -> StreamingResponse:
     repo = TradeStatsRepository()
-    rows = await repo.export_sessions(start=_parse_datetime(start), end=_parse_datetime(end), symbol=symbol)
+    rows = await repo.export_sessions(
+        start=_parse_datetime(start), end=_parse_datetime(end), symbol=symbol
+    )
 
     def iter_rows() -> asyncio.Iterator[str]:  # type: ignore[type-arg]
         buffer = io.StringIO()
@@ -620,8 +672,13 @@ async def list_exchange_trades(
     repo = ExchangeDataRepository()
     start_dt = _parse_datetime(start)
     end_dt = _parse_datetime(end)
-    result = await repo.list_trades(start=start_dt, end=end_dt, symbol=symbol, limit=limit, offset=offset)
-    return ExchangeTradeListResponse(total=int(result["total"]), items=[ExchangeTradeEntry(**item) for item in result["items"]])
+    result = await repo.list_trades(
+        start=start_dt, end=end_dt, symbol=symbol, limit=limit, offset=offset
+    )
+    return ExchangeTradeListResponse(
+        total=int(result["total"]),
+        items=[ExchangeTradeEntry(**item) for item in result["items"]],
+    )
 
 
 @router.get("/exchange/trades/summary", response_model=ExchangeTradeSummary)
@@ -648,8 +705,13 @@ async def list_account_transactions(
     repo = ExchangeDataRepository()
     start_dt = _parse_datetime(start)
     end_dt = _parse_datetime(end)
-    result = await repo.list_transactions(start=start_dt, end=end_dt, tx_type=tx_type, limit=limit, offset=offset)
-    return AccountTransactionListResponse(total=int(result["total"]), items=[AccountTransactionEntry(**item) for item in result["items"]])
+    result = await repo.list_transactions(
+        start=start_dt, end=end_dt, tx_type=tx_type, limit=limit, offset=offset
+    )
+    return AccountTransactionListResponse(
+        total=int(result["total"]),
+        items=[AccountTransactionEntry(**item) for item in result["items"]],
+    )
 
 
 @router.get("/exchange/transactions/summary", response_model=AccountTransactionSummary)
@@ -661,7 +723,9 @@ async def account_transaction_summary(
     repo = ExchangeDataRepository()
     start_dt = _parse_datetime(start)
     end_dt = _parse_datetime(end)
-    summary = await repo.summarize_transactions(start=start_dt, end=end_dt, tx_type=tx_type)
+    summary = await repo.summarize_transactions(
+        start=start_dt, end=end_dt, tx_type=tx_type
+    )
     return AccountTransactionSummary(**summary)
 
 
@@ -674,7 +738,9 @@ async def list_equity_snapshots(
     repo = ExchangeDataRepository()
     start_dt = _parse_datetime(start)
     end_dt = _parse_datetime(end)
-    snapshots = await repo.list_equity_snapshots(start=start_dt, end=end_dt, limit=limit)
+    snapshots = await repo.list_equity_snapshots(
+        start=start_dt, end=end_dt, limit=limit
+    )
     return [EquitySnapshotEntry(**entry) for entry in snapshots]
 
 
@@ -686,7 +752,9 @@ async def latest_equity_snapshot() -> EquitySnapshotEntry | None:
 
 
 @router.get("/stats/hypotheses/pnl", response_model=list[HypothesisPnlEntry])
-async def list_hypothesis_pnl(limit: int = Query(default=100, ge=1, le=500)) -> list[HypothesisPnlEntry]:
+async def list_hypothesis_pnl(
+    limit: int = Query(default=100, ge=1, le=500),
+) -> list[HypothesisPnlEntry]:
     repo = TradeStatsRepository()
     rows = await repo.list_hypothesis_stats(limit=limit)
     return [
@@ -697,7 +765,11 @@ async def list_hypothesis_pnl(limit: int = Query(default=100, ge=1, le=500)) -> 
             trades=int(item.get("trades", 0)),
             total_pnl_usdt=item.get("total_pnl_usdt"),
             avg_pnl_pct=item.get("avg_pnl_pct"),
-            last_closed_at=datetime.fromisoformat(item["last_closed_at"]) if item.get("last_closed_at") else None,
+            last_closed_at=(
+                datetime.fromisoformat(item["last_closed_at"])
+                if item.get("last_closed_at")
+                else None
+            ),
         )
         for item in rows
     ]
@@ -746,10 +818,18 @@ async def _stream_events(
 @router.get("/streams/execution", response_model=list[StreamEventResponse])
 async def list_execution_events(
     limit: int = Query(default=100, ge=1, le=500),
-    after_id: str | None = Query(default=None, description="Return entries strictly after this ID"),
+    after_id: str | None = Query(
+        default=None, description="Return entries strictly after this ID"
+    ),
     bus: EventBus = Depends(get_event_bus),
 ) -> list[StreamEventResponse]:
-    return await _stream_events(streams.EXECUTION_REPORTS, ExecutionReport, limit=limit, after_id=after_id, bus=bus)
+    return await _stream_events(
+        streams.EXECUTION_REPORTS,
+        ExecutionReport,
+        limit=limit,
+        after_id=after_id,
+        bus=bus,
+    )
 
 
 @router.get("/ops/duty-check")
@@ -806,7 +886,9 @@ async def ops_duty_check(
             # Execution stream can become quiet in dry-run when the autopilot is intentionally
             # blocked by anti-ruin limits. In that case, we don't want to page on-call.
             if active_count == 0 and ctoai_state != "awaiting_execution":
-                warnings.append(f"execution_stream_stale_s={int(execution_age_seconds)}")
+                warnings.append(
+                    f"execution_stream_stale_s={int(execution_age_seconds)}"
+                )
             else:
                 issues.append(f"execution_stream_stale_s={int(execution_age_seconds)}")
         elif execution_age_seconds > 600:
@@ -840,37 +922,61 @@ async def ops_duty_check(
 @router.get("/streams/positions", response_model=list[StreamEventResponse])
 async def list_position_events(
     limit: int = Query(default=100, ge=1, le=500),
-    after_id: str | None = Query(default=None, description="Return entries strictly after this ID"),
+    after_id: str | None = Query(
+        default=None, description="Return entries strictly after this ID"
+    ),
     bus: EventBus = Depends(get_event_bus),
 ) -> list[StreamEventResponse]:
-    return await _stream_events(streams.POSITION_EVENTS, PositionEvent, limit=limit, after_id=after_id, bus=bus)
+    return await _stream_events(
+        streams.POSITION_EVENTS, PositionEvent, limit=limit, after_id=after_id, bus=bus
+    )
 
 
 @router.get("/streams/decisions", response_model=list[StreamEventResponse])
 async def list_decision_events(
     limit: int = Query(default=100, ge=1, le=500),
-    after_id: str | None = Query(default=None, description="Return entries strictly after this ID"),
+    after_id: str | None = Query(
+        default=None, description="Return entries strictly after this ID"
+    ),
     bus: EventBus = Depends(get_event_bus),
 ) -> list[StreamEventResponse]:
-    return await _stream_events(streams.CTOAI_DECISIONS, CTOAiDecision, limit=limit, after_id=after_id, bus=bus)
+    return await _stream_events(
+        streams.CTOAI_DECISIONS, CTOAiDecision, limit=limit, after_id=after_id, bus=bus
+    )
 
 
 @router.get("/streams/risk", response_model=list[StreamEventResponse])
 async def list_risk_events(
     limit: int = Query(default=100, ge=1, le=500),
-    after_id: str | None = Query(default=None, description="Return entries strictly after this ID"),
+    after_id: str | None = Query(
+        default=None, description="Return entries strictly after this ID"
+    ),
     bus: EventBus = Depends(get_event_bus),
 ) -> list[StreamEventResponse]:
-    return await _stream_events(streams.RISK_ASSESSMENTS, RiskAssessment, limit=limit, after_id=after_id, bus=bus)
+    return await _stream_events(
+        streams.RISK_ASSESSMENTS,
+        RiskAssessment,
+        limit=limit,
+        after_id=after_id,
+        bus=bus,
+    )
 
 
 @router.get("/streams/hypotheses", response_model=list[StreamEventResponse])
 async def list_hypothesis_events(
     limit: int = Query(default=100, ge=1, le=500),
-    after_id: str | None = Query(default=None, description="Return entries strictly after this ID"),
+    after_id: str | None = Query(
+        default=None, description="Return entries strictly after this ID"
+    ),
     bus: EventBus = Depends(get_event_bus),
 ) -> list[StreamEventResponse]:
-    return await _stream_events(streams.RESEARCH_HYPOTHESES, TradeHypothesis, limit=limit, after_id=after_id, bus=bus)
+    return await _stream_events(
+        streams.RESEARCH_HYPOTHESES,
+        TradeHypothesis,
+        limit=limit,
+        after_id=after_id,
+        bus=bus,
+    )
 
 
 @router.post("/ctoai/emergency-stop")
@@ -911,7 +1017,9 @@ async def rl_status(
         active_policy_version = await client.get(ACTIVE_VERSION_KEY)
         active_policy_raw = None
         if active_policy_version:
-            active_policy_raw = await client.get(f"{POLICY_BY_VERSION_PREFIX}{active_policy_version}")
+            active_policy_raw = await client.get(
+                f"{POLICY_BY_VERSION_PREFIX}{active_policy_version}"
+            )
         closed_raw = await client.lrange(CLOSED_TRADES_KEY, 0, 19)
         last_train_raw = await client.get(LAST_TRAIN_KEY)
     finally:
@@ -927,7 +1035,9 @@ async def rl_status(
     buffer_ready = experience_count >= min_batch_required
     now = datetime.now(timezone.utc)
     base_time = last_trained_at or now
-    next_eligible_at = base_time + train_interval if train_interval.total_seconds() > 0 else None
+    next_eligible_at = (
+        base_time + train_interval if train_interval.total_seconds() > 0 else None
+    )
 
     def _parse_experience(raw: str | None) -> RLExperienceSample | None:
         if not raw:
@@ -948,8 +1058,16 @@ async def rl_status(
             symbol=str(payload.get("symbol", "")),
             action=str(payload.get("action", "")),
             timestamp=timestamp_value,
-            reward=float(payload.get("reward")) if payload.get("reward") is not None else None,
-            value=float(payload.get("value")) if payload.get("value") is not None else None,
+            reward=(
+                float(payload.get("reward"))
+                if payload.get("reward") is not None
+                else None
+            ),
+            value=(
+                float(payload.get("value"))
+                if payload.get("value") is not None
+                else None
+            ),
         )
 
     def _parse_metrics(raw: str | None) -> RLMetrics | None:
@@ -967,20 +1085,56 @@ async def rl_status(
                 timestamp_value = None
         return RLMetrics(
             timestamp=timestamp_value,
-            total_trades=int(payload.get("total_trades", 0)) if payload.get("total_trades") is not None else None,
-            win_rate=float(payload.get("win_rate")) if payload.get("win_rate") is not None else None,
-            sharpe_ratio=float(payload.get("sharpe_ratio")) if payload.get("sharpe_ratio") is not None else None,
-            max_drawdown=float(payload.get("max_drawdown")) if payload.get("max_drawdown") is not None else None,
-            max_drawdown_window=float(payload.get("max_drawdown_window"))
-            if payload.get("max_drawdown_window") is not None
-            else None,
-            losses_last_window=int(payload.get("losses_last_window", 0)) if payload.get("losses_last_window") is not None else None,
-            loss_window_size=int(payload.get("loss_window_size")) if payload.get("loss_window_size") is not None else None,
-            last_trade_pnl_pct=float(payload.get("last_trade_pnl_pct")) if payload.get("last_trade_pnl_pct") is not None else None,
-            last_trade_pnl_pct_used=float(payload.get("last_trade_pnl_pct_used"))
-            if payload.get("last_trade_pnl_pct_used") is not None
-            else None,
-            last_trade_reward=float(payload.get("last_trade_reward")) if payload.get("last_trade_reward") is not None else None,
+            total_trades=(
+                int(payload.get("total_trades", 0))
+                if payload.get("total_trades") is not None
+                else None
+            ),
+            win_rate=(
+                float(payload.get("win_rate"))
+                if payload.get("win_rate") is not None
+                else None
+            ),
+            sharpe_ratio=(
+                float(payload.get("sharpe_ratio"))
+                if payload.get("sharpe_ratio") is not None
+                else None
+            ),
+            max_drawdown=(
+                float(payload.get("max_drawdown"))
+                if payload.get("max_drawdown") is not None
+                else None
+            ),
+            max_drawdown_window=(
+                float(payload.get("max_drawdown_window"))
+                if payload.get("max_drawdown_window") is not None
+                else None
+            ),
+            losses_last_window=(
+                int(payload.get("losses_last_window", 0))
+                if payload.get("losses_last_window") is not None
+                else None
+            ),
+            loss_window_size=(
+                int(payload.get("loss_window_size"))
+                if payload.get("loss_window_size") is not None
+                else None
+            ),
+            last_trade_pnl_pct=(
+                float(payload.get("last_trade_pnl_pct"))
+                if payload.get("last_trade_pnl_pct") is not None
+                else None
+            ),
+            last_trade_pnl_pct_used=(
+                float(payload.get("last_trade_pnl_pct_used"))
+                if payload.get("last_trade_pnl_pct_used") is not None
+                else None
+            ),
+            last_trade_reward=(
+                float(payload.get("last_trade_reward"))
+                if payload.get("last_trade_reward") is not None
+                else None
+            ),
         )
 
     def _parse_policy(raw: str | None) -> RLPolicySummary | None:
@@ -993,10 +1147,26 @@ async def rl_status(
         return RLPolicySummary(
             version=payload.get("version"),
             architecture=payload.get("architecture"),
-            threshold=float(payload.get("threshold")) if payload.get("threshold") is not None else None,
-            input_size=int(payload.get("input_size")) if payload.get("input_size") is not None else None,
-            hidden_size=int(payload.get("hidden_size")) if payload.get("hidden_size") is not None else None,
-            action_size=int(payload.get("action_size")) if payload.get("action_size") is not None else None,
+            threshold=(
+                float(payload.get("threshold"))
+                if payload.get("threshold") is not None
+                else None
+            ),
+            input_size=(
+                int(payload.get("input_size"))
+                if payload.get("input_size") is not None
+                else None
+            ),
+            hidden_size=(
+                int(payload.get("hidden_size"))
+                if payload.get("hidden_size") is not None
+                else None
+            ),
+            action_size=(
+                int(payload.get("action_size"))
+                if payload.get("action_size") is not None
+                else None
+            ),
         )
 
     def _parse_closed_entry(raw: str) -> ClosedTradeEntry | None:
@@ -1019,9 +1189,21 @@ async def rl_status(
             direction=str(payload.get("direction", "")),
             opened_at=_safe_datetime(payload.get("opened_at")),
             closed_at=_safe_datetime(payload.get("closed_at")),
-            pnl_usdt=float(payload.get("pnl_usdt")) if payload.get("pnl_usdt") is not None else None,
-            pnl_pct=float(payload.get("pnl_pct")) if payload.get("pnl_pct") is not None else None,
-            duration_seconds=int(payload.get("duration_seconds")) if payload.get("duration_seconds") is not None else None,
+            pnl_usdt=(
+                float(payload.get("pnl_usdt"))
+                if payload.get("pnl_usdt") is not None
+                else None
+            ),
+            pnl_pct=(
+                float(payload.get("pnl_pct"))
+                if payload.get("pnl_pct") is not None
+                else None
+            ),
+            duration_seconds=(
+                int(payload.get("duration_seconds"))
+                if payload.get("duration_seconds") is not None
+                else None
+            ),
             entry_directive_id=payload.get("entry_directive_id"),
             exit_directive_id=payload.get("exit_directive_id"),
         )
@@ -1065,9 +1247,17 @@ async def rl_status(
             direction=str(row.get("direction", "")),
             opened_at=_safe_datetime(row.get("opened_at")),
             closed_at=_safe_datetime(row.get("closed_at")),
-            pnl_usdt=float(row.get("pnl_usdt")) if row.get("pnl_usdt") is not None else None,
-            pnl_pct=float(row.get("pnl_pct")) if row.get("pnl_pct") is not None else None,
-            duration_seconds=int(row.get("duration_seconds")) if row.get("duration_seconds") is not None else None,
+            pnl_usdt=(
+                float(row.get("pnl_usdt")) if row.get("pnl_usdt") is not None else None
+            ),
+            pnl_pct=(
+                float(row.get("pnl_pct")) if row.get("pnl_pct") is not None else None
+            ),
+            duration_seconds=(
+                int(row.get("duration_seconds"))
+                if row.get("duration_seconds") is not None
+                else None
+            ),
             entry_directive_id=row.get("entry_directive_id"),
             exit_directive_id=row.get("exit_directive_id"),
         )
@@ -1075,7 +1265,11 @@ async def rl_status(
     if recent_db:
         recent_closed = [_map_recent_row(item) for item in recent_db]
     else:
-        recent_closed = [entry for entry in (_parse_closed_entry(item) for item in closed_raw) if entry is not None]
+        recent_closed = [
+            entry
+            for entry in (_parse_closed_entry(item) for item in closed_raw)
+            if entry is not None
+        ]
 
     return RLStatusResponse(
         experience_count=experience_count,
@@ -1110,13 +1304,19 @@ async def rl_policy_promote(
                     latest_payload: dict[str, Any] = json.loads(latest_raw)
                 except json.JSONDecodeError:
                     latest_payload = {}
-                latest_version = str(latest_payload.get("version")) if latest_payload else ""
+                latest_version = (
+                    str(latest_payload.get("version")) if latest_payload else ""
+                )
                 if latest_version and latest_version == payload.version:
-                    await client.set(f"{POLICY_BY_VERSION_PREFIX}{payload.version}", latest_raw)
+                    await client.set(
+                        f"{POLICY_BY_VERSION_PREFIX}{payload.version}", latest_raw
+                    )
                     raw = latest_raw
 
         if raw is None:
-            raise HTTPException(status_code=404, detail=f"Policy version not found: {payload.version}")
+            raise HTTPException(
+                status_code=404, detail=f"Policy version not found: {payload.version}"
+            )
         await client.set(ACTIVE_VERSION_KEY, payload.version)
     finally:
         await client.aclose()
@@ -1144,7 +1344,10 @@ async def rl_policy_exists(
             return {"version": version, "exists": False}
 
         latest_version = str(latest_payload.get("version")) if latest_payload else ""
-        return {"version": version, "exists": bool(latest_version and latest_version == version)}
+        return {
+            "version": version,
+            "exists": bool(latest_version and latest_version == version),
+        }
     finally:
         await client.aclose()
 

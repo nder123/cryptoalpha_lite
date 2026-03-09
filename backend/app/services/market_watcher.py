@@ -1,17 +1,18 @@
 """Global market watcher that scans Bybit USDT-M perpetual pairs."""
+
 from __future__ import annotations
 
 import asyncio
 from datetime import datetime, timezone
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, List, Tuple
 
 import httpx
 
 from app.core.config import get_settings
-from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.core.logging import get_logger
-from app.domain.events import MarketSnapshot, MarketStatus, SymbolCategory
+from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.domain import streams
+from app.domain.events import MarketSnapshot, MarketStatus, SymbolCategory
 from app.exchange.bybit import BybitClient, SymbolTicker
 from app.infrastructure.event_bus import EventBus
 
@@ -50,9 +51,13 @@ class GlobalMarketWatcher:
         finally:
             await self._client.close()
 
-    async def _publish_snapshots(self, ranked: List[Tuple[str, SymbolTicker, float, SymbolCategory]]) -> None:
+    async def _publish_snapshots(
+        self, ranked: List[Tuple[str, SymbolTicker, float, SymbolCategory]]
+    ) -> None:
         now = datetime.now(timezone.utc)
-        ignored = sum(1 for _, _, _, category in ranked if category is SymbolCategory.IGNORED)
+        ignored = sum(
+            1 for _, _, _, category in ranked if category is SymbolCategory.IGNORED
+        )
         total = max(len(ranked), 1)
         self._logger.debug(
             "market_allocation",
@@ -147,9 +152,11 @@ class GlobalMarketWatcher:
     def _log_scale(self, value: float) -> float:
         if value <= 0:
             return 0.0
-        return min(12.0, max(0.0, (value ** 0.125)))
+        return min(12.0, max(0.0, (value**0.125)))
 
 
-async def run_market_watcher(stop_event: asyncio.Event, bus: EventBus, config_manager: RuntimeConfigManager) -> None:
+async def run_market_watcher(
+    stop_event: asyncio.Event, bus: EventBus, config_manager: RuntimeConfigManager
+) -> None:
     watcher = GlobalMarketWatcher(bus, config_manager)
     await watcher.run(stop_event)

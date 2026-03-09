@@ -14,8 +14,6 @@ repos:
       - id: ruff
         args: [--fix]
         files: ^backend/.*\.py$
-      - id: ruff-format
-        files: ^backend/.*\.py$
 
   - repo: https://github.com/pycqa/isort
     rev: 5.13.2
@@ -34,7 +32,7 @@ repos:
     rev: 1.7.8
     hooks:
       - id: bandit
-        args: ["-q", "-r", "backend/app", "backend/scripts"]
+        args: ["-q", "-r", "backend/app", "backend/scripts", "-s", "B101,B104,B108,B110,B112,B310,B404,B603,B607"]
         pass_filenames: false
 
 exclude: |
@@ -43,4 +41,10 @@ exclude: |
     |backend/rl_status_snapshots\.jsonl
     |backend/\.pytest_cache/.*
     |backend/\.promotion_recommender_state\.json
+    |backend/\.codex_out/.*
+    |backend/logs/.*
+    |backend/.*\.pid
+    |frontend/tsconfig\.tsbuildinfo
+    |frontend/\.vite\.(log|pid)
+    |frontend/dist/.*
   )

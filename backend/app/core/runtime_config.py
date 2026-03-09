@@ -1,4 +1,5 @@
 """Editable runtime configuration for the CTO-AI platform."""
+
 from __future__ import annotations
 
 import asyncio
@@ -31,11 +32,17 @@ class RuntimeConfig(BaseModel):
     execution_retry_attempts: int = Field(default=3, ge=0, le=10)
     execution_retry_backoff_seconds: float = Field(default=1.0, ge=0.0, le=30.0)
     execution_degraded_threshold: int = Field(default=3, ge=1, le=20)
-    execution_degraded_cooldown_seconds: float = Field(default=120.0, ge=10.0, le=3600.0)
+    execution_degraded_cooldown_seconds: float = Field(
+        default=120.0, ge=10.0, le=3600.0
+    )
     position_manager_poll_interval_seconds: float = Field(default=5.0, ge=1.0, le=60.0)
-    position_manager_force_close_minutes: float = Field(default=180.0, ge=1.0, le=1440.0)
+    position_manager_force_close_minutes: float = Field(
+        default=180.0, ge=1.0, le=1440.0
+    )
     position_manager_use_market_exit: bool = Field(default=True)
-    position_manager_limit_exit_timeout_seconds: float = Field(default=20.0, ge=0.0, le=600.0)
+    position_manager_limit_exit_timeout_seconds: float = Field(
+        default=20.0, ge=0.0, le=600.0
+    )
     symbol_denylist: list[str] = Field(default_factory=list)
     auto_exposure_enabled: bool = Field(default=False)
     auto_exposure_portfolio_pct: float = Field(default=0.1, ge=0.0, le=1.0)
@@ -62,8 +69,12 @@ class RuntimeConfig(BaseModel):
     dry_run_fill_simulator_delay_seconds: float = Field(default=2.0, ge=0.0, le=60.0)
     dry_run_fill_simulator_slippage_bps: float = Field(default=5.0, ge=0.0, le=500.0)
     dry_run_fill_simulator_spread_bps: float = Field(default=2.0, ge=0.0, le=500.0)
-    dry_run_fill_simulator_drift_bps_per_minute: float = Field(default=0.0, ge=-500.0, le=500.0)
-    dry_run_fill_simulator_volatility_bps: float = Field(default=10.0, ge=0.0, le=2000.0)
+    dry_run_fill_simulator_drift_bps_per_minute: float = Field(
+        default=0.0, ge=-500.0, le=500.0
+    )
+    dry_run_fill_simulator_volatility_bps: float = Field(
+        default=10.0, ge=0.0, le=2000.0
+    )
     dry_run_fill_simulator_fee_bps: float = Field(default=10.0, ge=0.0, le=500.0)
 
     max_trades_per_day: int = Field(default=50, ge=0, le=10_000)
@@ -97,7 +108,9 @@ class RuntimeConfig(BaseModel):
             position_manager_poll_interval_seconds=settings.position_manager_poll_interval_seconds,
             position_manager_force_close_minutes=settings.position_manager_force_close_minutes,
             position_manager_use_market_exit=settings.position_manager_use_market_exit,
-            position_manager_limit_exit_timeout_seconds=getattr(settings, "position_manager_limit_exit_timeout_seconds", 20.0),
+            position_manager_limit_exit_timeout_seconds=getattr(
+                settings, "position_manager_limit_exit_timeout_seconds", 20.0
+            ),
             symbol_denylist=getattr(settings, "symbol_denylist", []) or [],
             auto_exposure_enabled=settings.auto_exposure_enabled,
             auto_exposure_portfolio_pct=settings.auto_exposure_portfolio_pct,
@@ -127,11 +140,15 @@ class RuntimeConfigUpdate(BaseModel):
     """Partial update payload for runtime configuration."""
 
     market_scan_interval_seconds: float | None = Field(default=None, ge=1.0, le=300.0)
-    research_refresh_interval_seconds: float | None = Field(default=None, ge=5.0, le=600.0)
+    research_refresh_interval_seconds: float | None = Field(
+        default=None, ge=5.0, le=600.0
+    )
     funding_threshold: float | None = Field(default=None, ge=0.0, le=0.1)
     volatility_threshold: float | None = Field(default=None, ge=0.0, le=0.1)
     max_candidate_symbols: int | None = Field(default=None, ge=1, le=50)
-    max_portfolio_exposure_usdt: float | None = Field(default=None, ge=1.0, le=1_000_000.0)
+    max_portfolio_exposure_usdt: float | None = Field(
+        default=None, ge=1.0, le=1_000_000.0
+    )
     max_symbol_allocation_pct: float | None = Field(default=None, ge=0.01, le=1.0)
     max_leverage: float | None = Field(default=None, ge=1.0, le=50.0)
     min_confidence_threshold: float | None = Field(default=None, ge=0.0, le=1.0)
@@ -144,11 +161,19 @@ class RuntimeConfigUpdate(BaseModel):
     execution_retry_attempts: int | None = Field(default=None, ge=0, le=10)
     execution_retry_backoff_seconds: float | None = Field(default=None, ge=0.0, le=30.0)
     execution_degraded_threshold: int | None = Field(default=None, ge=1, le=20)
-    execution_degraded_cooldown_seconds: float | None = Field(default=None, ge=10.0, le=3600.0)
-    position_manager_poll_interval_seconds: float | None = Field(default=None, ge=1.0, le=60.0)
-    position_manager_force_close_minutes: float | None = Field(default=None, ge=1.0, le=1440.0)
+    execution_degraded_cooldown_seconds: float | None = Field(
+        default=None, ge=10.0, le=3600.0
+    )
+    position_manager_poll_interval_seconds: float | None = Field(
+        default=None, ge=1.0, le=60.0
+    )
+    position_manager_force_close_minutes: float | None = Field(
+        default=None, ge=1.0, le=1440.0
+    )
     position_manager_use_market_exit: bool | None = None
-    position_manager_limit_exit_timeout_seconds: float | None = Field(default=None, ge=0.0, le=600.0)
+    position_manager_limit_exit_timeout_seconds: float | None = Field(
+        default=None, ge=0.0, le=600.0
+    )
     symbol_denylist: list[str] | None = None
     auto_exposure_enabled: bool | None = None
     auto_exposure_portfolio_pct: float | None = Field(default=None, ge=0.0, le=1.0)
@@ -164,18 +189,30 @@ class RuntimeConfigUpdate(BaseModel):
 
     rl_autopilot_enabled: bool | None = None
     rl_autopilot_symbol: str | None = Field(default=None, min_length=2, max_length=30)
-    rl_autopilot_interval_seconds: float | None = Field(default=None, ge=30.0, le=86_400.0)
+    rl_autopilot_interval_seconds: float | None = Field(
+        default=None, ge=30.0, le=86_400.0
+    )
     rl_autopilot_hold_seconds: float | None = Field(default=None, ge=5.0, le=86_400.0)
     rl_autopilot_quantity: float | None = Field(default=None, gt=0.0, le=10_000.0)
     rl_autopilot_leverage: float | None = Field(default=None, ge=1.0, le=50.0)
     rl_autopilot_direction: str | None = None
 
     dry_run_fill_simulator_enabled: bool | None = None
-    dry_run_fill_simulator_delay_seconds: float | None = Field(default=None, ge=0.0, le=60.0)
-    dry_run_fill_simulator_slippage_bps: float | None = Field(default=None, ge=0.0, le=500.0)
-    dry_run_fill_simulator_spread_bps: float | None = Field(default=None, ge=0.0, le=500.0)
-    dry_run_fill_simulator_drift_bps_per_minute: float | None = Field(default=None, ge=-500.0, le=500.0)
-    dry_run_fill_simulator_volatility_bps: float | None = Field(default=None, ge=0.0, le=2000.0)
+    dry_run_fill_simulator_delay_seconds: float | None = Field(
+        default=None, ge=0.0, le=60.0
+    )
+    dry_run_fill_simulator_slippage_bps: float | None = Field(
+        default=None, ge=0.0, le=500.0
+    )
+    dry_run_fill_simulator_spread_bps: float | None = Field(
+        default=None, ge=0.0, le=500.0
+    )
+    dry_run_fill_simulator_drift_bps_per_minute: float | None = Field(
+        default=None, ge=-500.0, le=500.0
+    )
+    dry_run_fill_simulator_volatility_bps: float | None = Field(
+        default=None, ge=0.0, le=2000.0
+    )
     dry_run_fill_simulator_fee_bps: float | None = Field(default=None, ge=0.0, le=500.0)
 
     max_trades_per_day: int | None = Field(default=None, ge=0, le=10_000)
@@ -189,7 +226,9 @@ class RuntimeConfigUpdate(BaseModel):
 class RuntimeConfigManager:
     """Holds runtime overrides on top of static settings."""
 
-    def __init__(self, settings: Settings, overrides: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self, settings: Settings, overrides: dict[str, Any] | None = None
+    ) -> None:
         self._base = RuntimeConfig.from_settings(settings)
         self._overrides: dict[str, Any] = overrides or {}
         self._lock = asyncio.Lock()

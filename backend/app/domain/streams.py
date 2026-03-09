@@ -1,4 +1,5 @@
 """Domain stream name constants for the event bus."""
+
 from __future__ import annotations
 
 MARKET_SNAPSHOTS = "market.snapshots"

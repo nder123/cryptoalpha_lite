@@ -9,11 +9,9 @@ windows ahead of live testing.
 
 import argparse
 import asyncio
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Any, AsyncIterator, Dict, List
-
 import json
+from pathlib import Path
+from typing import Any, Dict, List
 
 import redis.asyncio as redis
 
@@ -39,28 +37,39 @@ async def _load_jsonl(path: Path) -> List[Dict[str, Any]]:
     return data
 
 
-async def _publish_snapshots(bus, snapshots: List[Dict[str, Any]], pace_seconds: float) -> None:
+async def _publish_snapshots(
+    bus, snapshots: List[Dict[str, Any]], pace_seconds: float
+) -> None:
     for payload in snapshots:
         snapshot = MarketSnapshot.model_validate(payload)
         await bus.publish(streams.MARKET_SNAPSHOTS, snapshot)
         await asyncio.sleep(pace_seconds)
 
 
-async def _publish_directives(bus, directives: List[Dict[str, Any]], pace_seconds: float) -> None:
+async def _publish_directives(
+    bus, directives: List[Dict[str, Any]], pace_seconds: float
+) -> None:
     for payload in directives:
         directive = TradeDirective.model_validate(payload)
         await bus.publish(streams.CTOAI_DIRECTIVES, directive)
         await asyncio.sleep(pace_seconds)
 
 
-async def _publish_execution_reports(bus, reports: List[Dict[str, Any]], pace_seconds: float) -> None:
+async def _publish_execution_reports(
+    bus, reports: List[Dict[str, Any]], pace_seconds: float
+) -> None:
     for payload in reports:
         report = ExecutionReport.model_validate(payload)
         await bus.publish(streams.EXECUTION_REPORTS, report)
         await asyncio.sleep(pace_seconds)
 
 
-async def replay_history(snapshots_file: Path, directives_file: Path, executions_file: Path, pace_seconds: float) -> None:
+async def replay_history(
+    snapshots_file: Path,
+    directives_file: Path,
+    executions_file: Path,
+    pace_seconds: float,
+) -> None:
     settings = get_settings()
     configure_logging(settings.log_level, settings.log_json)
 
@@ -94,7 +103,9 @@ async def wipe_rl_caches() -> None:
         for pattern in pattern_keys:
             cursor = 0
             while True:
-                cursor, keys = await client.scan(cursor=cursor, match=pattern, count=200)
+                cursor, keys = await client.scan(
+                    cursor=cursor, match=pattern, count=200
+                )
                 if keys:
                     await client.delete(*keys)
                 if cursor == 0:
@@ -105,10 +116,27 @@ async def wipe_rl_caches() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Replay market history for RL training")
-    parser.add_argument("--snapshots", type=Path, required=True, help="Path to MarketSnapshot JSONL file")
-    parser.add_argument("--directives", type=Path, required=True, help="Path to TradeDirective JSONL file")
-    parser.add_argument("--executions", type=Path, required=True, help="Path to ExecutionReport JSONL file")
+    parser = argparse.ArgumentParser(
+        description="Replay market history for RL training"
+    )
+    parser.add_argument(
+        "--snapshots",
+        type=Path,
+        required=True,
+        help="Path to MarketSnapshot JSONL file",
+    )
+    parser.add_argument(
+        "--directives",
+        type=Path,
+        required=True,
+        help="Path to TradeDirective JSONL file",
+    )
+    parser.add_argument(
+        "--executions",
+        type=Path,
+        required=True,
+        help="Path to ExecutionReport JSONL file",
+    )
     parser.add_argument(
         "--pace-seconds",
         type=float,
@@ -129,7 +157,9 @@ def main() -> None:
 async def _main_async(args: argparse.Namespace) -> None:
     if args.wipe:
         await wipe_rl_caches()
-    await replay_history(args.snapshots, args.directives, args.executions, args.pace_seconds)
+    await replay_history(
+        args.snapshots, args.directives, args.executions, args.pace_seconds
+    )
 
 
 if __name__ == "__main__":

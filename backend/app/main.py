@@ -1,4 +1,5 @@
 """FastAPI application entry point."""
+
 from __future__ import annotations
 
 import asyncio
@@ -10,36 +11,41 @@ from fastapi import FastAPI
 from app.api.routes import router
 from app.api.websocket import ws_router
 from app.core.config import get_settings
-from app.core.runtime_config import RuntimeConfigManager
 from app.core.logging import configure_logging
+from app.core.runtime_config import RuntimeConfigManager
 from app.domain import streams
-from app.domain.events import ExecutionReport, MarketSnapshot, RiskAssessment, TradeHypothesis
+from app.domain.events import (
+    ExecutionReport,
+    MarketSnapshot,
+    RiskAssessment,
+    TradeHypothesis,
+)
 from app.infrastructure.database import init_models
 from app.infrastructure.event_bus import EventBus, event_bus
-from app.services.service_supervisor import ServiceSupervisor
-from app.services.market_watcher import run_market_watcher
-from app.services.research_engine import run_research_engine
-from app.services.risk_engine import run_risk_engine
-from app.services.execution_engine import run_execution_engine
-from app.services.execution_fill_monitor import run_execution_fill_monitor
-from app.services.audit_logger import run_audit_logger
-from app.services.auto_exposure_manager import run_auto_exposure_manager
-from app.services.auto_research_manager import run_auto_research_manager
-from app.services.rl_state_builder import run_rl_state_builder
-from app.services.position_manager import run_position_manager
-from app.services.position_watcher import run_position_watcher
-from app.services.rl_trainer import run_rl_trainer
-from app.services.trade_stats_recorder import run_trade_stats_recorder
-from app.services.rl_autopilot import run_rl_autopilot
-from app.services.dry_run_fill_simulator import run_dry_run_fill_simulator
-from app.services.bybit_data_sync import run_bybit_data_sync
-from app.services.notification_dispatcher import run_notification_dispatcher
-from app.state.cto_ai import CTOAIOrchestrator
-from app.state.notifier import BroadcastManager
-from app.state.store import GlobalAppState
 from app.repositories.event_logs import EventLogRepository
 from app.repositories.runtime_settings import RuntimeSettingsRepository
 from app.repositories.trade_stats import TradeStatsRepository
+from app.services.audit_logger import run_audit_logger
+from app.services.auto_exposure_manager import run_auto_exposure_manager
+from app.services.auto_research_manager import run_auto_research_manager
+from app.services.bybit_data_sync import run_bybit_data_sync
+from app.services.dry_run_fill_simulator import run_dry_run_fill_simulator
+from app.services.execution_engine import run_execution_engine
+from app.services.execution_fill_monitor import run_execution_fill_monitor
+from app.services.market_watcher import run_market_watcher
+from app.services.notification_dispatcher import run_notification_dispatcher
+from app.services.position_manager import run_position_manager
+from app.services.position_watcher import run_position_watcher
+from app.services.research_engine import run_research_engine
+from app.services.risk_engine import run_risk_engine
+from app.services.rl_autopilot import run_rl_autopilot
+from app.services.rl_state_builder import run_rl_state_builder
+from app.services.rl_trainer import run_rl_trainer
+from app.services.service_supervisor import ServiceSupervisor
+from app.services.trade_stats_recorder import run_trade_stats_recorder
+from app.state.cto_ai import CTOAIOrchestrator
+from app.state.notifier import BroadcastManager
+from app.state.store import GlobalAppState
 
 
 @asynccontextmanager
@@ -65,27 +71,82 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     async with event_bus() as bus:
         app.state.event_bus = bus
         services = {
-            "market-watcher": lambda stop: run_market_watcher(stop, bus, config_manager),
-            "research-engine": lambda stop: run_research_engine(stop, bus, app.state.store, app.state.notifier, config_manager),
-            "risk-engine": lambda stop: run_risk_engine(stop, bus, config_manager, app.state.store),
-            "execution-engine": lambda stop: run_execution_engine(stop, bus, config_manager, app.state.store),
-            "trade-stats-recorder": lambda stop: run_trade_stats_recorder(stop, bus, trade_stats_repo, app.state.store, app.state.notifier),
-            "execution-fill-monitor": lambda stop: run_execution_fill_monitor(stop, bus),
-            "dry-run-fill-simulator": lambda stop: run_dry_run_fill_simulator(stop, bus, config_manager, app.state.store),
-            "position-watcher": lambda stop: run_position_watcher(stop, app.state.store, app.state.notifier, config_manager),
-            "position-manager": lambda stop: run_position_manager(stop, bus, app.state.cto_ai, app.state.store, app.state.notifier, config_manager),
-            "audit-logger": lambda stop: run_audit_logger(stop, bus, EventLogRepository()),
-            "auto-exposure-manager": lambda stop: run_auto_exposure_manager(stop, config_manager, runtime_settings_repo, app.state.store, app.state.notifier),
-            "auto-research-manager": lambda stop: run_auto_research_manager(stop, bus, app.state.store, config_manager, app.state.notifier),
-            "notification-dispatcher": lambda stop: run_notification_dispatcher(stop, config_manager),
-            "rl-state-builder": lambda stop: run_rl_state_builder(stop, bus, config_manager, trade_stats_repo),
-            "rl-trainer": lambda stop: run_rl_trainer(stop, bus, config_manager, trade_stats_repo),
-            "rl-autopilot": lambda stop: run_rl_autopilot(stop, bus, config_manager, trade_stats_repo, app.state.cto_ai, app.state.store, app.state.notifier),
+            "market-watcher": lambda stop: run_market_watcher(
+                stop, bus, config_manager
+            ),
+            "research-engine": lambda stop: run_research_engine(
+                stop, bus, app.state.store, app.state.notifier, config_manager
+            ),
+            "risk-engine": lambda stop: run_risk_engine(
+                stop, bus, config_manager, app.state.store
+            ),
+            "execution-engine": lambda stop: run_execution_engine(
+                stop, bus, config_manager, app.state.store
+            ),
+            "trade-stats-recorder": lambda stop: run_trade_stats_recorder(
+                stop, bus, trade_stats_repo, app.state.store, app.state.notifier
+            ),
+            "execution-fill-monitor": lambda stop: run_execution_fill_monitor(
+                stop, bus
+            ),
+            "dry-run-fill-simulator": lambda stop: run_dry_run_fill_simulator(
+                stop, bus, config_manager, app.state.store
+            ),
+            "position-watcher": lambda stop: run_position_watcher(
+                stop, app.state.store, app.state.notifier, config_manager
+            ),
+            "position-manager": lambda stop: run_position_manager(
+                stop,
+                bus,
+                app.state.cto_ai,
+                app.state.store,
+                app.state.notifier,
+                config_manager,
+            ),
+            "audit-logger": lambda stop: run_audit_logger(
+                stop, bus, EventLogRepository()
+            ),
+            "auto-exposure-manager": lambda stop: run_auto_exposure_manager(
+                stop,
+                config_manager,
+                runtime_settings_repo,
+                app.state.store,
+                app.state.notifier,
+            ),
+            "auto-research-manager": lambda stop: run_auto_research_manager(
+                stop, bus, app.state.store, config_manager, app.state.notifier
+            ),
+            "notification-dispatcher": lambda stop: run_notification_dispatcher(
+                stop, config_manager
+            ),
+            "rl-state-builder": lambda stop: run_rl_state_builder(
+                stop, bus, config_manager, trade_stats_repo
+            ),
+            "rl-trainer": lambda stop: run_rl_trainer(
+                stop, bus, config_manager, trade_stats_repo
+            ),
+            "rl-autopilot": lambda stop: run_rl_autopilot(
+                stop,
+                bus,
+                config_manager,
+                trade_stats_repo,
+                app.state.cto_ai,
+                app.state.store,
+                app.state.notifier,
+            ),
             "bybit-data-sync": lambda stop: run_bybit_data_sync(stop, config_manager),
-            "ctoai-market-listener": lambda stop: ctoai_market_listener(stop, app.state.cto_ai, app.state.store, app.state.notifier, bus),
-            "ctoai-hypothesis-listener": lambda stop: ctoai_hypothesis_listener(stop, app.state.cto_ai, app.state.store, app.state.notifier, bus),
-            "ctoai-risk-listener": lambda stop: ctoai_risk_listener(stop, app.state.cto_ai, app.state.store, app.state.notifier, bus),
-            "ctoai-execution-listener": lambda stop: ctoai_execution_listener(stop, app.state.cto_ai, app.state.store, app.state.notifier, bus),
+            "ctoai-market-listener": lambda stop: ctoai_market_listener(
+                stop, app.state.cto_ai, app.state.store, app.state.notifier, bus
+            ),
+            "ctoai-hypothesis-listener": lambda stop: ctoai_hypothesis_listener(
+                stop, app.state.cto_ai, app.state.store, app.state.notifier, bus
+            ),
+            "ctoai-risk-listener": lambda stop: ctoai_risk_listener(
+                stop, app.state.cto_ai, app.state.store, app.state.notifier, bus
+            ),
+            "ctoai-execution-listener": lambda stop: ctoai_execution_listener(
+                stop, app.state.cto_ai, app.state.store, app.state.notifier, bus
+            ),
         }
         await app.state.supervisor.start(services)
         try:
@@ -187,7 +248,11 @@ async def ctoai_execution_listener(
         stop_event=stop,
     ):
         await orchestrator.handle_execution_report(message.payload)
-        remove_directive = message.payload.status.name in {"FILLED", "FAILED", "CANCELLED"}
+        remove_directive = message.payload.status.name in {
+            "FILLED",
+            "FAILED",
+            "CANCELLED",
+        }
         if not remove_directive and message.payload.status.name == "SUBMITTED":
             try:
                 runtime_config = await store.get_runtime_config()

@@ -1,17 +1,24 @@
 """Execution engine responsible for fulfilling CTO-AI directives."""
+
 from __future__ import annotations
 
 import asyncio
 import time
 from datetime import datetime, timezone
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Optional
 
 from app.core.config import get_settings
-from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.core.logging import get_logger
+from app.core.runtime_config import RuntimeConfig, RuntimeConfigManager
 from app.domain import streams
-from app.domain.events import CTOAiDecision, ExecutionReport, ExecutionStatus, TradeAction, TradeDirective
+from app.domain.events import (
+    CTOAiDecision,
+    ExecutionReport,
+    ExecutionStatus,
+    TradeAction,
+    TradeDirective,
+)
 from app.exchange.bybit import BybitClient
 from app.infrastructure.decision_registry import DecisionRegistry
 from app.infrastructure.event_bus import EventBus
@@ -21,7 +28,9 @@ from app.state.store import GlobalAppState
 class ExecutionEngine:
     """Stateless executor that bridges directives to Bybit orders."""
 
-    def __init__(self, bus: EventBus, config_manager: RuntimeConfigManager, store: GlobalAppState) -> None:
+    def __init__(
+        self, bus: EventBus, config_manager: RuntimeConfigManager, store: GlobalAppState
+    ) -> None:
         self._settings = get_settings()
         self._logger = get_logger(__name__)
         self._bus = bus
@@ -50,7 +59,9 @@ class ExecutionEngine:
                         decision = message.payload
                         self._config = await self._config_manager.get_config()
                         await self._handle_decision(decision)
-                        await self._bus.ack(message.stream, "execution", message.message_id)
+                        await self._bus.ack(
+                            message.stream, "execution", message.message_id
+                        )
                         if stop_event.is_set():
                             break
 
@@ -70,7 +81,10 @@ class ExecutionEngine:
         directive = decision.directive
 
         if directive is None:
-            self._logger.error("execution_decision_missing_directive", decision_uid=decision.decision_uid)
+            self._logger.error(
+                "execution_decision_missing_directive",
+                decision_uid=decision.decision_uid,
+            )
             return
 
         is_new = await self._decision_registry.register_if_new(decision.decision_uid)
@@ -117,7 +131,10 @@ class ExecutionEngine:
             await self._emit_report(
                 directive,
                 ExecutionStatus.REJECTED,
-                notes=[f"unsupported action: {directive.action}", f"decision_uid={decision.decision_uid}"]
+                notes=[
+                    f"unsupported action: {directive.action}",
+                    f"decision_uid={decision.decision_uid}",
+                ],
             )
             await self._decision_registry.mark_processed(decision.decision_uid)
             return
@@ -131,7 +148,10 @@ class ExecutionEngine:
                 await self._emit_report(
                     directive,
                     ExecutionStatus.CANCELLED,
-                    notes=["directive expired", f"decision_uid={decision.decision_uid}"],
+                    notes=[
+                        "directive expired",
+                        f"decision_uid={decision.decision_uid}",
+                    ],
                 )
                 await self._decision_registry.mark_processed(decision.decision_uid)
                 return
@@ -141,7 +161,10 @@ class ExecutionEngine:
                 directive,
                 ExecutionStatus.SUBMITTED,
                 quantity=directive.quantity,
-                notes=["dry-run (no exchange order placed)", f"decision_uid={decision.decision_uid}"],
+                notes=[
+                    "dry-run (no exchange order placed)",
+                    f"decision_uid={decision.decision_uid}",
+                ],
             )
             await self._decision_registry.mark_processed(decision.decision_uid)
             return
@@ -188,11 +211,17 @@ class ExecutionEngine:
                 await self._emit_report(
                     directive,
                     ExecutionStatus.REJECTED,
-                    notes=["failed to fetch current exposure", f"decision_uid={decision.decision_uid}"],
+                    notes=[
+                        "failed to fetch current exposure",
+                        f"decision_uid={decision.decision_uid}",
+                    ],
                 )
                 await self._decision_registry.mark_processed(decision.decision_uid)
                 return
-            current_exposure = sum(abs(float(position.get("notional_usdt") or 0.0)) for position in positions)
+            current_exposure = sum(
+                abs(float(position.get("notional_usdt") or 0.0))
+                for position in positions
+            )
 
         risk_budget: dict[str, object] = {}
         try:
@@ -200,17 +229,27 @@ class ExecutionEngine:
         except Exception as exc:  # noqa: BLE001
             self._logger.debug("execution_risk_budget_unavailable", error=str(exc))
 
-        portfolio_limit = self._safe_float(risk_budget.get("portfolio_limit")) if risk_budget else 0.0
+        portfolio_limit = (
+            self._safe_float(risk_budget.get("portfolio_limit")) if risk_budget else 0.0
+        )
         symbol_limits = (risk_budget or {}).get("symbol_limits") or {}
         symbol_key = directive.symbol.upper()
-        symbol_limit = self._safe_float(symbol_limits.get(symbol_key)) if symbol_limits else 0.0
+        symbol_limit = (
+            self._safe_float(symbol_limits.get(symbol_key)) if symbol_limits else 0.0
+        )
 
         base_portfolio_limit = self._config.max_portfolio_exposure_usdt
-        effective_portfolio_limit = portfolio_limit if portfolio_limit > 0 else base_portfolio_limit
-        effective_symbol_limit = symbol_limit if symbol_limit > 0 else (
-            effective_portfolio_limit * self._config.max_symbol_allocation_pct
-            if effective_portfolio_limit > 0
-            else base_portfolio_limit * self._config.max_symbol_allocation_pct
+        effective_portfolio_limit = (
+            portfolio_limit if portfolio_limit > 0 else base_portfolio_limit
+        )
+        effective_symbol_limit = (
+            symbol_limit
+            if symbol_limit > 0
+            else (
+                effective_portfolio_limit * self._config.max_symbol_allocation_pct
+                if effective_portfolio_limit > 0
+                else base_portfolio_limit * self._config.max_symbol_allocation_pct
+            )
         )
 
         try:
@@ -256,24 +295,36 @@ class ExecutionEngine:
 
             if directive.action is TradeAction.OPEN:
                 filters = await self._client.get_symbol_filters(directive.symbol)
-                tick_size = filters.tick_size if filters.tick_size > 0 else Decimal("0.01")
+                tick_size = (
+                    filters.tick_size if filters.tick_size > 0 else Decimal("0.01")
+                )
 
                 price_for_notional: float | None = directive.price
 
                 if directive.take_profit_price is not None:
-                    tp_dec = self._quantize_decimal(Decimal(str(directive.take_profit_price)), tick_size)
+                    tp_dec = self._quantize_decimal(
+                        Decimal(str(directive.take_profit_price)), tick_size
+                    )
                 if directive.stop_loss_price is not None:
-                    sl_dec = self._quantize_decimal(Decimal(str(directive.stop_loss_price)), tick_size)
+                    sl_dec = self._quantize_decimal(
+                        Decimal(str(directive.stop_loss_price)), tick_size
+                    )
 
                 base_price: Decimal | None = None
                 market_price: float | None = None
                 try:
                     ticker = await self._client.get_symbol_ticker(directive.symbol)
                 except Exception as exc:  # noqa: BLE001
-                    self._logger.debug("execution_ticker_failed", symbol=directive.symbol, error=str(exc))
+                    self._logger.debug(
+                        "execution_ticker_failed",
+                        symbol=directive.symbol,
+                        error=str(exc),
+                    )
                 else:
                     if ticker.last_price > 0:
-                        base_price = self._quantize_decimal(Decimal(str(ticker.last_price)), tick_size)
+                        base_price = self._quantize_decimal(
+                            Decimal(str(ticker.last_price)), tick_size
+                        )
                         market_price = float(ticker.last_price)
 
                 if base_price is not None:
@@ -282,24 +333,46 @@ class ExecutionEngine:
                             adjusted = base_price - tick_size
                             if adjusted <= 0:
                                 adjusted = base_price * Decimal("0.99")
-                            sl_dec = self._quantize_decimal(max(adjusted, Decimal("0.0001")), tick_size)
+                            sl_dec = self._quantize_decimal(
+                                max(adjusted, Decimal("0.0001")), tick_size
+                            )
                         if tp_dec is not None and tp_dec <= base_price:
-                            tp_dec = self._quantize_decimal(base_price + tick_size, tick_size)
+                            tp_dec = self._quantize_decimal(
+                                base_price + tick_size, tick_size
+                            )
                     else:
                         if sl_dec is not None and sl_dec <= base_price:
-                            sl_dec = self._quantize_decimal(base_price + tick_size, tick_size)
+                            sl_dec = self._quantize_decimal(
+                                base_price + tick_size, tick_size
+                            )
                         if tp_dec is not None and tp_dec >= base_price:
                             adjusted = base_price - tick_size
                             if adjusted > 0:
                                 tp_dec = self._quantize_decimal(adjusted, tick_size)
 
-                entry_dec = Decimal(str(directive.price)) if directive.price is not None else None
+                entry_dec = (
+                    Decimal(str(directive.price))
+                    if directive.price is not None
+                    else None
+                )
                 if entry_dec is not None:
                     entry_dec = self._quantize_decimal(entry_dec, tick_size)
-                    if directive.direction == "long" and sl_dec is not None and sl_dec >= entry_dec:
-                        sl_dec = self._quantize_decimal(entry_dec - tick_size, tick_size)
-                    if directive.direction == "short" and sl_dec is not None and sl_dec <= entry_dec:
-                        sl_dec = self._quantize_decimal(entry_dec + tick_size, tick_size)
+                    if (
+                        directive.direction == "long"
+                        and sl_dec is not None
+                        and sl_dec >= entry_dec
+                    ):
+                        sl_dec = self._quantize_decimal(
+                            entry_dec - tick_size, tick_size
+                        )
+                    if (
+                        directive.direction == "short"
+                        and sl_dec is not None
+                        and sl_dec <= entry_dec
+                    ):
+                        sl_dec = self._quantize_decimal(
+                            entry_dec + tick_size, tick_size
+                        )
 
                 if price_for_notional is None:
                     if entry_dec is not None:
@@ -312,7 +385,10 @@ class ExecutionEngine:
                 if price_for_notional is not None:
                     order_notional = price_for_notional * directive.quantity
                     total_exposure = current_exposure + order_notional
-                    if effective_portfolio_limit > 0 and total_exposure > effective_portfolio_limit:
+                    if (
+                        effective_portfolio_limit > 0
+                        and total_exposure > effective_portfolio_limit
+                    ):
                         self._logger.warning(
                             "execution_exposure_limit_exceeded",
                             directive_id=directive.directive_id,
@@ -332,10 +408,15 @@ class ExecutionEngine:
                                 f"decision_uid={decision.decision_uid}",
                             ],
                         )
-                        await self._decision_registry.mark_processed(decision.decision_uid)
+                        await self._decision_registry.mark_processed(
+                            decision.decision_uid
+                        )
                         return
 
-                    if effective_symbol_limit > 0 and order_notional > effective_symbol_limit:
+                    if (
+                        effective_symbol_limit > 0
+                        and order_notional > effective_symbol_limit
+                    ):
                         self._logger.warning(
                             "execution_symbol_limit_exceeded",
                             directive_id=directive.directive_id,
@@ -353,7 +434,9 @@ class ExecutionEngine:
                                 f"decision_uid={decision.decision_uid}",
                             ],
                         )
-                        await self._decision_registry.mark_processed(decision.decision_uid)
+                        await self._decision_registry.mark_processed(
+                            decision.decision_uid
+                        )
                         return
                 else:
                     self._logger.warning(
@@ -413,7 +496,9 @@ class ExecutionEngine:
                     insufficient_balance_error,
                     f"decision_uid={decision.decision_uid}",
                 ]
-                await self._emit_report(directive, ExecutionStatus.REJECTED, notes=notes)
+                await self._emit_report(
+                    directive, ExecutionStatus.REJECTED, notes=notes
+                )
                 await self._decision_registry.mark_processed(decision.decision_uid)
                 await self._update_health(
                     "insufficient_balance",
@@ -423,9 +508,13 @@ class ExecutionEngine:
                 return
 
             if result is None:
-                error_message = str(last_error) if last_error else "unknown execution error"
+                error_message = (
+                    str(last_error) if last_error else "unknown execution error"
+                )
                 degraded = await self._register_failure(error_message)
-                status = ExecutionStatus.DEGRADED if degraded else ExecutionStatus.FAILED
+                status = (
+                    ExecutionStatus.DEGRADED if degraded else ExecutionStatus.FAILED
+                )
                 await self._emit_report(
                     directive,
                     status,
@@ -438,7 +527,9 @@ class ExecutionEngine:
                 await self._decision_registry.mark_processed(decision.decision_uid)
                 return
         except Exception as exc:  # noqa: BLE001
-            self._logger.error("execution_error", directive_id=directive.directive_id, error=str(exc))
+            self._logger.error(
+                "execution_error", directive_id=directive.directive_id, error=str(exc)
+            )
             degraded = await self._register_failure(str(exc))
             status = ExecutionStatus.DEGRADED if degraded else ExecutionStatus.FAILED
             await self._emit_report(
