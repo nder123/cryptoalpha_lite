@@ -1,0 +1,10 @@
+[Unit]
+Description=CryptoAlpha Duty Check Timer
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=20min
+Unit=cryptoalpha-duty-check.service
+
+[Install]
+WantedBy=timers.target

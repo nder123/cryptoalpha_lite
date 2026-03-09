@@ -1,0 +1,15 @@
+[Unit]
+Description=CryptoAlpha RL Promotion Recommender
+After=cryptoalpha-backend.service cryptoalpha-snapshots.service cryptoalpha-runtime-patch.service
+Wants=cryptoalpha-backend.service cryptoalpha-snapshots.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/CascadeProjects/cryptoalpha_lite/backend
+ExecStartPre=/usr/bin/bash -lc 'for i in {1..120}; do if curl -fsS http://127.0.0.1:8000/api/health >/dev/null 2>&1; then exit 0; fi; sleep 1; done; exit 1'
+ExecStart=/usr/bin/bash -lc "BASELINE_VERSION_A=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get(\"active_policy_version\") or \"\")'); python -u scripts/rl_promotion_recommender.py --api-base http://127.0.0.1:8000 --since 2026-02-23T17:39:10.184750Z --baseline-version-a \"$BASELINE_VERSION_A\" --min-trades 72 --hours 12 --interval 60 --secondary-floor -0.0002 --not-recommended-gap 0.005 --heartbeat-sec 600 --confirm-streak 2 --primary-epsilon-a 0.0022"
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

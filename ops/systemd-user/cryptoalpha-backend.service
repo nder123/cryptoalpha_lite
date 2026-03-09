@@ -1,0 +1,16 @@
+[Unit]
+Description=CryptoAlpha Backend (uvicorn)
+After=network-online.target cryptoalpha-docker-deps.service
+Wants=network-online.target cryptoalpha-docker-deps.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/CascadeProjects/cryptoalpha_lite/backend
+ExecStart=/usr/bin/bash -lc 'poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000'
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=CryptoAlpha RL Snapshots Collector
+After=cryptoalpha-backend.service
+Wants=cryptoalpha-backend.service
+
+[Service]
+Type=simple
+WorkingDirectory=%h/CascadeProjects/cryptoalpha_lite/backend
+ExecStart=/usr/bin/bash -lc 'python -u scripts/rl_snapshots_collect.py --url http://127.0.0.1:8000/api/rl/status --out %h/CascadeProjects/cryptoalpha_lite/backend/rl_status_snapshots.jsonl --interval 60'
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
