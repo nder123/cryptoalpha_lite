@@ -853,6 +853,7 @@ async def ops_duty_check(
         issues.append(f"services_not_healthy={','.join(bad_services)}")
 
     ctoai_snapshot = await cto_ai.snapshot()
+    ctoai_mode = str(ctoai_snapshot.get("mode") or "unknown")
     active_directives = ctoai_snapshot.get("active_directives")
     active_count = len(active_directives) if isinstance(active_directives, list) else 0
     if active_count > 0:
@@ -861,6 +862,10 @@ async def ops_duty_check(
     ctoai_state = str(ctoai_snapshot.get("state") or "unknown")
     if ctoai_state == "awaiting_execution" and not issues:
         warnings.append("ctoai_state=awaiting_execution")
+
+    expect_execution_activity = not (
+        ctoai_mode == "manual" and ctoai_state == "idle" and active_count == 0
+    )
 
     execution_last_id: str | None = None
     execution_last_timestamp: str | None = None
@@ -879,20 +884,26 @@ async def ops_duty_check(
                     ts = ts.replace(tzinfo=timezone.utc)
                 execution_age_seconds = (now - ts).total_seconds()
     else:
-        issues.append("execution_stream_empty")
+        if expect_execution_activity:
+            issues.append("execution_stream_empty")
 
     if execution_age_seconds is not None:
         if execution_age_seconds > 1800:
             # Execution stream can become quiet in dry-run when the autopilot is intentionally
             # blocked by anti-ruin limits. In that case, we don't want to page on-call.
-            if active_count == 0 and ctoai_state != "awaiting_execution":
+            if not expect_execution_activity:
+                pass
+            elif active_count == 0 and ctoai_state != "awaiting_execution":
                 warnings.append(
                     f"execution_stream_stale_s={int(execution_age_seconds)}"
                 )
             else:
                 issues.append(f"execution_stream_stale_s={int(execution_age_seconds)}")
         elif execution_age_seconds > 600:
-            warnings.append(f"execution_stream_stale_s={int(execution_age_seconds)}")
+            if expect_execution_activity:
+                warnings.append(
+                    f"execution_stream_stale_s={int(execution_age_seconds)}"
+                )
 
     status = "ok"
     if issues:
