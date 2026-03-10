@@ -254,6 +254,20 @@
 
 ## RL promote / rollback (operator workflow)
 
+- Сигнал/триггер (что считать поводом действовать):
+  - `PROMOTE_RECOMMENDED` (из digest/logs): можно рассматривать ручной promote.
+  - `ROLLBACK_RECOMMENDED` (из digest/logs или alert-канала): приоритетно проверить и при необходимости откатить.
+
+- Быстрый снимок состояния (1 команда):
+  - `systemctl --user start cryptoalpha-rl-ops-summary.service`
+  - `journalctl --user -u cryptoalpha-rl-ops-summary.service -n 120 --no-pager --output=cat`
+
+- Сигналы в journald:
+  - Критичные алерты (PROMOTE/ROLLBACK):
+    - `journalctl --user -t cryptoalpha-rl-alert -p alert -n 50 --no-pager --output=cat`
+  - Digest (последние события или явное "no events"):
+    - `journalctl --user -u cryptoalpha-recommender-events.service -n 120 --no-pager --output=cat`
+
 - Перед promote (зафиксировать точку отката):
   - `prev_active=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get("active_policy_version") or "")'); echo "prev_active=$prev_active"`
   - Вставить строку `prev_active=<...>` в scratchpad (или в commit message), чтобы откат был быстрым.
@@ -264,9 +278,15 @@
 
 - Verify after promote:
   - `curl -fsS http://127.0.0.1:8000/api/rl/status | python -m json.tool | grep -E 'active_policy_version|"policy"|"active_policy"' -n | head -n 60`
+  - Детерминированная проверка загрузки policy в backend (forces load):
+    - `curl -fsS http://127.0.0.1:8000/api/rl/policy/loaded | python -m json.tool`
   - `v=$(curl -fsS http://127.0.0.1:8000/api/rl/status | python -c 'import json,sys; print(json.load(sys.stdin).get("active_policy_version") or "")'); echo "active_policy_version=$v"; journalctl --user -u cryptoalpha-backend.service --since "30 minutes ago" --no-pager | grep -F "rl_policy:by_version:$v" | tail -n 5`
 
 - Rollback (ручной):
   - Использовать сохранённый `prev_active=<...>` и выполнить promote на него:
     - `curl -fsS -X POST http://127.0.0.1:8000/api/rl/policy/promote -H 'Content-Type: application/json' -d '{"version":"<PREV_ACTIVE>"}' | python -m json.tool`
   - Затем повторить Verify (см. выше).
+
+- Safety notes:
+  - Не делать promote/rollback «вслепую»: сначала зафиксировать `prev_active`.
+  - Если backend недоступен или `/api/rl/policy/loaded` не отвечает, сначала восстановить backend (иначе verify невозможен).
