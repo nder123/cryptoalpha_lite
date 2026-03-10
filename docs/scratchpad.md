@@ -127,6 +127,11 @@
     - `curl -fsS http://127.0.0.1:8000/api/health >/dev/null && echo OK_health`
     - `curl -fsS http://127.0.0.1:8000/api/rl/status | head -c 600; echo`
     - `curl -fsS http://127.0.0.1:8000/api/config/runtime | grep -E 'rl_enabled|rl_autopilot_enabled|max_symbol_allocation_pct|max_portfolio_exposure_usdt'`
+  - 10-секундный операторский чек (сигналы recommender):
+    - Критичные алерты (PROMOTE/ROLLBACK):
+      - `journalctl --user -t cryptoalpha-rl-alert -p alert -n 20 --no-pager --output=cat`
+    - Digest (последние события или явное "no events"):
+      - `journalctl --user -u cryptoalpha-recommender-events.service -n 60 --no-pager --output=cat`
   - Recommender events (за последние 30ч):
     - `journalctl --user -u cryptoalpha-recommender.service --since "30 hours ago" --no-pager | grep -E "PROMOTE_RECOMMENDED|PROMOTE_NOT_ACTIONABLE|NOT_RECOMMENDED|new_policy_version" | tail -n 200`
   - Backend RL usage (логи в journald):
