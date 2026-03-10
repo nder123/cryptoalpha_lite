@@ -1,0 +1,10 @@
+[Unit]
+Description=CryptoAlpha RL Recommender Events Digest Timer
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=cryptoalpha-recommender-events.service
+
+[Install]
+WantedBy=timers.target

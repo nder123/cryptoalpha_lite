@@ -1,0 +1,8 @@
+[Unit]
+Description=CryptoAlpha RL Recommender Events Digest
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/ander/CascadeProjects/cryptoalpha_lite
+ExecStart=/bin/bash -lc 'set -euo pipefail; out=$(journalctl --user -u cryptoalpha-recommender.service --since "10 minutes ago" --no-pager --output=cat | grep -E "PROMOTE_RECOMMENDED|NOT_RECOMMENDED|ROLLBACK_RECOMMENDED" | tail -n 50 || true); if [ -n "$out" ]; then echo "$out"; else echo "no recommender events in window"; fi'
