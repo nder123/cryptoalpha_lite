@@ -6,7 +6,10 @@ echo
 
 echo "-- /api/rl/status (compact)"
 if status_json=$(curl -fsS --max-time 3 http://127.0.0.1:8000/api/rl/status); then
-  printf '%s' "$status_json" | python -c 'import json,sys; j=json.load(sys.stdin); p=j.get("policy") or {}; print(f"active_policy_version={j.get('"'"'active_policy_version'"'"')}"); print(f"latest_policy_version={p.get('"'"'version'"'"')}")'
+  printf '%s' "$status_json" | python -c 'import json,sys; j=json.load(sys.stdin); p=j.get("policy") or {}; active=j.get("active_policy_version"); latest=p.get("version"); verdict="OK"; details="";  \
+verdict,details=("ATTENTION","missing versions") if (not active or not latest) else (verdict,details);  \
+verdict,details=("ATTENTION","latest!=active") if (active and latest and active!=latest) else (verdict,details);  \
+suffix=(" ("+details+")") if details else ""; print("verdict=%s%s" % (verdict, suffix)); print("active_policy_version=%s" % (active,)); print("latest_policy_version=%s" % (latest,))'
 else
   echo "ERROR: failed to fetch /api/rl/status"
 fi
