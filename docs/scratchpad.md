@@ -39,6 +39,21 @@
   - Пример (строго от времени):
     - `journalctl --user -u cryptoalpha-recommender.service --since "2026-03-08 09:30" --no-pager | grep -E "PROMOTE_RECOMMENDED|PROMOTE_NOT_ACTIONABLE|NOT_RECOMMENDED|new_policy_version" | tail -n 200`
 
+- [2026-03-10] ops: operator-friendly RL recommender signals через systemd/journald
+  - Что:
+    - `cryptoalpha-recommender-events.timer` -> `cryptoalpha-recommender-events.service` (digest каждые ~5 минут)
+      - печатает последние `PROMOTE_RECOMMENDED|NOT_RECOMMENDED|ROLLBACK_RECOMMENDED` за окно
+      - если событий нет: пишет `no recommender events in window`
+    - `cryptoalpha-recommender-alerts.timer` -> `cryptoalpha-recommender-alerts.service` (критичные алерты)
+      - если найдено `PROMOTE_RECOMMENDED|ROLLBACK_RECOMMENDED`, пишет в journald с тэгом `cryptoalpha-rl-alert` и priority `alert`
+  - Как смотреть:
+    - Digest:
+      - `journalctl --user -u cryptoalpha-recommender-events.service -n 200 --no-pager --output=cat`
+    - ALERT-поток (то, что нельзя пропустить):
+      - `journalctl --user -t cryptoalpha-rl-alert -p alert -n 50 --no-pager --output=cat`
+    - Таймеры:
+      - `systemctl --user list-timers --all --no-pager | grep -E "cryptoalpha-recommender-(events|alerts)"`
+
 - [2026-03-08] RL manual promote: добавлено хранение policy по версиям + переключение активной версии (для ручного promote)
   - Что:
     - `backend/app/services/rl_trainer.py`
