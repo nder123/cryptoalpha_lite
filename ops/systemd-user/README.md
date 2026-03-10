@@ -15,6 +15,7 @@ systemctl --user enable --now cryptoalpha-snapshots.service
 systemctl --user enable --now cryptoalpha-recommender.service
 systemctl --user enable --now cryptoalpha-duty-check.timer
 systemctl --user enable --now cryptoalpha-recommender-events.timer
+systemctl --user enable --now cryptoalpha-recommender-alerts.timer
 ```
 
 ## Проверка
@@ -24,7 +25,10 @@ systemctl --user list-units 'cryptoalpha*' --all --no-pager
 journalctl --user -u cryptoalpha-backend.service -n 100 --no-pager
 journalctl --user -u cryptoalpha-recommender.service -n 100 --no-pager
 journalctl --user -u cryptoalpha-recommender-events.service -n 50 --no-pager
+journalctl --user -u cryptoalpha-recommender-alerts.service -n 50 --no-pager
+journalctl --user -t cryptoalpha-rl-alert -p alert -n 50 --no-pager
 journalctl --user -u cryptoalpha-duty-check.service -n 50 --no-pager
 systemctl --user list-timers --all --no-pager | grep cryptoalpha-duty-check
 systemctl --user list-timers --all --no-pager | grep cryptoalpha-recommender-events
+systemctl --user list-timers --all --no-pager | grep cryptoalpha-recommender-alerts
 ```

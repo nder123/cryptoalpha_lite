@@ -1,0 +1,8 @@
+[Unit]
+Description=CryptoAlpha RL Recommender Alerts (PROMOTE/ROLLBACK)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/ander/CascadeProjects/cryptoalpha_lite
+ExecStart=/bin/bash -lc 'set -euo pipefail; out=$(journalctl --user -u cryptoalpha-recommender.service --since "6 minutes ago" --no-pager --output=cat | grep -E "PROMOTE_RECOMMENDED|ROLLBACK_RECOMMENDED" || true); if [ -n "$out" ]; then echo "$out" | systemd-cat -t cryptoalpha-rl-alert -p alert; fi'

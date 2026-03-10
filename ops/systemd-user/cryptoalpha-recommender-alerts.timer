@@ -1,0 +1,10 @@
+[Unit]
+Description=CryptoAlpha RL Recommender Alerts Timer
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=cryptoalpha-recommender-alerts.service
+
+[Install]
+WantedBy=timers.target
