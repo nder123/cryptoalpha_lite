@@ -53,6 +53,9 @@
       - `journalctl --user -t cryptoalpha-rl-alert -p alert -n 50 --no-pager --output=cat`
     - Таймеры:
       - `systemctl --user list-timers --all --no-pager | grep -E "cryptoalpha-recommender-(events|alerts)"`
+  - One-command сводка (API + alerts + digest + timers):
+    - `systemctl --user start cryptoalpha-rl-ops-summary.service`
+    - `journalctl --user -u cryptoalpha-rl-ops-summary.service -n 120 --no-pager --output=cat`
 
 - [2026-03-08] RL manual promote: добавлено хранение policy по версиям + переключение активной версии (для ручного promote)
   - Что:

@@ -1,0 +1,8 @@
+[Unit]
+Description=CryptoAlpha RL Ops Summary (oneshot)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/ander/CascadeProjects/cryptoalpha_lite
+ExecStart=/bin/bash -lc '/home/ander/CascadeProjects/cryptoalpha_lite/ops/rl_ops_summary.sh'
