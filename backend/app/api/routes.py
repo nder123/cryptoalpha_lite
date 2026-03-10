@@ -1300,6 +1300,16 @@ async def rl_status(
     )
 
 
+@router.get("/rl/policy/loaded")
+async def rl_policy_loaded(
+    cto_ai: CTOAIOrchestrator = Depends(get_cto_ai),
+) -> dict[str, object]:
+    meta = await cto_ai.rl_policy_metadata()
+    if meta is None:
+        raise HTTPException(status_code=503, detail="RL evaluator is not configured")
+    return meta
+
+
 @router.post("/rl/policy/promote")
 async def rl_policy_promote(
     payload: RLPolicyPromoteRequest,

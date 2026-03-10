@@ -80,6 +80,11 @@ class CTOAIOrchestrator:
     def confidence(self) -> float:
         return self._confidence
 
+    async def rl_policy_metadata(self) -> dict[str, object] | None:
+        if self._rl_evaluator is None:
+            return None
+        return await self._rl_evaluator.load_policy_metadata()
+
     async def set_mode(self, mode: TradingMode) -> None:
         async with self._lock:
             self._logger.info("ctoai_set_mode", mode=mode)
@@ -346,6 +351,16 @@ class CTOAIOrchestrator:
             symbol=directive.symbol,
             rl_policy_version=(
                 self._rl_evaluator.current_policy_version()
+                if self._rl_evaluator is not None
+                else None
+            ),
+            rl_active_policy_version=(
+                self._rl_evaluator.current_active_policy_version()
+                if self._rl_evaluator is not None
+                else None
+            ),
+            rl_policy_redis_key=(
+                self._rl_evaluator.current_policy_redis_key()
                 if self._rl_evaluator is not None
                 else None
             ),

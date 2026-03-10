@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import redis.asyncio as redis
 import torch
@@ -115,6 +115,8 @@ class RLPolicyEvaluator:
         )
         self._policy: Optional[RLPolicy] = None
         self._policy_version: Optional[str] = None
+        self._active_version: Optional[str] = None
+        self._loaded_redis_key: Optional[str] = None
         self._actor_model: Optional[ActorCriticNetwork] = None
         self._threshold: float = 0.5
         self._confidence_scale: float = 0.5
@@ -128,21 +130,45 @@ class RLPolicyEvaluator:
     def current_policy_version(self) -> Optional[str]:
         return self._policy_version
 
+    def current_active_policy_version(self) -> Optional[str]:
+        return self._active_version
+
+    def current_policy_redis_key(self) -> Optional[str]:
+        return self._loaded_redis_key
+
+    async def load_policy_metadata(self) -> dict[str, Any]:
+        await self._load_policy()
+        return {
+            "policy_version": self._policy_version,
+            "active_policy_version": self._active_version,
+            "redis_key": self._loaded_redis_key,
+        }
+
     async def close(self) -> None:
         await self._redis.aclose()
 
     async def _load_policy(self) -> Optional[RLPolicy]:
         active_version = await self._redis.get(ACTIVE_VERSION_KEY)
+        self._active_version = active_version
+
+        raw = None
+        loaded_redis_key = None
         if active_version:
-            raw = await self._redis.get(f"{POLICY_BY_VERSION_PREFIX}{active_version}")
+            loaded_redis_key = f"{POLICY_BY_VERSION_PREFIX}{active_version}"
+            raw = await self._redis.get(loaded_redis_key)
             if raw is None:
+                loaded_redis_key = POLICY_KEY
                 raw = await self._redis.get(POLICY_KEY)
         else:
+            loaded_redis_key = POLICY_KEY
             raw = await self._redis.get(POLICY_KEY)
+
+        self._loaded_redis_key = loaded_redis_key
         if raw is None:
             LOGGER.debug("rl_policy_missing")
             self._policy = None
             self._policy_version = None
+            self._loaded_redis_key = None
             return None
         try:
             payload = json.loads(raw)
@@ -150,6 +176,7 @@ class RLPolicyEvaluator:
             LOGGER.warning("rl_policy_invalid_json")
             self._policy = None
             self._policy_version = None
+            self._loaded_redis_key = None
             return None
         version = str(payload.get("version", "unknown"))
         if version == self._policy_version:
@@ -179,7 +206,8 @@ class RLPolicyEvaluator:
             self._inverse_action_mapping = {}
             LOGGER.info(
                 "rl_policy_loaded",
-                redis_key=POLICY_KEY,
+                redis_key=loaded_redis_key,
+                active_policy_version=active_version,
                 version=version,
                 previous_version=previous_version,
                 architecture=payload.get("architecture"),
@@ -272,7 +300,8 @@ class RLPolicyEvaluator:
         self._notional_scale = float(payload.get("notional_scale", 0.3))
         LOGGER.info(
             "rl_policy_loaded",
-            redis_key=POLICY_KEY,
+            redis_key=self._loaded_redis_key,
+            active_policy_version=self._active_version,
             version=self._policy_version,
             architecture="lstm_actor_critic",
             threshold=self._threshold,
