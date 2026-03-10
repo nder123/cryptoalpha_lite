@@ -19,6 +19,9 @@ systemctl --user enable --now cryptoalpha-recommender-alerts.timer
 
 # oneshot: печатает компактную RL-операторскую сводку в journald
 systemctl --user start cryptoalpha-rl-ops-summary.service
+
+# heartbeat: периодически запускает rl-ops summary и оставляет "пульс" в journald
+systemctl --user enable --now cryptoalpha-rl-ops-summary.timer
 ```
 
 ## Проверка
@@ -35,4 +38,5 @@ journalctl --user -u cryptoalpha-duty-check.service -n 50 --no-pager
 systemctl --user list-timers --all --no-pager | grep cryptoalpha-duty-check
 systemctl --user list-timers --all --no-pager | grep cryptoalpha-recommender-events
 systemctl --user list-timers --all --no-pager | grep cryptoalpha-recommender-alerts
+systemctl --user list-timers --all --no-pager | grep cryptoalpha-rl-ops-summary
 ```

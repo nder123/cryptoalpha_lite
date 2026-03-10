@@ -1,0 +1,10 @@
+[Unit]
+Description=CryptoAlpha RL Ops Summary Heartbeat Timer
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=12h
+Unit=cryptoalpha-rl-ops-summary.service
+
+[Install]
+WantedBy=timers.target
