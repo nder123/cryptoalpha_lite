@@ -837,6 +837,7 @@ async def ops_duty_check(
     store: GlobalAppState = Depends(get_app_state),
     cto_ai: CTOAIOrchestrator = Depends(get_cto_ai),
     bus: EventBus = Depends(get_event_bus),
+    settings: Settings = Depends(get_settings),
 ) -> dict[str, object]:
     now = datetime.now(timezone.utc)
     issues: list[str] = []
@@ -905,6 +906,81 @@ async def ops_duty_check(
                     f"execution_stream_stale_s={int(execution_age_seconds)}"
                 )
 
+    rl_active_version: str | None = None
+    rl_latest_version: str | None = None
+    rl_loaded: dict[str, object] | None = None
+    rl_verdict: str = "unknown"
+    rl_details: list[str] = []
+
+    client = redis.from_url(settings.redis_dsn, encoding="utf-8", decode_responses=True)
+    try:
+        rl_active_version = await client.get(ACTIVE_VERSION_KEY)
+        policy_raw = await client.get(POLICY_KEY)
+    finally:
+        await client.aclose()
+
+    if policy_raw:
+        try:
+            payload = json.loads(policy_raw)
+            if isinstance(payload, dict):
+                rl_latest_version = payload.get("version")
+        except json.JSONDecodeError:
+            rl_latest_version = None
+
+    rl_loaded = await cto_ai.rl_policy_metadata()
+    loaded_policy_version = None
+    loaded_active_version = None
+    loaded_redis_key = None
+    if isinstance(rl_loaded, dict):
+        loaded_policy_version = rl_loaded.get("policy_version")
+        loaded_active_version = rl_loaded.get("active_policy_version")
+        loaded_redis_key = rl_loaded.get("redis_key")
+
+    if not rl_active_version or not rl_latest_version:
+        rl_verdict = "attention"
+        rl_details.append("missing_versions")
+    elif rl_active_version != rl_latest_version:
+        rl_verdict = "attention"
+        rl_details.append("latest!=active")
+    else:
+        rl_verdict = "ok"
+
+    if (
+        loaded_active_version
+        and rl_active_version
+        and loaded_active_version != rl_active_version
+    ):
+        rl_verdict = "attention"
+        rl_details.append("loaded_active!=status_active")
+
+    if (
+        loaded_policy_version
+        and loaded_active_version
+        and loaded_policy_version != loaded_active_version
+    ):
+        rl_verdict = "attention"
+        rl_details.append("loaded_policy_version!=active")
+
+    if loaded_redis_key and rl_active_version:
+        expected_key = f"{POLICY_BY_VERSION_PREFIX}{rl_active_version}"
+        if loaded_redis_key != expected_key:
+            rl_verdict = "attention"
+            rl_details.append("loaded_redis_key!=by_version")
+
+    if rl_details:
+        if any(
+            item
+            in {
+                "loaded_policy_version!=active",
+                "loaded_redis_key!=by_version",
+                "loaded_active!=status_active",
+            }
+            for item in rl_details
+        ):
+            issues.append(f"rl_verdict={rl_verdict}:{','.join(rl_details)}")
+        else:
+            warnings.append(f"rl_verdict={rl_verdict}:{','.join(rl_details)}")
+
     status = "ok"
     if issues:
         status = "alert"
@@ -916,6 +992,13 @@ async def ops_duty_check(
         "issues": issues,
         "warnings": warnings,
         "services_bad": bad_services,
+        "rl": {
+            "verdict": rl_verdict,
+            "details": rl_details,
+            "active_policy_version": rl_active_version,
+            "latest_policy_version": rl_latest_version,
+            "loaded": rl_loaded,
+        },
         "ctoai": {
             "mode": ctoai_snapshot.get("mode"),
             "state": ctoai_state,
