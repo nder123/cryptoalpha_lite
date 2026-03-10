@@ -355,6 +355,11 @@ def main() -> int:
         if isinstance(state.get("last_status_sig"), str)
         else ""
     )
+    rollback_recommended_for = (
+        state.get("rollback_recommended_for")
+        if isinstance(state.get("rollback_recommended_for"), str)
+        else None
+    )
     last_heartbeat_ts = float(state.get("last_heartbeat_ts") or 0.0)
     baseline_version_a = args.baseline_version_a
     observed_versions: dict[str, float] = {}
@@ -491,6 +496,26 @@ def main() -> int:
             ev_a = eval_a
             ev_b = eval_b
 
+            ev_active_a: Optional[WindowEval] = None
+            ev_active_b: Optional[WindowEval] = None
+            if active_policy_version:
+                ev_active_a = _eval_window(
+                    window_name="A_active",
+                    lines=lines_a,
+                    current_policy_version=active_policy_version,
+                    min_trades=int(args.min_trades),
+                    secondary_floor=float(args.secondary_floor),
+                    baseline_policy_version=None,
+                    primary_epsilon=0.0,
+                )
+                ev_active_b = _eval_window(
+                    window_name="B_active",
+                    lines=lines_b,
+                    current_policy_version=active_policy_version,
+                    min_trades=int(args.min_trades),
+                    secondary_floor=float(args.secondary_floor),
+                )
+
             all_ready = ev_a.ready and ev_b.ready
             pass_all = (
                 all_ready
@@ -542,9 +567,56 @@ def main() -> int:
                 _emit_event("NOT_RECOMMENDED", body)
                 _notify("NOT_RECOMMENDED", body)
 
+            rollback_ready = (
+                ev_active_a is not None
+                and ev_active_b is not None
+                and ev_active_a.ready
+                and ev_active_b.ready
+            )
+
+            active_gap_a = (
+                _dd_gap(ev_active_a.current_dd, ev_active_a.leader_dd)
+                if ev_active_a is not None
+                else None
+            )
+            active_gap_b = (
+                _dd_gap(ev_active_b.current_dd, ev_active_b.leader_dd)
+                if ev_active_b is not None
+                else None
+            )
+
+            active_clearly_worse = (
+                rollback_ready
+                and (ev_active_a is not None)
+                and (ev_active_b is not None)
+                and (not ev_active_a.pass_primary)
+                and (not ev_active_b.pass_primary)
+                and (active_gap_a is not None)
+                and (active_gap_b is not None)
+                and (active_gap_a >= float(args.not_recommended_gap))
+                and (active_gap_b >= float(args.not_recommended_gap))
+            )
+
+            if (
+                active_clearly_worse
+                and active_policy_version
+                and rollback_recommended_for != active_policy_version
+            ):
+                rollback_recommended_for = active_policy_version
+                body = (
+                    f"active_policy_version={active_policy_version}\n"
+                    f"A: trades={ev_active_a.current_trades} dd={ev_active_a.current_dd} leader_dd={ev_active_a.leader_dd} gap={active_gap_a}\n"
+                    f"B: trades={ev_active_b.current_trades} dd={ev_active_b.current_dd} leader_dd={ev_active_b.leader_dd} gap={active_gap_b}\n"
+                    f"min_trades={int(args.min_trades)} gap_threshold={float(args.not_recommended_gap)}\n"
+                    "Рекомендация: ROLLBACK (вручную) — active политика деградировала относительно лидера"
+                )
+                _emit_event("ROLLBACK_RECOMMENDED", body)
+                _notify("ROLLBACK_RECOMMENDED", body)
+
             status_sig = (
                 f"policy_current={policy_version}"
                 f"|policy_eval={eval_policy_version}"
+                f"|policy_active={active_policy_version}"
                 f"|streak={streak}"
                 f"|pass_all={pass_all}"
                 f"|A_ready={ev_a.ready}"
@@ -555,6 +627,7 @@ def main() -> int:
                 f"|B_leader_dd={ev_b.leader_dd}"
                 f"|A_baseline={baseline_version_a}"
                 f"|notrec={not_recommended_for}"
+                f"|rollback={rollback_recommended_for}"
             )
 
             should_print = False
@@ -568,6 +641,7 @@ def main() -> int:
             if should_print:
                 print(
                     f"{_now_utc()}  recommender_status  policy_version={policy_version}  eval_policy_version={eval_policy_version}  "
+                    f"active_policy_version={active_policy_version}  baseline_version_a={baseline_version_a}  "
                     f"streak={streak}  pass_all={pass_all}  {_format_eval(ev_a)}  {_format_eval(ev_b)}",
                     flush=True,
                 )
@@ -629,6 +703,7 @@ def main() -> int:
                         "not_recommended_for": not_recommended_for,
                         "not_recommended_brief_for": not_recommended_brief_for,
                         "not_actionable_for": not_actionable_for,
+                        "rollback_recommended_for": rollback_recommended_for,
                         "last_status_sig": last_status_sig,
                         "last_heartbeat_ts": last_heartbeat_ts,
                         "baseline_version_a": baseline_version_a,
