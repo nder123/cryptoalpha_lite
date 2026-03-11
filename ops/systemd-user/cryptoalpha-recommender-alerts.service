@@ -5,4 +5,4 @@ After=network-online.target
 [Service]
 Type=oneshot
 WorkingDirectory=/home/ander/CascadeProjects/cryptoalpha_lite
-ExecStart=/bin/bash -lc 'set -euo pipefail; out=$(journalctl --user -u cryptoalpha-recommender.service --since "6 minutes ago" --no-pager --output=cat | grep -E "PROMOTE_RECOMMENDED|ROLLBACK_RECOMMENDED" || true); if [ -n "$out" ]; then echo "$out" | systemd-cat -t cryptoalpha-rl-alert -p alert; fi'
+ExecStart=/bin/bash -lc 'set -euo pipefail; out=$(journalctl --user -u cryptoalpha-recommender.service --since "6 minutes ago" --no-pager --output=cat | grep -E "PROMOTE_RECOMMENDED|ROLLBACK_RECOMMENDED" | tail -n 1 || true); if [ -n "$out" ]; then state_dir="$HOME/.cache/cryptoalpha"; state_file="$state_dir/rl_alert_last.txt"; mkdir -p "$state_dir"; last=""; if [ -f "$state_file" ]; then last=$(cat "$state_file" 2>/dev/null || true); fi; if [ "$out" != "$last" ]; then printf "%s" "$out" > "$state_file"; echo "$out" | systemd-cat -t cryptoalpha-rl-alert -p alert; fi; fi'
