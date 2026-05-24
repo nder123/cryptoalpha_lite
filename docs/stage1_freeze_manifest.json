@@ -1,0 +1,276 @@
+{
+  "schema": "stage1_freeze_manifest.v1",
+  "stage": "stage1",
+  "freeze_version": "v1",
+  "anchor_doc": "docs/stage1_freeze_v1.md",
+  "axioms": [
+    {
+      "id": "A1",
+      "title": "Single supervisor (systemd --user)"
+    },
+    {
+      "id": "A2",
+      "title": "Single-writer artifacts (watchdog only)"
+    },
+    {
+      "id": "A3",
+      "title": "Integrity > uptime (P10 immediate CRITICAL)"
+    },
+    {
+      "id": "A4",
+      "title": "Operator-only exit from SAFE_MODE (I-S6)"
+    },
+    {
+      "id": "A5",
+      "title": "Bounded everything"
+    }
+  ],
+  "invariants": [
+    "I-Stage1-1: δ closure under aggregator output",
+    "I-Stage1-2: SAFE_MODE → HEALTHY forbidden",
+    "I-Stage1-3: backend service never auto-restarted",
+    "I-Stage1-4: P10 coherence breach → CRITICAL same tick",
+    "I-Stage1-5: Trading gate matrix exact",
+    "I-Stage1-6: Retention pass terminates within PASS_BUDGET",
+    "I-Stage1-7: runtime_health_transition.v1 schema byte-stable",
+    "I-Stage1-8: Timeline causal chain chronological"
+  ],
+  "frozen_documents": [
+    "docs/runtime_topology_v1.md",
+    "docs/runtime_bootstrap_contract_v1.md",
+    "docs/unified_health_state_machine_v1.md",
+    "docs/watchdog_recovery_v1.md",
+    "docs/safe_mode_enforcement_v1.md",
+    "docs/retention_cleanup_v1.md",
+    "docs/operational_timeline_v1.md",
+    "docs/chaos_recovery_drills_v1.md",
+    "docs/stage1_freeze_v1.md",
+    "docs/stage1_errata_workflow.md",
+    "docs/stage_evolution_protocol_v1.md",
+    "docs/stage_transformation_algebra_v1.md",
+    "docs/stage1_truth_separation_v1.md"
+  ],
+  "structural_assertions": {
+    "h_states_exact_7": {
+      "module": "runtime.watchdog.states",
+      "attribute": "H",
+      "kind": "enum_members",
+      "expected": [
+        "BOOTSTRAPPING",
+        "HEALTHY",
+        "DEGRADED",
+        "RECOVERING",
+        "STALLED",
+        "SAFE_MODE",
+        "CRITICAL"
+      ],
+      "ties_axiom": "A3",
+      "ties_invariant": "I-Stage1-1"
+    },
+    "forbidden_direct_transitions_superset": {
+      "module": "runtime.watchdog.states",
+      "attribute": "FORBIDDEN_DIRECT_TRANSITIONS",
+      "kind": "set_pairs_superset",
+      "required_pairs": [
+        [
+          "CRITICAL",
+          "HEALTHY"
+        ],
+        [
+          "SAFE_MODE",
+          "HEALTHY"
+        ],
+        [
+          "STALLED",
+          "HEALTHY"
+        ],
+        [
+          "BOOTSTRAPPING",
+          "DEGRADED"
+        ],
+        [
+          "BOOTSTRAPPING",
+          "STALLED"
+        ],
+        [
+          "BOOTSTRAPPING",
+          "RECOVERING"
+        ]
+      ],
+      "ties_axiom": "A4",
+      "ties_invariant": "I-Stage1-2"
+    },
+    "forbidden_autorestart_includes_backend_and_watchdog": {
+      "module": "runtime.watchdog.recovery",
+      "attribute": "FORBIDDEN_AUTORESTART",
+      "kind": "set_superset",
+      "required_members": [
+        "cryptoalpha-backend.service",
+        "cryptoalpha-watchdog.service"
+      ],
+      "ties_invariant": "I-Stage1-3"
+    },
+    "trading_gate_allowed_states_exact": {
+      "module": "app.services.trading_gate",
+      "attribute": "ALLOWED_STATES",
+      "kind": "set_exact",
+      "expected_members": [
+        "HEALTHY",
+        "DEGRADED"
+      ],
+      "ties_invariant": "I-Stage1-5"
+    },
+    "trading_gate_denied_states_superset": {
+      "module": "app.services.trading_gate",
+      "attribute": "DENIED_STATES",
+      "kind": "set_superset",
+      "required_members": [
+        "BOOTSTRAPPING",
+        "STALLED",
+        "SAFE_MODE",
+        "CRITICAL",
+        "UNKNOWN"
+      ],
+      "ties_invariant": "I-Stage1-5"
+    },
+    "retention_never_prune_includes_audit": {
+      "module": "runtime.retention.policy",
+      "attribute": "NEVER_PRUNE",
+      "kind": "tuple_of_dataclass_field_superset",
+      "field": "rule_id",
+      "required_members": [
+        "ci_history_audit",
+        "runtime_health_current",
+        "runtime_overrides",
+        "docs_dir"
+      ],
+      "ties_axiom": "A5"
+    },
+    "evidence_schemas_unchanged": {
+      "module": "runtime.watchdog.evidence",
+      "kind": "constants_exact",
+      "expected": {
+        "TRANSITION_SCHEMA": "runtime_health_transition.v1",
+        "ARTIFACT_SCHEMA": "runtime_health.v1"
+      },
+      "ties_invariant": "I-Stage1-7"
+    },
+    "timeline_event_schema_unchanged": {
+      "module": "runtime.timeline.events",
+      "kind": "constants_exact",
+      "expected": {
+        "TIMELINE_EVENT_SCHEMA": "operational_timeline_event.v1"
+      },
+      "ties_invariant": "I-Stage1-8"
+    },
+    "restart_budgets_pinned": {
+      "module": "runtime.watchdog.recovery",
+      "attribute": "RESTART_BUDGETS",
+      "field": "max_count",
+      "kind": "mapping_value_exact",
+      "expected": {
+        "cryptoalpha-snapshots.service": 3,
+        "cryptoalpha-recommender.service": 3
+      },
+      "ties_axiom": "A5",
+      "ties_invariant": "I-Stage1-3"
+    },
+    "restart_budgets_window_pinned": {
+      "module": "runtime.watchdog.recovery",
+      "attribute": "RESTART_BUDGETS",
+      "field": "window_sec",
+      "kind": "mapping_value_exact",
+      "expected": {
+        "cryptoalpha-snapshots.service": 1800,
+        "cryptoalpha-recommender.service": 1800
+      },
+      "ties_axiom": "A5"
+    },
+    "systemd_units_present": {
+      "kind": "path_exists",
+      "paths": [
+        "ops/systemd-user/cryptoalpha-backend.service",
+        "ops/systemd-user/cryptoalpha-snapshots.service",
+        "ops/systemd-user/cryptoalpha-recommender.service",
+        "ops/systemd-user/cryptoalpha-watchdog.service",
+        "ops/systemd-user/cryptoalpha-retention.service",
+        "ops/systemd-user/cryptoalpha-retention.timer"
+      ],
+      "ties_axiom": "A1"
+    },
+    "bootstrap_scripts_present": {
+      "kind": "path_exists",
+      "paths": [
+        "scripts/bootstrap.sh",
+        "scripts/start_runtime.sh",
+        "scripts/runtime_health.sh",
+        "scripts/support_bundle.sh",
+        ".env.template"
+      ],
+      "ties_axiom": "A1"
+    },
+    "bybit_adapter_calls_gate": {
+      "kind": "text_contains",
+      "path": "backend/app/exchange/bybit_adapter.py",
+      "must_contain": [
+        "from app.services.trading_gate import assert_trading_allowed",
+        "assert_trading_allowed("
+      ],
+      "ties_axiom": "A4",
+      "ties_invariant": "I-Stage1-5"
+    },
+    "execution_engine_consults_gate": {
+      "kind": "text_contains",
+      "path": "backend/app/services/execution_engine.py",
+      "must_contain": [
+        "from app.services.trading_gate import is_trading_allowed",
+        "is_trading_allowed()"
+      ],
+      "ties_invariant": "I-Stage1-5"
+    },
+    "watchdog_unit_forbids_self_restart_via_forbidden_list": {
+      "kind": "text_contains",
+      "path": "backend/runtime/watchdog/recovery.py",
+      "must_contain": [
+        "cryptoalpha-backend.service",
+        "cryptoalpha-watchdog.service"
+      ],
+      "ties_invariant": "I-Stage1-3"
+    }
+  },
+  "test_count_baseline": {
+    "comment": "AST-static counts (literal parametrize lists are expanded; runtime-generated parametrize args like sorted(SET) count as 1). pytest --collect-only reports a slightly higher number; the gate only checks regression, not exact pytest cardinality. Each file MUST yield at least the listed count; growth is allowed, shrink is forbidden.",
+    "files": {
+      "tests/test_stress_harness.py": 15,
+      "tests/test_watchdog_states.py": 36,
+      "tests/test_watchdog_aggregator.py": 14,
+      "tests/test_watchdog_recovery.py": 14,
+      "tests/test_watchdog_evidence.py": 5,
+      "tests/test_safe_mode_enforcement.py": 20,
+      "tests/test_safe_mode_integration.py": 7,
+      "tests/test_retention.py": 16,
+      "tests/test_chaos_drills.py": 15,
+      "tests/test_timeline.py": 16,
+      "tests/test_freeze_guard.py": 20
+    },
+    "minimum_total": 178
+  },
+  "frozen_endpoints": [
+    "GET /api/ops/health-state",
+    "GET /api/ops/runtime-policy",
+    "GET /api/ops/timeline"
+  ],
+  "frozen_systemd_units": [
+    "cryptoalpha-backend.service",
+    "cryptoalpha-snapshots.service",
+    "cryptoalpha-recommender.service",
+    "cryptoalpha-watchdog.service",
+    "cryptoalpha-retention.service",
+    "cryptoalpha-retention.timer"
+  ],
+  "re_entry": {
+    "errata_path": "Inline `## Errata` section under affected sub-doc; must preserve every invariant and axiom.",
+    "amendment_path": "Bump affected sub-document to vN+1; update §1 of stage1_freeze_v1; tests grow.",
+    "stage2_path": "New top-level freeze document docs/stage2_freeze_v1.md; co-exists with this freeze."
+  }
+}

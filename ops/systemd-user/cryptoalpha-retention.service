@@ -1,0 +1,14 @@
+[Unit]
+Description=CryptoAlpha Retention & Cleanup (oneshot)
+After=cryptoalpha-backend.service
+Wants=cryptoalpha-backend.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=-%h/.config/cryptoalpha/env
+WorkingDirectory=%h/CascadeProjects/cryptoalpha_lite/backend
+ExecStart=%h/.local/bin/poetry run python -u -m runtime.retention
+Nice=10
+IOSchedulingClass=idle
+StandardOutput=journal
+StandardError=journal

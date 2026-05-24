@@ -22,6 +22,7 @@ from app.domain.events import (
 from app.exchange.bybit import BybitClient
 from app.infrastructure.decision_registry import DecisionRegistry
 from app.infrastructure.event_bus import EventBus
+from app.services.trading_gate import is_trading_allowed
 from app.state.store import GlobalAppState
 
 
@@ -155,6 +156,21 @@ class ExecutionEngine:
                 )
                 await self._decision_registry.mark_processed(decision.decision_uid)
                 return
+
+        gate_decision = is_trading_allowed()
+        if not gate_decision.allowed:
+            await self._emit_report(
+                directive,
+                ExecutionStatus.REJECTED,
+                notes=[
+                    "trading gate denied execution",
+                    f"state={gate_decision.state}",
+                    f"reason={gate_decision.reason}",
+                    f"decision_uid={decision.decision_uid}",
+                ],
+            )
+            await self._decision_registry.mark_processed(decision.decision_uid)
+            return
 
         if self._config.dry_run:
             await self._emit_report(
