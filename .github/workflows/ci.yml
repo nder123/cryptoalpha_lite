@@ -76,15 +76,19 @@ jobs:
         env:
           PYTHONPATH: .
         run: |
+          poetry run python -c "import app.services.execution_engine"
           poetry run python -c "from app.services.validation.cross_module_consistency import check_risk_coverage, check_event_bus_coverage, check_lineage_coverage; print('validation imports OK')"
 
-      - name: Pytest – validation + core integration
+      - name: Pytest (validation + non-legacy unit surface)
         env:
           PYTHONPATH: .
         run: |
-          poetry run pytest \
+          poetry run pytest -q --maxfail=1 --disable-warnings \
             tests/test_cross_module_consistency.py \
+            tests/test_full_cycle.py \
+            tests/test_notification_dispatcher.py \
+            tests/test_gate_c_invariants_light.py \
+            tests/test_event_lineage_consistency.py \
             tests/test_watchdog_states.py \
-            tests/test_watchdog_recovery.py \
             tests/test_watchdog_evidence.py \
-            -q --maxfail=3 --disable-warnings
+            tests/test_watchdog_recovery.py

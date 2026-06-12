@@ -33,20 +33,33 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install --no-interaction --no-root --only=main,dev || poetry install --no-interaction --no-root
 
-      - name: Import validation layers
+      - name: Import validation layers and freeze stub
+        id: freeze
         working-directory: backend
         env:
           PYTHONPATH: .
         run: |
+          set -euo pipefail
           poetry run python -c "from app.services.validation.cross_module_consistency import check_risk_coverage, check_event_bus_coverage, check_lineage_coverage; print('validation imports OK')"
+          poetry run python - <<'PY' | tee freeze_report.json
+          import json
+          from runtime.freeze_guard.checker import check
+          ok = check() is True
+          print(json.dumps({"schema": "stage1_freeze_report.stub.v1", "passed": ok}))
+          raise SystemExit(0 if ok else 1)
+          PY
 
-      - name: Pytest – validation suite
+      - name: Pytest – validation + stub-aware test surface
         working-directory: backend
         env:
           PYTHONPATH: .
         run: |
+          poetry run python -c "import app.services.execution_engine"
           poetry run pytest \
             tests/test_cross_module_consistency.py \
+            tests/test_watchdog_states.py \
+            tests/test_watchdog_recovery.py \
+            tests/test_watchdog_evidence.py \
             -q --tb=short
 
       - name: Pytest – core integration tests (lightweight)
