@@ -79,8 +79,10 @@ class HealthyRuntimeReader(RuntimeHealthReader):
             state="HEALTHY",
             stale=False,
             stale_reason=None,
-            reasons=(),
+            safe_mode_active=False,
+            coherence_break_count=0,
             since=FIXED_NOW.isoformat(),
+            reasons=[],
         )
 
 

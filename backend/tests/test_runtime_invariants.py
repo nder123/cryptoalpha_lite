@@ -97,8 +97,10 @@ class HealthyRuntimeReader(RuntimeHealthReader):
             state="HEALTHY",
             stale=False,
             stale_reason=None,
-            reasons=(),
+            safe_mode_active=False,
+            coherence_break_count=0,
             since=FIXED_NOW.isoformat(),
+            reasons=[],
         )
 
 
@@ -108,8 +110,10 @@ class DeniedRuntimeReader(RuntimeHealthReader):
             state="SAFE_MODE",
             stale=False,
             stale_reason=None,
-            reasons=("runtime contract deny path",),
+            safe_mode_active=True,
+            coherence_break_count=0,
             since=FIXED_NOW.isoformat(),
+            reasons=["runtime contract deny path"],
         )
 
 
