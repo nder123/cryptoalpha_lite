@@ -11,6 +11,7 @@ build/
 dist/
 
 # Local logs / runtime artifacts
+gate_c_core_report.json
 backend/.uvicorn.log
 backend/.health_cron.log
 backend/rl_status_snapshots.jsonl
