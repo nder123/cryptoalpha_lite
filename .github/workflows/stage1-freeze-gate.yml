@@ -49,6 +49,8 @@ jobs:
 
       - name: Stage 1 stub-aware test surface
         working-directory: backend
+        env:
+          PYTHONPATH: .
         run: |
           poetry run python -c "import app.services.execution_engine"
           poetry run pytest \
