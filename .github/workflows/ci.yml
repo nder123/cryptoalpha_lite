@@ -86,6 +86,7 @@ jobs:
             tests/test_full_cycle.py \
             tests/test_notification_dispatcher.py \
             tests/test_gate_c_invariants_light.py \
+            tests/test_event_lineage_consistency.py \
             tests/test_watchdog_states.py \
             tests/test_watchdog_evidence.py \
             tests/test_watchdog_recovery.py
