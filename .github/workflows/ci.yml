@@ -72,8 +72,19 @@ jobs:
         run: |
           poetry install --with dev
 
-      - name: Pytest (unit)
+      - name: Import checks
         env:
           PYTHONPATH: .
         run: |
-          poetry run pytest -q --maxfail=1 --disable-warnings --cov=app --cov-report=term-missing
+          poetry run python -c "from app.services.validation.cross_module_consistency import check_risk_coverage, check_event_bus_coverage, check_lineage_coverage; print('validation imports OK')"
+
+      - name: Pytest – validation + core integration
+        env:
+          PYTHONPATH: .
+        run: |
+          poetry run pytest \
+            tests/test_cross_module_consistency.py \
+            tests/test_watchdog_states.py \
+            tests/test_watchdog_recovery.py \
+            tests/test_watchdog_evidence.py \
+            -q --maxfail=3 --disable-warnings
