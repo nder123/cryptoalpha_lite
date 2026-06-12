@@ -4,12 +4,15 @@ Validates structural invariants between layers:
   A. risk_engine <-> trading_gate   – every trade decision has a risk result
   B. execution_engine <-> event_bus – every execution event is recorded
   C. trading_gate <-> event lineage – every decision appears in the lineage graph
+  D. event contract conformance     – all events satisfy the canonical schema
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Sequence
+from typing import Any, Dict, List, Sequence
+
+from app.services.contracts.event_contract import validate_batch
 
 
 @dataclass(frozen=True)
@@ -80,4 +83,25 @@ def check_lineage_coverage(
         event-lineage graph.
     """
     missing = [did for did in decision_ids if did not in lineage_graph]
+    return ConsistencyResult(ok=len(missing) == 0, missing=missing)
+
+
+# ── D. event contract conformance ────────────────────────────────────
+
+
+def check_event_contract(
+    events: Sequence[Dict[str, Any]],
+) -> ConsistencyResult:
+    """Every event must conform to the canonical event contract.
+
+    Parameters
+    ----------
+    events:
+        Sequence of raw event dicts to validate against
+        :func:`~app.services.contracts.event_contract.validate_batch`.
+    """
+    bad = validate_batch(events)
+    missing = [
+        f"event[{idx}]: {', '.join(violations)}" for idx, violations in bad.items()
+    ]
     return ConsistencyResult(ok=len(missing) == 0, missing=missing)
