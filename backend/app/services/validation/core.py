@@ -1,4 +1,42 @@
-from typing import Any
+from __future__ import annotations
+
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from typing import Protocol
+
+from app.domain.events import CTOAiDecision
+from app.services.runtime_enforcer import RuntimeBoundaryResult
+
+
+@dataclass(frozen=True)
+class ValidationContext:
+    runtime_events: Sequence[object] = ()
+    runtime_decisions: Sequence[object] = ()
+    runtime_executions: Sequence[object] = ()
+
+
+@dataclass(frozen=True)
+class ValidationResult:
+    allowed: bool
+    reasons: tuple[str, ...] = ()
+    warnings: tuple[str, ...] = ()
+
+
+class _PreExecutionGate(Protocol):
+    def validate_before_execution(self, decision: object) -> object: ...
+
+
+class _RuntimeEnforcer(Protocol):
+    def validate_boundary_compliance(
+        self,
+        events: Sequence[object],
+        decisions: Sequence[object],
+        executions: Sequence[object],
+    ) -> object: ...
+
+
+class _Contracts(Protocol):
+    def validate(self, decision: object, context: object) -> object: ...
 
 
 class ValidationCore:
@@ -11,15 +49,34 @@ class ValidationCore:
     - No behavioral changes
     """
 
-    def __init__(self, pre_execution_gate=None, runtime_enforcer=None, contracts=None):
+    def __init__(
+        self,
+        pre_execution_gate: _PreExecutionGate | None = None,
+        runtime_enforcer: _RuntimeEnforcer | None = None,
+        contracts: _Contracts | None = None,
+    ) -> None:
         self.pre_execution_gate = pre_execution_gate
         self.runtime_enforcer = runtime_enforcer
         self.contracts = contracts
 
+    def evaluate(self, decision: object, context: object) -> ValidationResult:
+        """
+        SINGLE SOURCE OF TRUTH (shadow mode only)
+
+        Returns:
+            ValidationResult (allowed/denied + reasons)
+        """
+        contract_result = self._run_contracts(decision, context)
+        pre_result = self._run_pre_gate(decision)
+        runtime_result = self._read_runtime_enforcer(context, decision)
+        trace_id = _decision_trace_id(decision)
+
+        return self._merge(contract_result, pre_result, runtime_result, trace_id)
+
     # -----------------------------
     # Pre-execution validation
     # -----------------------------
-    def validate_before_execution(self, decision: Any):
+    def validate_before_execution(self, decision: object):
         """
         Delegates to existing pre_execution_gate (no modification)
         """
@@ -30,7 +87,7 @@ class ValidationCore:
     # -----------------------------
     # Execution validation (post fact)
     # -----------------------------
-    def validate_execution(self, execution: Any, decision: Any):
+    def validate_execution(self, execution: object, decision: object):
         """
         Delegates to runtime_enforcer (no modification)
         """
@@ -41,10 +98,131 @@ class ValidationCore:
     # -----------------------------
     # Contract validation (optional)
     # -----------------------------
-    def validate_contracts(self, event: Any):
+    def validate_contracts(self, event: object):
         """
         Delegates to contracts layer (no modification)
         """
         if self.contracts is None:
             return None
         return self.contracts.validate(event)
+
+    def _run_contracts(self, decision: object, context: object) -> ValidationResult:
+        if self.contracts is None:
+            return ValidationResult(allowed=True)
+        try:
+            result = self.contracts.validate(decision, context)
+        except TypeError:
+            result = self.contracts.validate(decision)
+        return _normalize_result(result, fallback_reason="CONTRACT_DENIED")
+
+    def _run_pre_gate(self, decision: object) -> ValidationResult:
+        if self.pre_execution_gate is None:
+            return ValidationResult(allowed=True)
+        return _normalize_result(
+            self.pre_execution_gate.validate_before_execution(decision),
+            fallback_reason="PRE_EXECUTION_DENIED",
+        )
+
+    def _read_runtime_enforcer(
+        self, context: object, decision: object
+    ) -> ValidationResult:
+        if self.runtime_enforcer is None:
+            return ValidationResult(allowed=True)
+
+        validation_context = (
+            context if isinstance(context, ValidationContext) else ValidationContext()
+        )
+        try:
+            result = self.runtime_enforcer.validate_boundary_compliance(
+                validation_context.runtime_events,
+                validation_context.runtime_decisions,
+                validation_context.runtime_executions,
+            )
+        except TypeError:
+            result = self.runtime_enforcer.validate_boundary_compliance(decision)
+        return _normalize_result(result, fallback_reason="RUNTIME_VIOLATION")
+
+    def _merge(
+        self,
+        contract_result: ValidationResult,
+        pre_result: ValidationResult,
+        runtime_result: ValidationResult,
+        trace_id: str | None,
+    ) -> ValidationResult:
+        reasons: list[str] = []
+        warnings: list[str] = []
+
+        if trace_id is None:
+            reasons.append("TRACE_ID_MISSING")
+
+        if not contract_result.allowed:
+            reasons.extend(_prefixed("contract", contract_result.reasons))
+
+        warnings.extend(_prefixed("pre", pre_result.reasons))
+        warnings.extend(_prefixed("pre", pre_result.warnings))
+        warnings.extend(_prefixed("runtime", runtime_result.reasons))
+        warnings.extend(_prefixed("runtime", runtime_result.warnings))
+
+        return ValidationResult(
+            allowed=not reasons,
+            reasons=tuple(reasons),
+            warnings=tuple(warnings),
+        )
+
+
+def _normalize_result(result: object, *, fallback_reason: str) -> ValidationResult:
+    if result is None:
+        return ValidationResult(allowed=True)
+    if isinstance(result, ValidationResult):
+        return result
+    if isinstance(result, RuntimeBoundaryResult):
+        return ValidationResult(
+            allowed=result.ok,
+            reasons=tuple(violation.code for violation in result.violations),
+        )
+    if isinstance(result, bool):
+        return ValidationResult(
+            allowed=result,
+            reasons=() if result else (fallback_reason,),
+        )
+    if isinstance(result, Mapping):
+        allowed_value = result.get("allowed")
+        if allowed_value is None:
+            allowed_value = result.get("ok")
+        allowed = allowed_value is not False
+        reasons = _string_items(result.get("reasons"))
+        if not reasons:
+            reasons = _string_items(result.get("violations"))
+        if not allowed and not reasons:
+            reasons = (fallback_reason,)
+        return ValidationResult(
+            allowed=allowed,
+            reasons=reasons,
+            warnings=_string_items(result.get("warnings")),
+        )
+    return ValidationResult(allowed=True)
+
+
+def _decision_trace_id(decision: object) -> str | None:
+    value: object = None
+    if isinstance(decision, CTOAiDecision):
+        value = decision.meta.get("trace_id")
+    elif isinstance(decision, Mapping):
+        value = decision.get("trace_id")
+    if isinstance(value, str) and value:
+        return value
+    return None
+
+
+def _string_items(value: object) -> tuple[str, ...]:
+    if value is None:
+        return ()
+    if isinstance(value, str):
+        return (value,)
+    if isinstance(value, Sequence):
+        return tuple(str(item) for item in value)
+    return (str(value),)
+
+
+def _prefixed(source: str, items: Sequence[str]) -> tuple[str, ...]:
+    return tuple(f"{source}:{item}" for item in items)
