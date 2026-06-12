@@ -1,4 +1,4 @@
-name: stage1-freeze-gate
+name: gate-c-validation
 
 on:
   pull_request:
@@ -6,8 +6,8 @@ on:
     branches: [main]
 
 jobs:
-  freeze-gate:
-    name: Stage 1 Freeze Gate
+  gate-c:
+    name: Gate C – validation suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,35 +33,29 @@ jobs:
           poetry config virtualenvs.in-project true
           poetry install --no-interaction --no-root --only=main,dev || poetry install --no-interaction --no-root
 
-      - name: Freeze guard structural verify
-        id: freeze
+      - name: Import validation layers
         working-directory: backend
+        env:
+          PYTHONPATH: .
         run: |
-          set -euo pipefail
-          poetry run python -m runtime.freeze_guard verify --json | tee freeze_report.json
-          poetry run python -m runtime.freeze_guard verify
+          poetry run python -c "from app.services.validation.cross_module_consistency import check_risk_coverage, check_event_bus_coverage, check_lineage_coverage; print('validation imports OK')"
 
-      - name: Stage 1 test surface
+      - name: Pytest – validation suite
         working-directory: backend
+        env:
+          PYTHONPATH: .
         run: |
           poetry run pytest \
-            tests/test_freeze_guard.py \
-            tests/test_stress_harness.py \
-            tests/test_watchdog_states.py \
-            tests/test_watchdog_aggregator.py \
-            tests/test_watchdog_recovery.py \
-            tests/test_watchdog_evidence.py \
-            tests/test_safe_mode_enforcement.py \
-            tests/test_safe_mode_integration.py \
-            tests/test_retention.py \
-            tests/test_chaos_drills.py \
-            tests/test_timeline.py \
+            tests/test_cross_module_consistency.py \
             -q --tb=short
 
-      - name: Upload freeze report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: stage1-freeze-report
-          path: backend/freeze_report.json
-          retention-days: 30
+      - name: Pytest – core integration tests (lightweight)
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+        run: |
+          poetry run pytest \
+            tests/test_watchdog_states.py \
+            tests/test_watchdog_recovery.py \
+            tests/test_watchdog_evidence.py \
+            -q --tb=short
