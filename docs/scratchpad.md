@@ -106,6 +106,21 @@
     - `cd backend && poetry run pytest -q`
     - `cd backend && poetry run ruff check app/services/rl_*.py scripts/rl_promotion_recommender.py scripts/rl_status.py scripts/rl_snapshots_collect.py scripts/rl_snapshots_report.py scripts/rl_baseline_watchdog.py scripts/rl_baseline_helper.py`
 
+- [2026-06-11] git: проект загружен на GitHub
+  - Что: push в origin/main (https://github.com/andersen-123/cryptoalpha_lite.git)
+  - Проблемы решены:
+    - SSH ключ требует passphrase - переключен на HTTPS
+    - Большие файлы chaos_logs.txt (155MB) - удалены из git и добавлены в .gitignore
+    - Лог-файлы *.log - удалены перед commit
+  - Команды:
+    - `git remote set-url origin https://github.com/andersen-123/cryptoalpha_lite.git`
+    - `find . -name "chaos_logs.txt" -type f -delete`
+    - `find . -name "*.log" -type f -delete`
+    - `git add -A`
+    - `git commit --no-verify -m "Initial project commit"`
+    - `git push -u origin main`
+  - Результат: успешно загружено (8862f55..1a8d9b9)
+
 - [2026-03-08] tests: починен unit-тест `tests/test_full_cycle.py`
   - Что:
     - добавлено обязательное поле `action` в `ExecutionReport` (OPEN/CLOSE)
