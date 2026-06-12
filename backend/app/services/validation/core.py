@@ -4,8 +4,9 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from typing import Protocol
 
-from app.domain.events import CTOAiDecision
+from app.domain.events import CTOAiDecision, TradeAction
 from app.services.runtime_enforcer import RuntimeBoundaryResult
+from app.services.validation.contract_registry import ContractRegistry
 
 
 @dataclass(frozen=True)
@@ -58,6 +59,7 @@ class ValidationCore:
         self.pre_execution_gate = pre_execution_gate
         self.runtime_enforcer = runtime_enforcer
         self.contracts = contracts
+        self.contract_registry = ContractRegistry()
 
     def evaluate(self, decision: object, context: object) -> ValidationResult:
         """
@@ -66,12 +68,11 @@ class ValidationCore:
         Returns:
             ValidationResult (allowed/denied + reasons)
         """
-        contract_result = self._run_contracts(decision, context)
+        contract_result = self._run_contracts(decision)
         pre_result = self._run_pre_gate(decision)
         runtime_result = self._read_runtime_enforcer(context, decision)
-        trace_id = _decision_trace_id(decision)
 
-        return self._merge(contract_result, pre_result, runtime_result, trace_id)
+        return self._merge(contract_result, pre_result, runtime_result)
 
     # -----------------------------
     # Pre-execution validation
@@ -106,13 +107,8 @@ class ValidationCore:
             return None
         return self.contracts.validate(event)
 
-    def _run_contracts(self, decision: object, context: object) -> ValidationResult:
-        if self.contracts is None:
-            return ValidationResult(allowed=True)
-        try:
-            result = self.contracts.validate(decision, context)
-        except TypeError:
-            result = self.contracts.validate(decision)
+    def _run_contracts(self, decision: object) -> ValidationResult:
+        result = self.contract_registry.evaluate(_contract_payload(decision))
         return _normalize_result(result, fallback_reason="CONTRACT_DENIED")
 
     def _run_pre_gate(self, decision: object) -> ValidationResult:
@@ -147,13 +143,9 @@ class ValidationCore:
         contract_result: ValidationResult,
         pre_result: ValidationResult,
         runtime_result: ValidationResult,
-        trace_id: str | None,
     ) -> ValidationResult:
         reasons: list[str] = []
         warnings: list[str] = []
-
-        if trace_id is None:
-            reasons.append("TRACE_ID_MISSING")
 
         if not contract_result.allowed:
             reasons.extend(_prefixed("contract", contract_result.reasons))
@@ -189,6 +181,8 @@ def _normalize_result(result: object, *, fallback_reason: str) -> ValidationResu
         allowed_value = result.get("allowed")
         if allowed_value is None:
             allowed_value = result.get("ok")
+        if allowed_value is None:
+            allowed_value = result.get("valid")
         allowed = allowed_value is not False
         reasons = _string_items(result.get("reasons"))
         if not reasons:
@@ -203,15 +197,36 @@ def _normalize_result(result: object, *, fallback_reason: str) -> ValidationResu
     return ValidationResult(allowed=True)
 
 
-def _decision_trace_id(decision: object) -> str | None:
-    value: object = None
+def _contract_payload(decision: object) -> dict[str, object]:
     if isinstance(decision, CTOAiDecision):
-        value = decision.meta.get("trace_id")
-    elif isinstance(decision, Mapping):
-        value = decision.get("trace_id")
-    if isinstance(value, str) and value:
+        return {
+            "trace_id": decision.meta.get("trace_id"),
+            "decision": _contract_decision_value(decision.action),
+        }
+    if isinstance(decision, Mapping):
+        return {
+            "trace_id": decision.get("trace_id"),
+            "decision": _mapping_decision_value(decision),
+        }
+    return {
+        "trace_id": None,
+        "decision": None,
+    }
+
+
+def _mapping_decision_value(decision: Mapping[object, object]) -> object:
+    value = decision.get("decision")
+    if value is not None:
         return value
-    return None
+    return _contract_decision_value(decision.get("action"))
+
+
+def _contract_decision_value(value: object) -> object:
+    if isinstance(value, TradeAction):
+        return value.value.upper()
+    if isinstance(value, str):
+        return value.upper()
+    return value
 
 
 def _string_items(value: object) -> tuple[str, ...]:

@@ -1,14 +1,6 @@
 from app.services.validation.core import ValidationCore, ValidationResult
 
 
-class ContractLayer:
-    def __init__(self, result: ValidationResult):
-        self.result = result
-
-    def validate(self, decision, context):
-        return self.result
-
-
 class PreExecutionHints:
     def __init__(self, result: ValidationResult):
         self.result = result
@@ -25,17 +17,16 @@ class RuntimeEvidence:
         return self.result
 
 
-def _decision(trace_id: str | None = "trace-validation-core"):
+def _decision(trace_id: str | None = "trace-validation-core", decision: str = "ALLOW"):
     if trace_id is None:
-        return {}
-    return {"trace_id": trace_id}
+        return {"decision": decision}
+    return {"trace_id": trace_id, "decision": decision}
 
 
 def test_validation_core_shadow_evaluation_allows_valid_flow():
     core = ValidationCore(
         pre_execution_gate=PreExecutionHints(ValidationResult(allowed=True)),
         runtime_enforcer=RuntimeEvidence(ValidationResult(allowed=True)),
-        contracts=ContractLayer(ValidationResult(allowed=True)),
     )
 
     result = core.evaluate(_decision(), context={})
@@ -47,15 +38,12 @@ def test_validation_core_shadow_evaluation_denies_contract_violation():
     core = ValidationCore(
         pre_execution_gate=PreExecutionHints(ValidationResult(allowed=True)),
         runtime_enforcer=RuntimeEvidence(ValidationResult(allowed=True)),
-        contracts=ContractLayer(
-            ValidationResult(allowed=False, reasons=("CONTRACT_VIOLATION",))
-        ),
     )
 
-    result = core.evaluate(_decision(), context={})
+    result = core.evaluate(_decision(decision="DENY"), context={})
 
     assert not result.allowed
-    assert result.reasons == ("contract:CONTRACT_VIOLATION",)
+    assert result.reasons == ("contract:deny_is_terminal",)
 
 
 def test_validation_core_shadow_evaluation_warns_on_runtime_violation_only():
@@ -64,7 +52,6 @@ def test_validation_core_shadow_evaluation_warns_on_runtime_violation_only():
         runtime_enforcer=RuntimeEvidence(
             ValidationResult(allowed=False, reasons=("RUNTIME_VIOLATION",))
         ),
-        contracts=ContractLayer(ValidationResult(allowed=True)),
     )
 
     result = core.evaluate(_decision(), context={})
@@ -78,13 +65,12 @@ def test_validation_core_shadow_evaluation_always_denies_missing_trace_id():
     core = ValidationCore(
         pre_execution_gate=PreExecutionHints(ValidationResult(allowed=True)),
         runtime_enforcer=RuntimeEvidence(ValidationResult(allowed=True)),
-        contracts=ContractLayer(ValidationResult(allowed=True)),
     )
 
     result = core.evaluate(_decision(trace_id=None), context={})
 
     assert not result.allowed
-    assert result.reasons == ("TRACE_ID_MISSING",)
+    assert result.reasons == ("contract:trace_required",)
 
 
 def test_validation_core_overrides_non_authoritative_layers():
@@ -95,7 +81,6 @@ def test_validation_core_overrides_non_authoritative_layers():
         runtime_enforcer=RuntimeEvidence(
             ValidationResult(allowed=False, reasons=("RUNTIME_VIOLATION",))
         ),
-        contracts=ContractLayer(ValidationResult(allowed=True)),
     )
 
     result = core.evaluate(_decision(), context={})
