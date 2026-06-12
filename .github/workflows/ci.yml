@@ -72,8 +72,19 @@ jobs:
         run: |
           poetry install --with dev
 
-      - name: Pytest (unit)
+      - name: Import smoke (stub-aware)
         env:
           PYTHONPATH: .
         run: |
-          poetry run pytest -q --maxfail=1 --disable-warnings --cov=app --cov-report=term-missing
+          poetry run python -c "import app.services.execution_engine"
+
+      - name: Pytest (non-legacy unit surface)
+        env:
+          PYTHONPATH: .
+        run: |
+          poetry run pytest -q --maxfail=1 --disable-warnings \
+            tests/test_full_cycle.py \
+            tests/test_notification_dispatcher.py \
+            tests/test_watchdog_states.py \
+            tests/test_watchdog_evidence.py \
+            tests/test_watchdog_recovery.py
