@@ -125,6 +125,7 @@ def test_insights_diff_artifact_can_be_enabled(
         json.dumps(_insights(0.90, 0.10, 0.95, "stable_regime")),
         encoding="utf-8",
     )
+    monkeypatch.setenv("ENABLE_BEHAVIOR_INSIGHTS_DEBUG", "true")
     monkeypatch.setenv("ENABLE_INSIGHTS_DIFF", "true")
     monkeypatch.setenv("PREVIOUS_INSIGHTS_PATH", str(previous_path))
 

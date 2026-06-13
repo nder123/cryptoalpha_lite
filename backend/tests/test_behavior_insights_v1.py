@@ -59,7 +59,7 @@ def test_insights_v1_has_no_nan_or_division_errors():
 def test_insights_v1_is_consistent_with_metrics_v1(tmp_path: Path):
     report = run_historical_evaluation(FIXTURE_DIR, output_dir=tmp_path)
     metrics_v1 = report["metrics_v1"]
-    insights = json.loads((tmp_path / "insights.json").read_text())
+    insights = build_insights_v1(metrics_v1)
 
     assert insights["decision_efficiency"] == metrics_v1["decision_rate"]
     assert insights["execution_friction"] == 0.4
@@ -68,12 +68,18 @@ def test_insights_v1_is_consistent_with_metrics_v1(tmp_path: Path):
 
 
 def test_insights_v1_run_is_deterministic(tmp_path: Path):
-    first_dir = tmp_path / "first"
-    second_dir = tmp_path / "second"
+    report = run_historical_evaluation(FIXTURE_DIR, output_dir=tmp_path)
 
-    run_historical_evaluation(FIXTURE_DIR, output_dir=first_dir)
-    run_historical_evaluation(FIXTURE_DIR, output_dir=second_dir)
+    first = build_insights_v1(report["metrics_v1"])
+    second = build_insights_v1(report["metrics_v1"])
 
-    assert json.loads((first_dir / "insights.json").read_text()) == json.loads(
-        (second_dir / "insights.json").read_text()
-    )
+    assert first == second
+
+
+def test_insights_v1_is_debug_artifact_only(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("ENABLE_BEHAVIOR_INSIGHTS_DEBUG", "true")
+
+    run_historical_evaluation(FIXTURE_DIR, output_dir=tmp_path)
+
+    insights = json.loads((tmp_path / "insights.json").read_text())
+    assert insights["activity_profile"] == "stable_regime"
