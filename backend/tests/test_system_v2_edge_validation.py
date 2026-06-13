@@ -76,7 +76,7 @@ def test_system_v2_case_is_deterministic(tmp_path: Path):
     }
 
 
-def test_system_v2_decision_projection_preserves_signal_ordering():
+def test_system_v2_decision_projection_preserves_signal_direction_and_variance():
     from scripts.behavior_validation.data_adapter import (
         load_historical_data,
         normalize_dataset,
@@ -84,12 +84,35 @@ def test_system_v2_decision_projection_preserves_signal_ordering():
 
     signals = generate_signal_v2(normalize_dataset(load_historical_data(FIXTURE_DIR)))
     decisions = _generate_decisions(signals)
-    projected_scores = tuple(_projection(signal) for signal in signals)
+    projected_scores = tuple(
+        _regime_weight(signal) * _projection(signal) for signal in signals
+    )
     decision_scores = tuple(decision["decision_score"] for decision in decisions)
 
     assert decision_scores == projected_scores
     assert len(set(decision_scores)) > 2
     assert max(decision_scores) - min(decision_scores) > 0.0
+    for signal, decision_score in zip(signals, decision_scores, strict=True):
+        assert (decision_score >= 0.0) == (_projection(signal) >= 0.0)
+
+
+def test_system_v2_decision_projection_applies_fixed_regime_weights():
+    from scripts.behavior_validation.data_adapter import (
+        load_historical_data,
+        normalize_dataset,
+    )
+
+    signals = generate_signal_v2(normalize_dataset(load_historical_data(FIXTURE_DIR)))
+    decisions = _generate_decisions(signals)
+    decision_by_signal_id = {
+        decision["source_signal_id"]: decision for decision in decisions
+    }
+
+    for signal in signals:
+        decision = decision_by_signal_id[signal["signal_id"]]
+        assert decision["decision_score"] == _regime_weight(signal) * _projection(
+            signal
+        )
 
 
 def _is_finite(payload: dict[str, object]) -> bool:
@@ -108,6 +131,14 @@ def _projection(signal: dict[str, object]) -> float:
         + _float_value(signal["microstructure_component"])
         + _float_value(signal["relative_component"])
     ) / 3.0
+
+
+def _regime_weight(signal: dict[str, object]) -> float:
+    return {
+        "low": 0.2,
+        "mid": 0.4,
+        "high": 0.4,
+    }[str(signal["volatility_regime"])]
 
 
 def _float_value(value: object) -> float:

@@ -15,6 +15,12 @@ from scripts.behavior_validation.metrics import build_metrics
 from scripts.behavior_validation.metrics_v1 import build_metrics_v1
 from scripts.behavior_validation.report_schema import build_report
 
+SIGNAL_V2_REGIME_WEIGHTS = {
+    "low": 0.2,
+    "mid": 0.4,
+    "high": 0.4,
+}
+
 DEFAULT_DATA = (
     {
         "event_id": "sample-001",
@@ -182,11 +188,19 @@ def _has_signal_v2_projection(signal: dict[str, object]) -> bool:
 
 
 def _signal_v2_projection(signal: dict[str, object]) -> float:
-    return (
+    system_signal = (
         _float_value(signal.get("regime_component"))
         + _float_value(signal.get("microstructure_component"))
         + _float_value(signal.get("relative_component"))
     ) / 3.0
+    return _signal_v2_regime_weight(signal) * system_signal
+
+
+def _signal_v2_regime_weight(signal: dict[str, object]) -> float:
+    regime = signal.get("volatility_regime")
+    if regime in SIGNAL_V2_REGIME_WEIGHTS:
+        return SIGNAL_V2_REGIME_WEIGHTS[str(regime)]
+    return 1.0
 
 
 def _signal_strength(payload: dict[str, object]) -> float:
