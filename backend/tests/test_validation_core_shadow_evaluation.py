@@ -46,6 +46,23 @@ def test_validation_core_shadow_evaluation_denies_contract_violation():
     assert result.reasons == ("contract:deny_is_terminal",)
 
 
+def test_validation_core_contract_violation_is_terminal_not_warning():
+    core = ValidationCore(
+        pre_execution_gate=PreExecutionHints(
+            ValidationResult(allowed=False, reasons=("PRE_GATE_DENIED",))
+        ),
+        runtime_enforcer=RuntimeEvidence(
+            ValidationResult(allowed=False, reasons=("RUNTIME_VIOLATION",))
+        ),
+    )
+
+    result = core.evaluate(_decision(decision="DENY"), context={})
+
+    assert not result.allowed
+    assert result.reasons == ("contract:deny_is_terminal",)
+    assert result.warnings == ()
+
+
 def test_validation_core_shadow_evaluation_warns_on_runtime_violation_only():
     core = ValidationCore(
         pre_execution_gate=PreExecutionHints(ValidationResult(allowed=True)),

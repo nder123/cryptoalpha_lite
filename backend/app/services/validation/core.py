@@ -141,11 +141,18 @@ class ValidationCore:
         runtime_result: ValidationResult,
     ) -> ValidationResult:
         reasons: list[str] = []
-        warnings: list[str] = []
 
         if not contract_result.allowed:
             reasons.extend(_prefixed("contract", contract_result.reasons))
+            if not reasons:
+                reasons = ["contract:CONTRACT_DENIED"]
+            return ValidationResult(
+                allowed=False,
+                reasons=tuple(reasons),
+                warnings=(),
+            )
 
+        warnings: list[str] = []
         warnings.extend(_prefixed("pre", pre_result.reasons))
         warnings.extend(_prefixed("pre", pre_result.warnings))
         warnings.extend(_prefixed("runtime", runtime_result.reasons))
