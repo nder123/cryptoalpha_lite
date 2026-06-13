@@ -10,6 +10,7 @@ from scripts.behavior_validation.data_adapter import (
     normalize_dataset,
 )
 from scripts.behavior_validation.execution_simulator import simulate_execution
+from scripts.behavior_validation.insights_v1 import build_insights_v1
 from scripts.behavior_validation.metrics import build_metrics
 from scripts.behavior_validation.metrics_v1 import build_metrics_v1
 from scripts.behavior_validation.report_schema import build_report
@@ -48,6 +49,7 @@ def run_evaluation(
         decisions=decisions,
         executions=executions,
     )
+    insights_v1 = build_insights_v1(metrics_v1)
     report = build_report(
         run_id=run_id,
         signals=len(signals),
@@ -62,6 +64,7 @@ def run_evaluation(
         report,
         metrics,
         metrics_v1,
+        insights_v1,
         input_summary or _input_summary(data),
     )
     return report
@@ -148,6 +151,7 @@ def _write_artifacts(
     report: dict[str, object],
     metrics: dict[str, int],
     metrics_v1: dict[str, object],
+    insights_v1: dict[str, object],
     input_summary: dict[str, object],
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -162,6 +166,10 @@ def _write_artifacts(
     )
     (output_dir / "input_summary.json").write_text(
         json.dumps(input_summary, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (output_dir / "insights.json").write_text(
+        json.dumps(insights_v1, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
 

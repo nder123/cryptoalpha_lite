@@ -41,6 +41,7 @@ def test_historical_evaluation_generates_artifacts(tmp_path: Path):
     summary = json.loads((tmp_path / "summary.json").read_text())
     metrics = json.loads((tmp_path / "metrics.json").read_text())
     input_summary = json.loads((tmp_path / "input_summary.json").read_text())
+    insights = json.loads((tmp_path / "insights.json").read_text())
 
     assert report == summary
     assert summary["signals"] == 10
@@ -48,6 +49,7 @@ def test_historical_evaluation_generates_artifacts(tmp_path: Path):
     assert summary["executions"] == 10
     assert metrics["signals_generated"] == 10
     assert metrics["metrics_v1"]["signals_generated"] == 10
+    assert insights["activity_profile"] == "stable_regime"
     assert input_summary == {
         "rows": 10,
         "symbols": ["BTCUSDT", "ETHUSDT"],
