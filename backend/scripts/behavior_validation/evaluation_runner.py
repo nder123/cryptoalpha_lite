@@ -11,6 +11,7 @@ from scripts.behavior_validation.data_adapter import (
 )
 from scripts.behavior_validation.execution_simulator import simulate_execution
 from scripts.behavior_validation.metrics import build_metrics
+from scripts.behavior_validation.metrics_v1 import build_metrics_v1
 from scripts.behavior_validation.report_schema import build_report
 
 DEFAULT_DATA = (
@@ -42,18 +43,25 @@ def run_evaluation(
     decisions = _generate_decisions(signals)
     executions = tuple(simulate_execution(decision) for decision in decisions)
     metrics = build_metrics(signals, decisions, executions)
+    metrics_v1 = build_metrics_v1(
+        signals=signals,
+        decisions=decisions,
+        executions=executions,
+    )
     report = build_report(
         run_id=run_id,
         signals=len(signals),
         decisions=len(decisions),
         executions=len(executions),
         metrics=metrics,
+        metrics_v1=metrics_v1,
     )
 
     _write_artifacts(
         output_dir or _default_output_dir(),
         report,
         metrics,
+        metrics_v1,
         input_summary or _input_summary(data),
     )
     return report
@@ -127,6 +135,8 @@ def _generate_decisions(
         {
             "decision_id": f"decision-{index}",
             "source_signal_id": signal["signal_id"],
+            "symbol": signal.get("symbol"),
+            "timestamp": signal.get("timestamp"),
             "simulation_status": signal["simulation_status"],
         }
         for index, signal in enumerate(signals, start=1)
@@ -137,6 +147,7 @@ def _write_artifacts(
     output_dir: Path,
     report: dict[str, object],
     metrics: dict[str, int],
+    metrics_v1: dict[str, object],
     input_summary: dict[str, object],
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -145,7 +156,8 @@ def _write_artifacts(
         encoding="utf-8",
     )
     (output_dir / "metrics.json").write_text(
-        json.dumps(metrics, indent=2, sort_keys=True) + "\n",
+        json.dumps({**metrics, "metrics_v1": metrics_v1}, indent=2, sort_keys=True)
+        + "\n",
         encoding="utf-8",
     )
     (output_dir / "input_summary.json").write_text(

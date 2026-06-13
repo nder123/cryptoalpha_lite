@@ -47,6 +47,7 @@ def test_historical_evaluation_generates_artifacts(tmp_path: Path):
     assert summary["decisions"] == 10
     assert summary["executions"] == 10
     assert metrics["signals_generated"] == 10
+    assert metrics["metrics_v1"]["signals_generated"] == 10
     assert input_summary == {
         "rows": 10,
         "symbols": ["BTCUSDT", "ETHUSDT"],

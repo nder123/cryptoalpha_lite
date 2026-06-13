@@ -8,6 +8,7 @@ def build_report(
     decisions: int,
     executions: int,
     metrics: dict[str, int],
+    metrics_v1: dict[str, object],
 ) -> dict[str, object]:
     return {
         "run_id": run_id,
@@ -15,4 +16,5 @@ def build_report(
         "decisions": decisions,
         "executions": executions,
         "metrics": metrics,
+        "metrics_v1": metrics_v1,
     }

@@ -49,9 +49,17 @@ def test_report_schema_is_json_serializable():
         decisions=1,
         executions=1,
         metrics={"signals_generated": 1},
+        metrics_v1={"signals_generated": 1},
     )
 
-    assert set(report) == {"run_id", "signals", "decisions", "executions", "metrics"}
+    assert set(report) == {
+        "run_id",
+        "signals",
+        "decisions",
+        "executions",
+        "metrics",
+        "metrics_v1",
+    }
     assert json.loads(json.dumps(report)) == report
 
 
@@ -74,3 +82,4 @@ def test_evaluation_runner_writes_summary_and_metrics(tmp_path: Path):
     assert summary["decisions"] == 2
     assert summary["executions"] == 2
     assert metrics["executions_simulated"] == 2
+    assert metrics["metrics_v1"]["signals_generated"] == 2
