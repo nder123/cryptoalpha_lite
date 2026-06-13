@@ -1,3 +1,6 @@
+# STABILITY CLASS: SEMANTIC CORE
+# CHANGE RULE: breaking changes require Gate D review
+
 from collections.abc import Mapping
 
 from .contracts import CONTRACT_RULES

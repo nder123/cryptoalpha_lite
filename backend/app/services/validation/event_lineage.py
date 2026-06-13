@@ -1,3 +1,6 @@
+# STABILITY CLASS: SEMANTIC CORE
+# CHANGE RULE: breaking changes require Gate D review
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -27,6 +30,13 @@ class LineageReport:
 
 
 def validate_event_lineage(events: list[LineageEvent]) -> LineageReport:
+    """Validate event-level lineage ancestry.
+
+    ``LineageSemantics.EVENT_LEVEL`` boundary:
+    ``parent_id`` is interpreted as event ancestry linkage. The invariant is a
+    strict DAG over ``event_id`` space; this function enforces parent existence
+    and trace consistency as a secondary invariant.
+    """
     violations: list[LineageViolation] = []
     by_id = {event.event_id: event for event in events if event.event_id}
 

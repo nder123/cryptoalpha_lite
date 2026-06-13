@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, cast
 
-from app.domain.events import CTOAiDecision, TradeAction
 from app.services.runtime_enforcer import RuntimeBoundaryResult
 from app.services.validation.contract_registry import ContractRegistry
 
@@ -28,16 +27,11 @@ class _PreExecutionGate(Protocol):
 
 
 class _RuntimeEnforcer(Protocol):
-    def validate_boundary_compliance(
-        self,
-        events: Sequence[object],
-        decisions: Sequence[object],
-        executions: Sequence[object],
-    ) -> object: ...
+    def validate_boundary_compliance(self, *args: object) -> object: ...
 
 
 class _Contracts(Protocol):
-    def validate(self, decision: object, context: object) -> object: ...
+    def validate(self, *args: object) -> object: ...
 
 
 class ValidationCore:
@@ -68,7 +62,10 @@ class ValidationCore:
         Returns:
             ValidationResult (allowed/denied + reasons)
         """
-        contract_result = self._run_contracts(decision)
+        contract_result = _normalize_result(
+            self.contract_registry.evaluate(cast(Mapping[str, object], decision)),
+            fallback_reason="CONTRACT_DENIED",
+        )
         pre_result = self._run_pre_gate(decision)
         runtime_result = self._read_runtime_enforcer(context, decision)
 
@@ -101,15 +98,14 @@ class ValidationCore:
     # -----------------------------
     def validate_contracts(self, event: object):
         """
-        Delegates to contracts layer (no modification)
+        Deprecated compatibility shim for legacy injected contracts.
+
+        Contract evaluation for the ValidationCore decision path is owned by
+        self.contract_registry.evaluate().
         """
         if self.contracts is None:
             return None
         return self.contracts.validate(event)
-
-    def _run_contracts(self, decision: object) -> ValidationResult:
-        result = self.contract_registry.evaluate(_contract_payload(decision))
-        return _normalize_result(result, fallback_reason="CONTRACT_DENIED")
 
     def _run_pre_gate(self, decision: object) -> ValidationResult:
         if self.pre_execution_gate is None:
@@ -144,21 +140,27 @@ class ValidationCore:
         pre_result: ValidationResult,
         runtime_result: ValidationResult,
     ) -> ValidationResult:
-        reasons: list[str] = []
-        warnings: list[str] = []
-
         if not contract_result.allowed:
-            reasons.extend(_prefixed("contract", contract_result.reasons))
+            failures = _prefixed("contract", contract_result.reasons) or (
+                "contract:CONTRACT_DENIED",
+            )
+            return ValidationResult(
+                allowed=False,
+                reasons=failures,
+                warnings=(),
+            )
 
-        warnings.extend(_prefixed("pre", pre_result.reasons))
-        warnings.extend(_prefixed("pre", pre_result.warnings))
-        warnings.extend(_prefixed("runtime", runtime_result.reasons))
-        warnings.extend(_prefixed("runtime", runtime_result.warnings))
+        observations = (
+            *_prefixed("pre", pre_result.reasons),
+            *_prefixed("pre", pre_result.warnings),
+            *_prefixed("runtime", runtime_result.reasons),
+            *_prefixed("runtime", runtime_result.warnings),
+        )
 
         return ValidationResult(
-            allowed=not reasons,
-            reasons=tuple(reasons),
-            warnings=tuple(warnings),
+            allowed=True,
+            reasons=(),
+            warnings=observations,
         )
 
 
@@ -195,38 +197,6 @@ def _normalize_result(result: object, *, fallback_reason: str) -> ValidationResu
             warnings=_string_items(result.get("warnings")),
         )
     return ValidationResult(allowed=True)
-
-
-def _contract_payload(decision: object) -> dict[str, object]:
-    if isinstance(decision, CTOAiDecision):
-        return {
-            "trace_id": decision.meta.get("trace_id"),
-            "decision": _contract_decision_value(decision.action),
-        }
-    if isinstance(decision, Mapping):
-        return {
-            "trace_id": decision.get("trace_id"),
-            "decision": _mapping_decision_value(decision),
-        }
-    return {
-        "trace_id": None,
-        "decision": None,
-    }
-
-
-def _mapping_decision_value(decision: Mapping[object, object]) -> object:
-    value = decision.get("decision")
-    if value is not None:
-        return value
-    return _contract_decision_value(decision.get("action"))
-
-
-def _contract_decision_value(value: object) -> object:
-    if isinstance(value, TradeAction):
-        return value.value.upper()
-    if isinstance(value, str):
-        return value.upper()
-    return value
 
 
 def _string_items(value: object) -> tuple[str, ...]:
