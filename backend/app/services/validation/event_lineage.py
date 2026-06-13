@@ -1,3 +1,6 @@
+# STABILITY CLASS: SEMANTIC CORE
+# CHANGE RULE: breaking changes require Gate D review
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

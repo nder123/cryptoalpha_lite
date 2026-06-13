@@ -1,3 +1,6 @@
+# STABILITY CLASS: SEMANTIC CORE
+# CHANGE RULE: breaking changes require Gate D review
+
 """Canonical event contract for the CryptoAlpha event system.
 
 Every event flowing through execution_core, validation layer, and shadow
