@@ -1,0 +1,21 @@
+{
+  "data": "medium",
+  "decision": "dead",
+  "details": {
+    "data": {
+      "classification": "medium",
+      "price_variance": 1.983432833749704e-05,
+      "trend_strength_proxy": 0.08545454545454545,
+      "volatility_proxy": 0.003872370156127229
+    },
+    "decision": {
+      "changed_ratio": 0.0,
+      "classification": "dead"
+    },
+    "signal": {
+      "changed_ratio": 1.0,
+      "classification": "sensitive"
+    }
+  },
+  "signal": "sensitive"
+}
