@@ -98,6 +98,9 @@ def _signal_v2(
     outcome: str | None,
 ) -> dict[str, object]:
     score = _signal_v2_score(features)
+    regime_component = _regime_component(features)
+    microstructure_component = _microstructure_component(features)
+    relative_component = _relative_component(features)
     return {
         "signal_id": f"signal-v2-{index}",
         "source_event_id": row["event_id"],
@@ -118,6 +121,9 @@ def _signal_v2(
         "signal_strength": abs(score),
         "signal_sensitivity": abs(_float_value(features["z_score"])),
         "signal_delta": score,
+        "regime_component": regime_component,
+        "microstructure_component": microstructure_component,
+        "relative_component": relative_component,
         "signal_v2_score": score,
         "signal_v2_direction": _direction(score),
         "signal_v2_bucket": _signal_bucket(score, features),
@@ -132,6 +138,36 @@ def _signal_v2_score(features: dict[str, object]) -> float:
         + 0.2 * _float_value(features.get("delta_acceleration"))
         + 0.1 * _float_value(features.get("range_expansion"))
         + 0.1 * _float_value(features.get("volatility_cluster"))
+    )
+
+
+def _regime_component(features: dict[str, object]) -> float:
+    relative_strength = _float_value(features.get("relative_strength"))
+    if (
+        features.get("volatility_regime") == "low"
+        and features.get("market_structure") == "trend"
+    ):
+        return relative_strength
+    return -relative_strength
+
+
+def _microstructure_component(features: dict[str, object]) -> float:
+    return -_mean(
+        (
+            _float_value(features.get("delta_acceleration")),
+            _float_value(features.get("volatility_cluster")),
+            _float_value(features.get("range_expansion")),
+        )
+    )
+
+
+def _relative_component(features: dict[str, object]) -> float:
+    return -_mean(
+        (
+            _float_value(features.get("relative_strength")),
+            _float_value(features.get("z_score")),
+            _float_value(features.get("normalized_deviation")),
+        )
     )
 
 

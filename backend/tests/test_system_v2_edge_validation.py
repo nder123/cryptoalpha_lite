@@ -2,6 +2,7 @@ import json
 import math
 from pathlib import Path
 
+from scripts.behavior_validation.evaluation_runner import _generate_decisions
 from scripts.behavior_validation.feature_transform import generate_signal_v2
 from scripts.behavior_validation.system_v2_edge_runner import (
     run_system_v2_edge_validation,
@@ -23,6 +24,9 @@ def test_signal_v2_is_compatible_with_existing_decision_mapping():
     assert all("signal_strength" in signal for signal in signals)
     assert all("signal_sensitivity" in signal for signal in signals)
     assert all("signal_delta" in signal for signal in signals)
+    assert all("regime_component" in signal for signal in signals)
+    assert all("microstructure_component" in signal for signal in signals)
+    assert all("relative_component" in signal for signal in signals)
     assert all("open" in signal and "close" in signal for signal in signals)
 
 
@@ -72,6 +76,22 @@ def test_system_v2_case_is_deterministic(tmp_path: Path):
     }
 
 
+def test_system_v2_decision_projection_preserves_signal_ordering():
+    from scripts.behavior_validation.data_adapter import (
+        load_historical_data,
+        normalize_dataset,
+    )
+
+    signals = generate_signal_v2(normalize_dataset(load_historical_data(FIXTURE_DIR)))
+    decisions = _generate_decisions(signals)
+    projected_scores = tuple(_projection(signal) for signal in signals)
+    decision_scores = tuple(decision["decision_score"] for decision in decisions)
+
+    assert decision_scores == projected_scores
+    assert len(set(decision_scores)) > 2
+    assert max(decision_scores) - min(decision_scores) > 0.0
+
+
 def _is_finite(payload: dict[str, object]) -> bool:
     for value in payload.values():
         if isinstance(value, dict):
@@ -80,3 +100,19 @@ def _is_finite(payload: dict[str, object]) -> bool:
         elif isinstance(value, float) and math.isnan(value):
             return False
     return True
+
+
+def _projection(signal: dict[str, object]) -> float:
+    return (
+        _float_value(signal["regime_component"])
+        + _float_value(signal["microstructure_component"])
+        + _float_value(signal["relative_component"])
+    ) / 3.0
+
+
+def _float_value(value: object) -> float:
+    if isinstance(value, bool):
+        return float(value)
+    if isinstance(value, int | float):
+        return float(value)
+    return 0.0

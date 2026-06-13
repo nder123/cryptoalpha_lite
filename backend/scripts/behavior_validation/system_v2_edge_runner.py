@@ -140,8 +140,13 @@ def _case_classification(report: dict[str, object]) -> str:
     naive = _mode_aggregate(report, "naive")
     system = _mode_aggregate(report, "system")
     system_stable = _stability_classification(system["variance"]) == "stable"
+    window_advantage = _system_preserves_window_advantage(report)
 
-    if system["mean_hit_rate"] > naive["mean_hit_rate"] and system_stable:
+    if (
+        system["mean_hit_rate"] > naive["mean_hit_rate"]
+        and system_stable
+        and window_advantage
+    ):
         return "CASE_A_EDGE_EXISTS"
     if system["mean_hit_rate"] > naive["mean_hit_rate"]:
         return "CASE_C_WEAK_EDGE"
@@ -151,6 +156,20 @@ def _case_classification(report: dict[str, object]) -> str:
     ):
         return "CASE_B_NO_EDGE"
     return "CASE_B_NO_EDGE"
+
+
+def _system_preserves_window_advantage(report: dict[str, object]) -> bool:
+    windows = report.get("windows", {})
+    if not isinstance(windows, dict):
+        return False
+    for window in windows.values():
+        if not isinstance(window, dict):
+            return False
+        system = _mode_aggregate(window, "system")
+        naive = _mode_aggregate(window, "naive")
+        if system["mean_hit_rate"] < naive["mean_hit_rate"]:
+            return False
+    return True
 
 
 def _mode_aggregate(

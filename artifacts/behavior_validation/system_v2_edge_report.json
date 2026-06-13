@@ -1,5 +1,5 @@
 {
-  "case": "CASE_B_NO_EDGE",
+  "case": "CASE_C_WEAK_EDGE",
   "naive": {
     "mean_execution_rate": 1.0,
     "mean_hit_rate": 0.25,
@@ -19,7 +19,7 @@
   },
   "system": {
     "mean_execution_rate": 1.0,
-    "mean_hit_rate": 0.125,
+    "mean_hit_rate": 1.0,
     "mean_stability_score": 1.0,
     "variance": 0.0
   },
@@ -39,7 +39,7 @@
       },
       "system": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.0,
+        "mean_hit_rate": 1.0,
         "mean_stability_score": 1.0,
         "variance": 0.0
       }
@@ -79,7 +79,7 @@
       },
       "system": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 1.0,
+        "mean_hit_rate": 0.0,
         "mean_stability_score": 1.0,
         "variance": 0.0
       }

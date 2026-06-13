@@ -151,6 +151,8 @@ def _generate_decisions(
 
 
 def _decision_score(signal: dict[str, object]) -> float:
+    if _has_signal_v2_projection(signal):
+        return _signal_v2_projection(signal)
     return (
         0.5 * _signal_strength(signal)
         + 0.3 * _signal_sensitivity(signal)
@@ -159,9 +161,32 @@ def _decision_score(signal: dict[str, object]) -> float:
 
 
 def _decision_direction(signal: dict[str, object]) -> str:
+    if _has_signal_v2_projection(signal):
+        if _signal_v2_projection(signal) >= 0.0:
+            return "long"
+        return "short"
     if _signal_delta(signal) >= 0.0:
         return "long"
     return "short"
+
+
+def _has_signal_v2_projection(signal: dict[str, object]) -> bool:
+    return all(
+        isinstance(signal.get(key), int | float)
+        for key in (
+            "regime_component",
+            "microstructure_component",
+            "relative_component",
+        )
+    )
+
+
+def _signal_v2_projection(signal: dict[str, object]) -> float:
+    return (
+        _float_value(signal.get("regime_component"))
+        + _float_value(signal.get("microstructure_component"))
+        + _float_value(signal.get("relative_component"))
+    ) / 3.0
 
 
 def _signal_strength(payload: dict[str, object]) -> float:
