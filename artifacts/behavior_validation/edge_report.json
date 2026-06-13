@@ -60,9 +60,9 @@
     "stability_score": 1.0
   },
   "system": {
-    "directional_consistency": 0.0,
+    "directional_consistency": 0.2222222222222222,
     "execution_acceptance_ratio": 0.4,
-    "hit_rate": 0.0,
+    "hit_rate": 0.25,
     "metrics_v1": {
       "acceptance_ratio": 0.4,
       "decision_density": 2.0,

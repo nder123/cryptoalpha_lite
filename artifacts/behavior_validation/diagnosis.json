@@ -1,6 +1,6 @@
 {
   "data": "medium",
-  "decision": "dead",
+  "decision": "reactive",
   "details": {
     "data": {
       "classification": "medium",
@@ -9,8 +9,8 @@
       "volatility_proxy": 0.003872370156127229
     },
     "decision": {
-      "changed_ratio": 0.0,
-      "classification": "dead"
+      "changed_ratio": 1.0,
+      "classification": "reactive"
     },
     "signal": {
       "changed_ratio": 1.0,

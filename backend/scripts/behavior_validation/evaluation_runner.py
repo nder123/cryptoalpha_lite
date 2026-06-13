@@ -123,6 +123,10 @@ def _generate_signals(
             "source_event_id": row["event_id"],
             "symbol": row.get("symbol"),
             "timestamp": row.get("timestamp"),
+            "signal_strength": _signal_strength(row),
+            "signal_sensitivity": _signal_sensitivity(row),
+            "signal_delta": _signal_delta(row),
+            "signal_type": _signal_type(row),
             "simulation_status": row["simulation_status"],
         }
         for index, row in enumerate(data, start=1)
@@ -138,10 +142,77 @@ def _generate_decisions(
             "source_signal_id": signal["signal_id"],
             "symbol": signal.get("symbol"),
             "timestamp": signal.get("timestamp"),
+            "decision_score": _decision_score(signal),
+            "direction": _decision_direction(signal),
             "simulation_status": signal["simulation_status"],
         }
         for index, signal in enumerate(signals, start=1)
     )
+
+
+def _decision_score(signal: dict[str, object]) -> float:
+    return (
+        0.5 * _signal_strength(signal)
+        + 0.3 * _signal_sensitivity(signal)
+        + 0.2 * _signal_delta(signal)
+    )
+
+
+def _decision_direction(signal: dict[str, object]) -> str:
+    if _signal_delta(signal) >= 0.0:
+        return "long"
+    return "short"
+
+
+def _signal_strength(payload: dict[str, object]) -> float:
+    existing = payload.get("signal_strength")
+    if isinstance(existing, int | float):
+        return float(existing)
+
+    open_price = _float_value(payload.get("open"))
+    close_price = _float_value(payload.get("close"))
+    if open_price == 0.0:
+        return 0.0
+    return abs(close_price - open_price) / open_price
+
+
+def _signal_sensitivity(payload: dict[str, object]) -> float:
+    existing = payload.get("signal_sensitivity")
+    if isinstance(existing, int | float):
+        return float(existing)
+
+    high_price = _float_value(payload.get("high"))
+    low_price = _float_value(payload.get("low"))
+    open_price = _float_value(payload.get("open"))
+    if open_price == 0.0:
+        return 0.0
+    return abs(high_price - low_price) / open_price
+
+
+def _signal_delta(payload: dict[str, object]) -> float:
+    existing = payload.get("signal_delta")
+    if isinstance(existing, int | float):
+        return float(existing)
+
+    open_price = _float_value(payload.get("open"))
+    close_price = _float_value(payload.get("close"))
+    if open_price == 0.0:
+        return 0.0
+    return (close_price - open_price) / open_price
+
+
+def _signal_type(payload: dict[str, object]) -> str:
+    if _signal_delta(payload) >= 0.0:
+        return "positive_delta"
+    return "negative_delta"
+
+
+def _float_value(value: object) -> float:
+    if isinstance(value, bool):
+        return float(value)
+    if isinstance(value, int | float):
+        return float(value)
+    return 0.0
 
 
 def _write_artifacts(

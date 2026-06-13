@@ -165,7 +165,7 @@ def _perturb_signals(
     return tuple(
         {
             **signal,
-            "price_probe_delta": 0.001,
+            "signal_delta": _float_value(signal.get("signal_delta")) + 0.001,
         }
         for signal in signals
     )
@@ -193,6 +193,7 @@ def _decision_signature(
             decision.get("source_signal_id"),
             decision.get("symbol"),
             decision.get("timestamp"),
+            decision.get("decision_score"),
             decision.get("simulation_status"),
         )
         for decision in decisions

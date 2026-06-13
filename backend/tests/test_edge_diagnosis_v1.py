@@ -37,13 +37,13 @@ def test_signal_sensitivity_detects_shuffle_response():
     }
 
 
-def test_decision_sensitivity_detects_dead_mapping():
+def test_decision_sensitivity_detects_reactive_mapping():
     data = normalize_dataset(load_historical_data(FIXTURE_DIR))
     result = check_decision_sensitivity(data)
 
     assert result == {
-        "classification": "dead",
-        "changed_ratio": 0.0,
+        "classification": "reactive",
+        "changed_ratio": 1.0,
     }
 
 
@@ -54,7 +54,7 @@ def test_diagnosis_runner_writes_stable_schema(tmp_path: Path):
     assert report == artifact
     assert report["data"] == "medium"
     assert report["signal"] == "sensitive"
-    assert report["decision"] == "dead"
+    assert report["decision"] == "reactive"
     assert set(report) == {"data", "signal", "decision", "details"}
     assert set(report["details"]) == {"data", "signal", "decision"}
     assert _is_finite(report)
