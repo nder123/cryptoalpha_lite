@@ -98,7 +98,10 @@ class ValidationCore:
     # -----------------------------
     def validate_contracts(self, event: object):
         """
-        Delegates to contracts layer (no modification)
+        Deprecated compatibility shim for legacy injected contracts.
+
+        Contract evaluation for the ValidationCore decision path is owned by
+        self.contract_registry.evaluate().
         """
         if self.contracts is None:
             return None
