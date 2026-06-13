@@ -67,7 +67,12 @@ def validate_batch(events: Sequence[Dict[str, Any]]) -> Dict[int, list[str]]:
 def check_lineage_compatibility(
     events: Sequence[Dict[str, Any]],
 ) -> list[str]:
-    """Verify that ``parent_id`` references form a valid lineage graph.
+    """Verify trace-level lineage envelope compatibility.
+
+    ``LineageSemantics.TRACE_LEVEL`` boundary:
+    ``parent_id`` is interpreted as trace-level linkage. The invariant is
+    "event belongs to trace graph consistency boundary", not event-to-event
+    ancestry.
 
     Rules:
     * Every non-null ``parent_id`` must reference an existing ``trace_id``.

@@ -66,6 +66,8 @@ def check_event_bus_coverage(
 
 
 # ── C. trading_gate <-> event lineage ────────────────────────────────────
+# Lineage coverage checks operate on the event-level graph. They do not validate
+# trace-level envelope constraints.
 
 
 def check_lineage_coverage(
