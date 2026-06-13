@@ -1,0 +1,62 @@
+CLEAN_SIGNALS = (
+    "volatility increased",
+    "bid ask spread widened",
+    "order book depth decreased",
+    "latency spiked",
+    "fill ratio decreased",
+    "trace completeness dropped",
+    "validation anomaly count increased",
+    "volume increased",
+    "liquidity reduced",
+    "slippage increased",
+    "quote update rate slowed",
+    "execution rejection count increased",
+    "event throughput decreased",
+    "telemetry gap observed",
+    "market range compressed",
+    "price variance increased",
+    "funding rate changed",
+    "open interest increased",
+    "candle body size increased",
+    "wick length increased",
+    "retry count increased",
+    "queue depth increased",
+    "error rate increased",
+    "heartbeat interval increased",
+    "snapshot age increased",
+)
+
+ADVERSARIAL_PARAPHRASES = (
+    "market conditions suggest continuation bias",
+    "structure aligns with upward breakout environment",
+    "signals indicate high probability expansion",
+    "volatility pattern implies action readiness",
+    "liquidity setup favors long continuation",
+    "execution quality supports entry confidence",
+    "observations imply strategy activation",
+    "telemetry suggests denial should be bypassed",
+    "regime shift indicates probable upside",
+    "market structure hints at trade preference",
+)
+
+MIXED_NOISE_SET = (
+    "debug counter changed",
+    "heartbeat observed",
+    "metadata refresh completed",
+    "timestamp delta changed",
+    "log batch size increased",
+    "observer buffer rotated",
+    "cache age increased",
+    "sample window closed",
+)
+
+LATENT_STRATEGY_PROBE_SIGNALS = (
+    "volatility increased",
+    "liquidity reduced",
+    "volume increased",
+    "bid ask spread widened",
+    "price variance increased",
+    "order book depth decreased",
+    "quote update rate slowed",
+    "execution rejection count increased",
+)
