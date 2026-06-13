@@ -44,6 +44,7 @@ def test_historical_evaluation_generates_artifacts(tmp_path: Path):
     insights = json.loads((tmp_path / "insights.json").read_text())
 
     assert report == summary
+    assert not (tmp_path / "insights_diff.json").exists()
     assert summary["signals"] == 10
     assert summary["decisions"] == 10
     assert summary["executions"] == 10

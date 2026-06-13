@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from scripts.behavior_validation.data_adapter import (
     normalize_dataset,
 )
 from scripts.behavior_validation.execution_simulator import simulate_execution
+from scripts.behavior_validation.insights_diff_v1 import diff_insights_files
 from scripts.behavior_validation.insights_v1 import build_insights_v1
 from scripts.behavior_validation.metrics import build_metrics
 from scripts.behavior_validation.metrics_v1 import build_metrics_v1
@@ -172,10 +174,26 @@ def _write_artifacts(
         json.dumps(insights_v1, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    _write_optional_insights_diff(output_dir)
 
 
 def _default_output_dir() -> Path:
     return Path(__file__).resolve().parents[3] / "artifacts" / "behavior_validation"
+
+
+def _write_optional_insights_diff(output_dir: Path) -> None:
+    if os.getenv("ENABLE_INSIGHTS_DIFF", "false").lower() != "true":
+        return
+
+    previous_path = os.getenv("PREVIOUS_INSIGHTS_PATH")
+    if previous_path is None:
+        return
+
+    diff = diff_insights_files(previous_path, output_dir / "insights.json")
+    (output_dir / "insights_diff.json").write_text(
+        json.dumps(diff, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _input_summary(data: Sequence[dict[str, object]]) -> dict[str, object]:
