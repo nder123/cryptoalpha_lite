@@ -1,0 +1,24 @@
+{
+  "classification": "stable",
+  "regimes": {
+    "high_vol": {
+      "naive": 0.0,
+      "random": 0.5,
+      "system": 1.0,
+      "variance": 0.0
+    },
+    "low_vol": {
+      "naive": 1.0,
+      "random": 0.5,
+      "system": 1.0,
+      "variance": 0.0
+    },
+    "mid_vol": {
+      "naive": 0.0,
+      "random": 0.5,
+      "system": 1.0,
+      "variance": 0.0
+    }
+  },
+  "stability": 0.0
+}

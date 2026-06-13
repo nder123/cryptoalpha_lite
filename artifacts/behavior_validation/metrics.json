@@ -1,0 +1,31 @@
+{
+  "decisions_generated": 10,
+  "executions_attempted": 10,
+  "executions_simulated": 10,
+  "metrics_v1": {
+    "acceptance_ratio": 0.4,
+    "decision_density": 2.0,
+    "decision_rate": 1.0,
+    "decisions_generated": 10,
+    "empty_windows": 0,
+    "executions_accepted": 4,
+    "executions_attempted": 10,
+    "executions_rejected": 4,
+    "missing_data_windows": 0,
+    "processing_failures": 0,
+    "signals_generated": 10,
+    "signals_per_symbol": {
+      "BTCUSDT": 5,
+      "ETHUSDT": 5
+    },
+    "signals_per_window": {
+      "2026-01-01T00:00:00Z": 2,
+      "2026-01-01T00:01:00Z": 2,
+      "2026-01-01T00:02:00Z": 2,
+      "2026-01-01T00:03:00Z": 2,
+      "2026-01-01T00:04:00Z": 2
+    }
+  },
+  "signals_generated": 10,
+  "simulation_failures": 4
+}

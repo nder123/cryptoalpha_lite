@@ -1,0 +1,30 @@
+{
+  "delta": {
+    "directional_alignment_delta": -0.125,
+    "mutual_information_proxy_delta": 0.6887218755408673
+  },
+  "features": [
+    "volatility_regime",
+    "market_structure",
+    "delta_acceleration",
+    "volatility_cluster",
+    "range_behavior",
+    "range_expansion",
+    "normalized_deviation",
+    "z_score",
+    "relative_strength"
+  ],
+  "signal_v1": {
+    "directional_alignment": 0.25,
+    "mutual_information_proxy": 0.3112781244591328,
+    "samples": 8,
+    "unique_signal_states": 2
+  },
+  "signal_v2": {
+    "directional_alignment": 0.125,
+    "mutual_information_proxy": 1.0,
+    "samples": 8,
+    "unique_signal_states": 5
+  },
+  "winner": "signal_v2"
+}
