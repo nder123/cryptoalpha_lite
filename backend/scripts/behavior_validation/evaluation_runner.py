@@ -5,6 +5,10 @@ import json
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 
+from scripts.behavior_validation.data_adapter import (
+    load_historical_data,
+    normalize_dataset,
+)
 from scripts.behavior_validation.execution_simulator import simulate_execution
 from scripts.behavior_validation.metrics import build_metrics
 from scripts.behavior_validation.report_schema import build_report
@@ -32,6 +36,7 @@ def run_evaluation(
     data: Sequence[dict[str, object]] = DEFAULT_DATA,
     run_id: str = DEFAULT_RUN_ID,
     output_dir: Path | None = None,
+    input_summary: dict[str, object] | None = None,
 ) -> dict[str, object]:
     signals = _generate_signals(data)
     decisions = _generate_decisions(signals)
@@ -45,8 +50,29 @@ def run_evaluation(
         metrics=metrics,
     )
 
-    _write_artifacts(output_dir or _default_output_dir(), report, metrics)
+    _write_artifacts(
+        output_dir or _default_output_dir(),
+        report,
+        metrics,
+        input_summary or _input_summary(data),
+    )
     return report
+
+
+def run_historical_evaluation(
+    dataset_path: Path | str,
+    *,
+    run_id: str = DEFAULT_RUN_ID,
+    output_dir: Path | None = None,
+) -> dict[str, object]:
+    raw_data = load_historical_data(dataset_path)
+    data = normalize_dataset(raw_data)
+    return run_evaluation(
+        data=data,
+        run_id=run_id,
+        output_dir=output_dir,
+        input_summary=_input_summary(data),
+    )
 
 
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
@@ -57,12 +83,25 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         type=Path,
         default=_default_output_dir(),
     )
+    parser.add_argument(
+        "--historical-data",
+        type=Path,
+        default=None,
+        help="CSV file or directory of CSV files to use as historical input",
+    )
     return parser.parse_args(argv)
 
 
 def main() -> None:
     args = parse_args()
-    report = run_evaluation(run_id=args.run_id, output_dir=args.output_dir)
+    if args.historical_data is None:
+        report = run_evaluation(run_id=args.run_id, output_dir=args.output_dir)
+    else:
+        report = run_historical_evaluation(
+            args.historical_data,
+            run_id=args.run_id,
+            output_dir=args.output_dir,
+        )
     print(json.dumps(report, indent=2, sort_keys=True))
 
 
@@ -73,6 +112,8 @@ def _generate_signals(
         {
             "signal_id": f"signal-{index}",
             "source_event_id": row["event_id"],
+            "symbol": row.get("symbol"),
+            "timestamp": row.get("timestamp"),
             "simulation_status": row["simulation_status"],
         }
         for index, row in enumerate(data, start=1)
@@ -96,6 +137,7 @@ def _write_artifacts(
     output_dir: Path,
     report: dict[str, object],
     metrics: dict[str, int],
+    input_summary: dict[str, object],
 ) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "summary.json").write_text(
@@ -106,10 +148,33 @@ def _write_artifacts(
         json.dumps(metrics, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    (output_dir / "input_summary.json").write_text(
+        json.dumps(input_summary, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _default_output_dir() -> Path:
     return Path(__file__).resolve().parents[3] / "artifacts" / "behavior_validation"
+
+
+def _input_summary(data: Sequence[dict[str, object]]) -> dict[str, object]:
+    symbols = sorted(
+        {str(row["symbol"]) for row in data if row.get("symbol") is not None}
+    )
+    timestamps = sorted(
+        str(row["timestamp"]) for row in data if row.get("timestamp") is not None
+    )
+    if timestamps:
+        time_range = f"{timestamps[0]}..{timestamps[-1]}"
+    else:
+        time_range = "n/a"
+
+    return {
+        "rows": len(data),
+        "symbols": symbols,
+        "time_range": time_range,
+    }
 
 
 if __name__ == "__main__":

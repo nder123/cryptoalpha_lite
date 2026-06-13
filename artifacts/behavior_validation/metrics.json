@@ -1,7 +1,7 @@
 {
-  "decisions_generated": 3,
-  "executions_attempted": 3,
-  "executions_simulated": 3,
-  "signals_generated": 3,
-  "simulation_failures": 1
+  "decisions_generated": 10,
+  "executions_attempted": 10,
+  "executions_simulated": 10,
+  "signals_generated": 10,
+  "simulation_failures": 4
 }
