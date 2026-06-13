@@ -1,0 +1,88 @@
+{
+  "case": "CASE_B_NO_EDGE",
+  "naive": {
+    "mean_execution_rate": 1.0,
+    "mean_hit_rate": 0.25,
+    "mean_stability_score": 1.0,
+    "variance": 0.0
+  },
+  "random": {
+    "mean_execution_rate": 1.0,
+    "mean_hit_rate": 0.5,
+    "mean_stability_score": 1.0,
+    "variance": 0.0
+  },
+  "stability": {
+    "naive": "stable",
+    "random": "stable",
+    "system": "stable"
+  },
+  "system": {
+    "mean_execution_rate": 1.0,
+    "mean_hit_rate": 0.125,
+    "mean_stability_score": 1.0,
+    "variance": 0.0
+  },
+  "windows": {
+    "early": {
+      "naive": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      },
+      "random": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.5,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      },
+      "system": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      }
+    },
+    "late": {
+      "naive": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      },
+      "random": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      },
+      "system": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      }
+    },
+    "mid": {
+      "naive": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 1.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      },
+      "random": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 0.5,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      },
+      "system": {
+        "mean_execution_rate": 1.0,
+        "mean_hit_rate": 1.0,
+        "mean_stability_score": 1.0,
+        "variance": 0.0
+      }
+    }
+  }
+}
