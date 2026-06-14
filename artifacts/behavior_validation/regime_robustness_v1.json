@@ -1,24 +1,24 @@
 {
-  "classification": "stable",
+  "classification": "partial",
   "regimes": {
     "high_vol": {
-      "naive": 0.0,
-      "random": 0.5,
-      "system": 1.0,
+      "naive": 0.5193370165745856,
+      "random": 0.49963167587476975,
+      "system": 0.48158379373848986,
       "variance": 0.0
     },
     "low_vol": {
-      "naive": 1.0,
-      "random": 0.5,
-      "system": 1.0,
+      "naive": 0.4960254372019078,
+      "random": 0.49761526232114467,
+      "system": 0.4864864864864865,
       "variance": 0.0
     },
     "mid_vol": {
-      "naive": 0.0,
-      "random": 0.5,
-      "system": 1.0,
+      "naive": 0.4810785241248817,
+      "random": 0.5030274361400189,
+      "system": 0.5241248817407758,
       "variance": 0.0
     }
   },
-  "stability": 0.0
+  "stability": 0.01900417896124018
 }

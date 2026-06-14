@@ -1,8 +1,12 @@
 {
-  "rows": 10,
+  "rows": 4464,
   "symbols": [
     "BTCUSDT",
-    "ETHUSDT"
+    "DOGEUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "SOLUSDT",
+    "XRPUSDT"
   ],
-  "time_range": "2026-01-01T00:00:00Z..2026-01-01T00:04:00Z"
+  "time_range": "2024-01-01T00:00:00Z..2024-01-31T23:00:00Z"
 }

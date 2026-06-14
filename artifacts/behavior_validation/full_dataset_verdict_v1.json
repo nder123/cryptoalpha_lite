@@ -1,0 +1,56 @@
+{
+  "cost_adjusted_pnl": -0.44930690109986543,
+  "dataset_rows": 4464,
+  "edge_score": -0.00010065118752237128,
+  "naive_baseline": {
+    "mean_execution_rate": 1.0,
+    "mean_hit_rate": 0.4946164199192463,
+    "mean_stability_score": 1.0,
+    "variance": 0.0
+  },
+  "random_baseline": {
+    "mean_execution_rate": 1.0,
+    "mean_hit_rate": 0.49950650515926426,
+    "mean_stability_score": 1.0,
+    "variance": 5.844891787987352e-06
+  },
+  "regime_breakdown": {
+    "classification": "partial",
+    "economic_pnl": {
+      "high": -0.43351378306808186,
+      "low": -0.0028956027165307425,
+      "mid": -0.012897515315252758
+    },
+    "robustness": {
+      "high_vol": {
+        "naive": 0.5193370165745856,
+        "random": 0.49963167587476975,
+        "system": 0.48158379373848986,
+        "variance": 0.0
+      },
+      "low_vol": {
+        "naive": 0.4960254372019078,
+        "random": 0.49761526232114467,
+        "system": 0.4864864864864865,
+        "variance": 0.0
+      },
+      "mid_vol": {
+        "naive": 0.4810785241248817,
+        "random": 0.5030274361400189,
+        "system": 0.5241248817407758,
+        "variance": 0.0
+      }
+    },
+    "stability": 0.01900417896124018
+  },
+  "symbols": 6,
+  "system_result": {
+    "case": "CASE_C_WEAK_EDGE",
+    "mean_execution_rate": 1.0,
+    "mean_hit_rate": 0.503140421713773,
+    "mean_stability_score": 1.0,
+    "stability": "stable",
+    "variance": 0.0
+  },
+  "verdict": "NO_EDGE"
+}
