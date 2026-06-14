@@ -1,0 +1,680 @@
+{
+  "alpha_per_state": {
+    "HIGH_DOWN_CHAOTIC": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.4567201490674716,
+      "count": 395,
+      "direction_bias": -1.0,
+      "exposure_share": 0.0667494071016423,
+      "mean_abs_exposure": 0.12443022453753107,
+      "predictability_score": 0.6982002768804799,
+      "regime_conditional_edge": -0.08687721722440447,
+      "regime_exposure_contribution": -0.021285193415570967,
+      "stability_score": 0.8406719820061817,
+      "stability_weighted_alpha": -0.3188821345358027,
+      "state_probability": 0.08848566308243727,
+      "stay_probability": 0.7436548223350253,
+      "system_alpha_contribution": -0.028216497119543472,
+      "transition_adjusted_expectancy": -0.06706381395492714,
+      "transition_penalty": 0.0024571524149512337,
+      "transition_probability": 0.25634517766497467
+    },
+    "HIGH_DOWN_STABLE": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.999999999,
+      "count": 1,
+      "direction_bias": -1.0,
+      "exposure_share": 0.0003261230468266246,
+      "mean_abs_exposure": 0.24013588215509984,
+      "predictability_score": -0.045454545454545456,
+      "regime_conditional_edge": 0.010915267370686358,
+      "regime_exposure_contribution": 1.482377484093189e-05,
+      "stability_score": 999999999.9999999,
+      "stability_weighted_alpha": 0.04545454540909091,
+      "state_probability": 0.00022401433691756272,
+      "stay_probability": 0.0,
+      "system_alpha_contribution": 1.0182469849706745e-05,
+      "transition_adjusted_expectancy": -0.00958532724248303,
+      "transition_penalty": 0.00958532724248303,
+      "transition_probability": 1.0
+    },
+    "HIGH_DOWN_TRANSITIONAL": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.3340056260441522,
+      "count": 47,
+      "direction_bias": -1.0,
+      "exposure_share": 0.007546814390920451,
+      "mean_abs_exposure": 0.11823372678730387,
+      "predictability_score": 0.4651837524177949,
+      "regime_conditional_edge": -0.05500040868925837,
+      "regime_exposure_contribution": -0.0011725786671169356,
+      "stability_score": 0.5015141855632179,
+      "stability_weighted_alpha": -0.15537399045187347,
+      "state_probability": 0.010528673835125449,
+      "stay_probability": 0.5106382978723404,
+      "system_alpha_contribution": -0.0016358820679296714,
+      "transition_adjusted_expectancy": -0.0327760071301981,
+      "transition_penalty": 0.004690692054832121,
+      "transition_probability": 0.4893617021276596
+    },
+    "HIGH_FLAT_CHAOTIC": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.34397694187038985,
+      "count": 571,
+      "direction_bias": 0.0,
+      "exposure_share": 0.09691063130126952,
+      "mean_abs_exposure": 0.12497147118345188,
+      "predictability_score": 0.6177033492822966,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.5243366640969965,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.12791218637992832,
+      "stay_probability": 0.6631578947368421,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.003228741807994284,
+      "transition_penalty": 0.003228741807994284,
+      "transition_probability": 0.33684210526315794
+    },
+    "HIGH_FLAT_TRANSITIONAL": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.2826726853138476,
+      "count": 64,
+      "direction_bias": 0.0,
+      "exposure_share": 0.0150695719803781,
+      "mean_abs_exposure": 0.17337900700079203,
+      "predictability_score": 0.47017045454545453,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.3940637412330012,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.014336917562724014,
+      "stay_probability": 0.515625,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.004642892883077718,
+      "transition_penalty": 0.004642892883077718,
+      "transition_probability": 0.484375
+    },
+    "HIGH_UP_CHAOTIC": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.5391799117624149,
+      "count": 366,
+      "direction_bias": 1.0,
+      "exposure_share": 0.06492539873184881,
+      "mean_abs_exposure": 0.13061982815956183,
+      "predictability_score": 0.6977148534525585,
+      "regime_conditional_edge": 0.09113539426234706,
+      "regime_exposure_contribution": 0.024424534615770585,
+      "stability_score": 1.170044287401876,
+      "stability_weighted_alpha": 0.3761938331198767,
+      "state_probability": 0.08198924731182795,
+      "stay_probability": 0.7431693989071039,
+      "system_alpha_contribution": 0.030843849220850105,
+      "transition_adjusted_expectancy": 0.06526723081575135,
+      "transition_penalty": 0.002461805357359029,
+      "transition_probability": 0.2568306010928961
+    },
+    "HIGH_UP_TRANSITIONAL": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.37033968344045404,
+      "count": 44,
+      "direction_bias": 1.0,
+      "exposure_share": 0.010342168939564642,
+      "mean_abs_exposure": 0.17307507130609168,
+      "predictability_score": 0.5227272727272728,
+      "regime_conditional_edge": 0.09047106000091157,
+      "regime_exposure_contribution": 0.0020021058667458983,
+      "stability_score": 0.5881578903748995,
+      "stability_weighted_alpha": 0.1935866527075101,
+      "state_probability": 0.00985663082437276,
+      "stay_probability": 0.5681818181818182,
+      "system_alpha_contribution": 0.0019081121682639882,
+      "transition_adjusted_expectancy": 0.047264892782172996,
+      "transition_penalty": 0.0041391185819813076,
+      "transition_probability": 0.43181818181818177
+    },
+    "LOW_DOWN_STABLE": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.41957031372424997,
+      "count": 277,
+      "direction_bias": -1.0,
+      "exposure_share": 0.08315576471012233,
+      "mean_abs_exposure": 0.22104879951806508,
+      "predictability_score": 0.5502133245815557,
+      "regime_conditional_edge": -0.12162399487759637,
+      "regime_exposure_contribution": -0.019196772486654433,
+      "stability_score": 0.7228615690151328,
+      "stability_weighted_alpha": -0.2308531772099459,
+      "state_probability": 0.06205197132616488,
+      "stay_probability": 0.5956678700361011,
+      "system_alpha_contribution": -0.014324894732785622,
+      "transition_adjusted_expectancy": -0.07632316175437365,
+      "transition_penalty": 0.003875655780354149,
+      "transition_probability": 0.4043321299638989
+    },
+    "LOW_DOWN_TRANSITIONAL": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.33333670709919316,
+      "count": 97,
+      "direction_bias": -1.0,
+      "exposure_share": 0.020487339931913224,
+      "mean_abs_exposure": 0.15552113144446103,
+      "predictability_score": 0.5899621212121212,
+      "regime_conditional_edge": -0.09175157660028335,
+      "regime_exposure_contribution": -0.004028958952621543,
+      "stability_score": 0.5000075910116001,
+      "stability_weighted_alpha": -0.19665603079810354,
+      "state_probability": 0.021729390681003585,
+      "stay_probability": 0.6354166666666666,
+      "system_alpha_contribution": -0.0042732157229874645,
+      "transition_adjusted_expectancy": -0.06179513152191865,
+      "transition_penalty": 0.0034946505571552718,
+      "transition_probability": 0.36458333333333337
+    },
+    "LOW_FLAT_STABLE": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.3211380995882849,
+      "count": 554,
+      "direction_bias": 0.0,
+      "exposure_share": 0.15630447071570924,
+      "mean_abs_exposure": 0.20774816834080714,
+      "predictability_score": 0.5411880538234329,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.4730536496355467,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.12410394265232975,
+      "stay_probability": 0.5866425992779783,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.003962165954022768,
+      "transition_penalty": 0.003962165954022768,
+      "transition_probability": 0.41335740072202165
+    },
+    "LOW_FLAT_TRANSITIONAL": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.3009471130177931,
+      "count": 134,
+      "direction_bias": 0.0,
+      "exposure_share": 0.030466483078633887,
+      "mean_abs_exposure": 0.16741450906111327,
+      "predictability_score": 0.46947082767978293,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.4305069310520609,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.030017921146953404,
+      "stay_probability": 0.5149253731343284,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.004649599035532813,
+      "transition_penalty": 0.004649599035532813,
+      "transition_probability": 0.4850746268656716
+    },
+    "LOW_UP_STABLE": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.3896316292225734,
+      "count": 365,
+      "direction_bias": 1.0,
+      "exposure_share": 0.10890288086794626,
+      "mean_abs_exposure": 0.21969596068005623,
+      "predictability_score": 0.6312577833125779,
+      "regime_conditional_edge": 0.13868478514161955,
+      "regime_exposure_contribution": 0.026785534616951642,
+      "stability_score": 0.6383548818663379,
+      "stability_weighted_alpha": 0.2459579985715099,
+      "state_probability": 0.0817652329749104,
+      "stay_probability": 0.6767123287671233,
+      "system_alpha_contribution": 0.020110813055242184,
+      "transition_adjusted_expectancy": 0.09075088579552612,
+      "transition_penalty": 0.0030988181222273902,
+      "transition_probability": 0.3232876712328767
+    },
+    "LOW_UP_TRANSITIONAL": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.33396754309975785,
+      "count": 61,
+      "direction_bias": 1.0,
+      "exposure_share": 0.013982982866804267,
+      "mean_abs_exposure": 0.16878955122911976,
+      "predictability_score": 0.5447093889716841,
+      "regime_conditional_edge": 0.09194125331481859,
+      "regime_exposure_contribution": 0.0025437179125879675,
+      "stability_score": 0.5014283307664379,
+      "stability_weighted_alpha": 0.18191525633824365,
+      "state_probability": 0.013664874551971327,
+      "stay_probability": 0.5901639344262295,
+      "system_alpha_contribution": 0.002485849156951806,
+      "transition_adjusted_expectancy": 0.050331998988055626,
+      "transition_penalty": 0.003928412804296324,
+      "transition_probability": 0.4098360655737705
+    },
+    "MID_DOWN_CHAOTIC": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.3320576942450534,
+      "count": 92,
+      "direction_bias": -1.0,
+      "exposure_share": 0.01668345400387374,
+      "mean_abs_exposure": 0.13352841963758993,
+      "predictability_score": 0.4980237154150197,
+      "regime_conditional_edge": -0.06650031966140842,
+      "regime_exposure_contribution": -0.002758986276046578,
+      "stability_score": 0.4971352935486588,
+      "stability_weighted_alpha": -0.1653726066200661,
+      "state_probability": 0.02060931899641577,
+      "stay_probability": 0.5434782608695652,
+      "system_alpha_contribution": -0.0034082168031017205,
+      "transition_adjusted_expectancy": -0.04051738833972508,
+      "transition_penalty": 0.004375910262872687,
+      "transition_probability": 0.4565217391304348
+    },
+    "MID_DOWN_STABLE": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.33278962853991423,
+      "count": 95,
+      "direction_bias": -1.0,
+      "exposure_share": 0.02870980526553008,
+      "mean_abs_exposure": 0.2225267419774766,
+      "predictability_score": 0.5609284332688589,
+      "regime_conditional_edge": -0.12482157673784956,
+      "regime_exposure_contribution": -0.0053592927942611585,
+      "stability_score": 0.4987776611020839,
+      "stability_weighted_alpha": -0.18667116494501962,
+      "state_probability": 0.02128136200716846,
+      "stay_probability": 0.6063829787234043,
+      "system_alpha_contribution": -0.003972616637494817,
+      "transition_adjusted_expectancy": -0.07946262746839677,
+      "transition_penalty": 0.003772947957147575,
+      "transition_probability": 0.3936170212765957
+    },
+    "MID_DOWN_TRANSITIONAL": {
+      "alpha_sign": "negative",
+      "bounded_stability_score": 0.29003578582562045,
+      "count": 239,
+      "direction_bias": -1.0,
+      "exposure_share": 0.05249397708757948,
+      "mean_abs_exposure": 0.16172871815887516,
+      "predictability_score": 0.6100076394194042,
+      "regime_conditional_edge": -0.09865575359042156,
+      "regime_exposure_contribution": -0.009287446767550056,
+      "stability_score": 0.4085216973406248,
+      "stability_weighted_alpha": -0.17692404505863862,
+      "state_probability": 0.05353942652329749,
+      "stay_probability": 0.6554621848739496,
+      "system_alpha_contribution": -0.009472411910621557,
+      "transition_adjusted_expectancy": -0.06796762350415703,
+      "transition_penalty": 0.003302507705393313,
+      "transition_probability": 0.3445378151260504
+    },
+    "MID_FLAT_CHAOTIC": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.3060245224637822,
+      "count": 125,
+      "direction_bias": 0.0,
+      "exposure_share": 0.02055933571255219,
+      "mean_abs_exposure": 0.12110850222692106,
+      "predictability_score": 0.49854545454545457,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.44097310693202585,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.02800179211469534,
+      "stay_probability": 0.544,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.004370909222572261,
+      "transition_penalty": 0.004370909222572261,
+      "transition_probability": 0.45599999999999996
+    },
+    "MID_FLAT_STABLE": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.2836639596548602,
+      "count": 134,
+      "direction_bias": 0.0,
+      "exposure_share": 0.0363589418172988,
+      "mean_abs_exposure": 0.19979379893025712,
+      "predictability_score": 0.5067842605156039,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.3959928632352315,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.030017921146953404,
+      "stay_probability": 0.5522388059701493,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.0042919375712610576,
+      "transition_penalty": 0.0042919375712610576,
+      "transition_probability": 0.4477611940298507
+    },
+    "MID_FLAT_TRANSITIONAL": {
+      "alpha_sign": "neutral",
+      "bounded_stability_score": 0.24754277199438396,
+      "count": 361,
+      "direction_bias": 0.0,
+      "exposure_share": 0.07118382870883046,
+      "mean_abs_exposure": 0.1451943475276096,
+      "predictability_score": 0.5656565656565657,
+      "regime_conditional_edge": 0.0,
+      "regime_exposure_contribution": 0.0,
+      "stability_score": 0.32897919347588006,
+      "stability_weighted_alpha": 0.0,
+      "state_probability": 0.08086917562724015,
+      "stay_probability": 0.6111111111111112,
+      "system_alpha_contribution": 0.0,
+      "transition_adjusted_expectancy": -0.0037276272609656222,
+      "transition_penalty": 0.0037276272609656222,
+      "transition_probability": 0.38888888888888884
+    },
+    "MID_UP_CHAOTIC": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.375707539327893,
+      "count": 87,
+      "direction_bias": 1.0,
+      "exposure_share": 0.014910592862638381,
+      "mean_abs_exposure": 0.12619763823002197,
+      "predictability_score": 0.6327063740856844,
+      "regime_conditional_edge": 0.07984605010269415,
+      "regime_exposure_contribution": 0.0035444351248213445,
+      "stability_score": 0.6018133535096837,
+      "stability_weighted_alpha": 0.23771255492480586,
+      "state_probability": 0.019489247311827957,
+      "stay_probability": 0.6781609195402298,
+      "system_alpha_contribution": 0.004632838772056028,
+      "transition_adjusted_expectancy": 0.0510635378536716,
+      "transition_penalty": 0.003084932905626723,
+      "transition_probability": 0.32183908045977017
+    },
+    "MID_UP_STABLE": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.36088319237272803,
+      "count": 77,
+      "direction_bias": 1.0,
+      "exposure_share": 0.02128153708952968,
+      "mean_abs_exposure": 0.2035109750767416,
+      "predictability_score": 0.49999999999999994,
+      "regime_conditional_edge": 0.10175548753837078,
+      "regime_exposure_contribution": 0.0038400745217340424,
+      "stability_score": 0.5646592110642666,
+      "stability_weighted_alpha": 0.180441596186364,
+      "state_probability": 0.01724910394265233,
+      "stay_probability": 0.5454545454545454,
+      "system_alpha_contribution": 0.0031124558481966905,
+      "transition_adjusted_expectancy": 0.051146026274346314,
+      "transition_penalty": 0.004356966928401378,
+      "transition_probability": 0.4545454545454546
+    },
+    "MID_UP_TRANSITIONAL": {
+      "alpha_sign": "positive",
+      "bounded_stability_score": 0.29505817000032497,
+      "count": 278,
+      "direction_bias": 1.0,
+      "exposure_share": 0.06264848978858754,
+      "mean_abs_exposure": 0.1659362909410897,
+      "predictability_score": 0.6523871811641596,
+      "regime_conditional_edge": 0.10825470909989338,
+      "regime_exposure_contribution": 0.01205934360917523,
+      "stability_score": 0.4185567623366328,
+      "stability_weighted_alpha": 0.19249216780596742,
+      "state_probability": 0.062275985663082435,
+      "stay_probability": 0.697841726618705,
+      "system_alpha_contribution": 0.011987639482540086,
+      "transition_adjusted_expectancy": 0.07264836718349187,
+      "transition_penalty": 0.0028962859293833617,
+      "transition_probability": 0.302158273381295
+    }
+  },
+  "artifact_consistency": {
+    "overlay_artifacts_consistent": true,
+    "state_rows_match_stability": true,
+    "unique_states_match_forecastability": true,
+    "unique_states_match_transition": true
+  },
+  "comparison_vs_naive_baseline": {
+    "naive_conditional_expectancy": 0.0038992099988959593,
+    "regime_aware_delta_vs_naive": -0.0037611978660820064,
+    "regime_aware_transition_adjusted_expectancy": 0.00013801213281395305,
+    "stability_weighted_delta_vs_naive": 0.005888795180590309,
+    "stability_weighted_system_alpha": 0.009788005179486269,
+    "system_alpha_differs_from_naive": true
+  },
+  "final_system_alpha_score": 0.009788005179486269,
+  "input_rows": 4464,
+  "regime_exposure_contribution": {
+    "per_state": {
+      "HIGH_DOWN_CHAOTIC": {
+        "exposure_share": 0.0667494071016423,
+        "regime_exposure_contribution": -0.021285193415570967
+      },
+      "HIGH_DOWN_STABLE": {
+        "exposure_share": 0.0003261230468266246,
+        "regime_exposure_contribution": 1.482377484093189e-05
+      },
+      "HIGH_DOWN_TRANSITIONAL": {
+        "exposure_share": 0.007546814390920451,
+        "regime_exposure_contribution": -0.0011725786671169356
+      },
+      "HIGH_FLAT_CHAOTIC": {
+        "exposure_share": 0.09691063130126952,
+        "regime_exposure_contribution": 0.0
+      },
+      "HIGH_FLAT_TRANSITIONAL": {
+        "exposure_share": 0.0150695719803781,
+        "regime_exposure_contribution": 0.0
+      },
+      "HIGH_UP_CHAOTIC": {
+        "exposure_share": 0.06492539873184881,
+        "regime_exposure_contribution": 0.024424534615770585
+      },
+      "HIGH_UP_TRANSITIONAL": {
+        "exposure_share": 0.010342168939564642,
+        "regime_exposure_contribution": 0.0020021058667458983
+      },
+      "LOW_DOWN_STABLE": {
+        "exposure_share": 0.08315576471012233,
+        "regime_exposure_contribution": -0.019196772486654433
+      },
+      "LOW_DOWN_TRANSITIONAL": {
+        "exposure_share": 0.020487339931913224,
+        "regime_exposure_contribution": -0.004028958952621543
+      },
+      "LOW_FLAT_STABLE": {
+        "exposure_share": 0.15630447071570924,
+        "regime_exposure_contribution": 0.0
+      },
+      "LOW_FLAT_TRANSITIONAL": {
+        "exposure_share": 0.030466483078633887,
+        "regime_exposure_contribution": 0.0
+      },
+      "LOW_UP_STABLE": {
+        "exposure_share": 0.10890288086794626,
+        "regime_exposure_contribution": 0.026785534616951642
+      },
+      "LOW_UP_TRANSITIONAL": {
+        "exposure_share": 0.013982982866804267,
+        "regime_exposure_contribution": 0.0025437179125879675
+      },
+      "MID_DOWN_CHAOTIC": {
+        "exposure_share": 0.01668345400387374,
+        "regime_exposure_contribution": -0.002758986276046578
+      },
+      "MID_DOWN_STABLE": {
+        "exposure_share": 0.02870980526553008,
+        "regime_exposure_contribution": -0.0053592927942611585
+      },
+      "MID_DOWN_TRANSITIONAL": {
+        "exposure_share": 0.05249397708757948,
+        "regime_exposure_contribution": -0.009287446767550056
+      },
+      "MID_FLAT_CHAOTIC": {
+        "exposure_share": 0.02055933571255219,
+        "regime_exposure_contribution": 0.0
+      },
+      "MID_FLAT_STABLE": {
+        "exposure_share": 0.0363589418172988,
+        "regime_exposure_contribution": 0.0
+      },
+      "MID_FLAT_TRANSITIONAL": {
+        "exposure_share": 0.07118382870883046,
+        "regime_exposure_contribution": 0.0
+      },
+      "MID_UP_CHAOTIC": {
+        "exposure_share": 0.014910592862638381,
+        "regime_exposure_contribution": 0.0035444351248213445
+      },
+      "MID_UP_STABLE": {
+        "exposure_share": 0.02128153708952968,
+        "regime_exposure_contribution": 0.0038400745217340424
+      },
+      "MID_UP_TRANSITIONAL": {
+        "exposure_share": 0.06264848978858754,
+        "regime_exposure_contribution": 0.01205934360917523
+      }
+    },
+    "total_exposure_weighted_alpha": 0.01212534068280597
+  },
+  "source_constraints": {
+    "economic_closure_modified": false,
+    "evaluation_runner_modified": false,
+    "execution_layer_modified": false,
+    "input_layers": [
+      "market_state_labeling_v1",
+      "state_transition_model_v1",
+      "state_stability_model_v1",
+      "regime_forecastability_v1",
+      "regime_decision_overlay_v1"
+    ],
+    "learning_model_used": false,
+    "new_data_used": false,
+    "new_features_created": false,
+    "optimization_used": false,
+    "trading_logic_used": false
+  },
+  "stability_contribution": {
+    "mean_bounded_stability_score": 0.3749658939397792,
+    "stability_is_not_profitability": true,
+    "stability_to_alpha_magnitude_correlation": 0.1597761442067304,
+    "stability_to_signed_alpha_correlation": 0.1278423638826368
+  },
+  "transition_cost_breakdown": {
+    "penalty_share_of_abs_expectancy": 0.05954707675005953,
+    "per_state": {
+      "HIGH_DOWN_CHAOTIC": {
+        "transition_penalty": 0.0024571524149512337,
+        "transition_probability": 0.25634517766497467,
+        "weighted_transition_penalty": 0.00021742276073157197
+      },
+      "HIGH_DOWN_STABLE": {
+        "transition_penalty": 0.00958532724248303,
+        "transition_probability": 1.0,
+        "weighted_transition_penalty": 2.147250726362686e-06
+      },
+      "HIGH_DOWN_TRANSITIONAL": {
+        "transition_penalty": 0.004690692054832121,
+        "transition_probability": 0.4893617021276596,
+        "weighted_transition_penalty": 4.938676670634178e-05
+      },
+      "HIGH_FLAT_CHAOTIC": {
+        "transition_penalty": 0.003228741807994284,
+        "transition_probability": 0.33684210526315794,
+        "weighted_transition_penalty": 0.00041299542391683164
+      },
+      "HIGH_FLAT_TRANSITIONAL": {
+        "transition_penalty": 0.004642892883077718,
+        "transition_probability": 0.484375,
+        "weighted_transition_penalty": 6.656477251724327e-05
+      },
+      "HIGH_UP_CHAOTIC": {
+        "transition_penalty": 0.002461805357359029,
+        "transition_probability": 0.2568306010928961,
+        "weighted_transition_penalty": 0.00020184156827809244
+      },
+      "HIGH_UP_TRANSITIONAL": {
+        "transition_penalty": 0.0041391185819813076,
+        "transition_probability": 0.43181818181818177,
+        "weighted_transition_penalty": 4.079776380089102e-05
+      },
+      "LOW_DOWN_STABLE": {
+        "transition_penalty": 0.003875655780354149,
+        "transition_probability": 0.4043321299638989,
+        "weighted_transition_penalty": 0.00024049208135262082
+      },
+      "LOW_DOWN_TRANSITIONAL": {
+        "transition_penalty": 0.0034946505571552718,
+        "transition_probability": 0.36458333333333337,
+        "weighted_transition_penalty": 7.593662725001374e-05
+      },
+      "LOW_FLAT_STABLE": {
+        "transition_penalty": 0.003962165954022768,
+        "transition_probability": 0.41335740072202165,
+        "weighted_transition_penalty": 0.000491720416337055
+      },
+      "LOW_FLAT_TRANSITIONAL": {
+        "transition_penalty": 0.004649599035532813,
+        "transition_probability": 0.4850746268656716,
+        "weighted_transition_penalty": 0.00013957129721357456
+      },
+      "LOW_UP_STABLE": {
+        "transition_penalty": 0.0030988181222273902,
+        "transition_probability": 0.3232876712328767,
+        "weighted_transition_penalty": 0.00025337558571079694
+      },
+      "LOW_UP_TRANSITIONAL": {
+        "transition_penalty": 0.003928412804296324,
+        "transition_probability": 0.4098360655737705,
+        "weighted_transition_penalty": 5.368126815906715e-05
+      },
+      "MID_DOWN_CHAOTIC": {
+        "transition_penalty": 0.004375910262872687,
+        "transition_probability": 0.4565217391304348,
+        "weighted_transition_penalty": 9.01845305072328e-05
+      },
+      "MID_DOWN_STABLE": {
+        "transition_penalty": 0.003772947957147575,
+        "transition_probability": 0.3936170212765957,
+        "weighted_transition_penalty": 8.029347131026425e-05
+      },
+      "MID_DOWN_TRANSITIONAL": {
+        "transition_penalty": 0.003302507705393313,
+        "transition_probability": 0.3445378151260504,
+        "weighted_transition_penalty": 0.00017681436863552908
+      },
+      "MID_FLAT_CHAOTIC": {
+        "transition_penalty": 0.004370909222572261,
+        "transition_probability": 0.45599999999999996,
+        "weighted_transition_penalty": 0.0001223932914026731
+      },
+      "MID_FLAT_STABLE": {
+        "transition_penalty": 0.0042919375712610576,
+        "transition_probability": 0.4477611940298507,
+        "weighted_transition_penalty": 0.00012883504358176113
+      },
+      "MID_FLAT_TRANSITIONAL": {
+        "transition_penalty": 0.0037276272609656222,
+        "transition_probability": 0.38888888888888884,
+        "weighted_transition_penalty": 0.00030145014363991705
+      },
+      "MID_UP_CHAOTIC": {
+        "transition_penalty": 0.003084932905626723,
+        "transition_probability": 0.32183908045977017,
+        "weighted_transition_penalty": 6.012302033815522e-05
+      },
+      "MID_UP_STABLE": {
+        "transition_penalty": 0.004356966928401378,
+        "transition_probability": 0.4545454545454546,
+        "weighted_transition_penalty": 7.515377542269402e-05
+      },
+      "MID_UP_TRANSITIONAL": {
+        "transition_penalty": 0.0028962859293833617,
+        "transition_probability": 0.302158273381295,
+        "weighted_transition_penalty": 0.0001803690610144656
+      }
+    },
+    "transition_cost_unit": 0.00958532724248303,
+    "transition_costs_material": true,
+    "weighted_transition_penalty": 0.003461550288553155
+  },
+  "unique_states": 22,
+  "weighted_system_alpha": {
+    "has_positive_and_negative_regimes": true,
+    "negative_alpha_contribution": -0.06530373499446432,
+    "positive_alpha_contribution": 0.0750917401739506,
+    "stability_weighted_system_alpha": 0.009788005179486269,
+    "transition_adjusted_system_expectancy": 0.00013801213281395305
+  }
+}
