@@ -2,15 +2,15 @@
   "case": "CASE_C_WEAK_EDGE",
   "naive": {
     "mean_execution_rate": 1.0,
-    "mean_hit_rate": 0.25,
+    "mean_hit_rate": 0.4946164199192463,
     "mean_stability_score": 1.0,
     "variance": 0.0
   },
   "random": {
     "mean_execution_rate": 1.0,
-    "mean_hit_rate": 0.5,
+    "mean_hit_rate": 0.49950650515926426,
     "mean_stability_score": 1.0,
-    "variance": 0.0
+    "variance": 5.844891787987352e-06
   },
   "stability": {
     "naive": "stable",
@@ -19,7 +19,7 @@
   },
   "system": {
     "mean_execution_rate": 1.0,
-    "mean_hit_rate": 1.0,
+    "mean_hit_rate": 0.503140421713773,
     "mean_stability_score": 1.0,
     "variance": 0.0
   },
@@ -27,19 +27,19 @@
     "early": {
       "naive": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.0,
+        "mean_hit_rate": 0.4709851551956815,
         "mean_stability_score": 1.0,
         "variance": 0.0
       },
       "random": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.5,
+        "mean_hit_rate": 0.5024291497975708,
         "mean_stability_score": 1.0,
-        "variance": 0.0
+        "variance": 0.00014161844973692415
       },
       "system": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 1.0,
+        "mean_hit_rate": 0.5188933873144399,
         "mean_stability_score": 1.0,
         "variance": 0.0
       }
@@ -47,19 +47,19 @@
     "late": {
       "naive": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.0,
+        "mean_hit_rate": 0.5114709851551957,
         "mean_stability_score": 1.0,
         "variance": 0.0
       },
       "random": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.0,
+        "mean_hit_rate": 0.4993252361673415,
         "mean_stability_score": 1.0,
-        "variance": 0.0
+        "variance": 1.0927349516737815e-05
       },
       "system": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.0,
+        "mean_hit_rate": 0.4925775978407557,
         "mean_stability_score": 1.0,
         "variance": 0.0
       }
@@ -67,19 +67,19 @@
     "mid": {
       "naive": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 1.0,
+        "mean_hit_rate": 0.49865047233468285,
         "mean_stability_score": 1.0,
         "variance": 0.0
       },
       "random": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.5,
+        "mean_hit_rate": 0.4967611336032389,
         "mean_stability_score": 1.0,
-        "variance": 0.0
+        "variance": 0.0002517661328656432
       },
       "system": {
         "mean_execution_rate": 1.0,
-        "mean_hit_rate": 0.0,
+        "mean_hit_rate": 0.5026990553306343,
         "mean_stability_score": 1.0,
         "variance": 0.0
       }
