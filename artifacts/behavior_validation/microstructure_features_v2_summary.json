@@ -1,0 +1,242 @@
+{
+  "correlation_summary": {
+    "BTC_ETH": {
+      "max": 0.9999999999999998,
+      "mean": 0.7695797142690332,
+      "min": -0.27894756604363713,
+      "stddev": 0.2122994888444599
+    },
+    "DOGEUSDT_beta_to_BTC": {
+      "max": 6.523849990030746,
+      "mean": 1.0859088198668514,
+      "min": 0.0,
+      "stddev": 0.8478933251140506
+    },
+    "DOGEUSDT_corr_to_BTC": {
+      "max": 1.0,
+      "mean": 0.7213577501582621,
+      "min": 0.0,
+      "stddev": 0.16443522779702163
+    },
+    "LINKUSDT_beta_to_BTC": {
+      "max": 8.633806926131069,
+      "mean": 1.2763440827199946,
+      "min": 0.0,
+      "stddev": 0.757706701179657
+    },
+    "LINKUSDT_corr_to_BTC": {
+      "max": 1.0,
+      "mean": 0.6494032708936429,
+      "min": 0.0,
+      "stddev": 0.1710860263372366
+    },
+    "SOLUSDT_beta_to_BTC": {
+      "max": 5.224580762399107,
+      "mean": 1.7699780956157853,
+      "min": -17.353545141472136,
+      "stddev": 1.077759212249817
+    },
+    "SOLUSDT_corr_to_BTC": {
+      "max": 0.949364182588433,
+      "mean": 0.7337387264285411,
+      "min": -1.0,
+      "stddev": 0.1527951863111543
+    },
+    "XRPUSDT_beta_to_BTC": {
+      "max": 2.0705478121250973,
+      "mean": 0.7536515650405254,
+      "min": -2.0983022691733813,
+      "stddev": 0.35338819805012245
+    },
+    "XRPUSDT_corr_to_BTC": {
+      "max": 0.9275003259033368,
+      "mean": 0.6689231150565808,
+      "min": -1.0,
+      "stddev": 0.20051878343346566
+    }
+  },
+  "dataset_compatibility_check": {
+    "compatible": true,
+    "decisions_unchanged": true,
+    "executions_unchanged": true,
+    "features": 4464,
+    "rows": 4464,
+    "signals_unchanged": true
+  },
+  "feature_count_per_symbol": {
+    "BTCUSDT": 744,
+    "DOGEUSDT": 744,
+    "ETHUSDT": 744,
+    "LINKUSDT": 744,
+    "SOLUSDT": 744,
+    "XRPUSDT": 744
+  },
+  "missing_nan_diagnostics": {
+    "feature_keys": [
+      "micro_v2_abs_return_autocorr_lag_1",
+      "micro_v2_abs_return_autocorr_lag_2",
+      "micro_v2_abs_return_autocorr_lag_3",
+      "micro_v2_beta_to_btc_20",
+      "micro_v2_btc_eth_corr_20",
+      "micro_v2_corr_to_btc_20",
+      "micro_v2_directional_persistence_20",
+      "micro_v2_return_acceleration",
+      "micro_v2_rolling_volatility_10",
+      "micro_v2_rolling_volatility_20",
+      "micro_v2_rolling_volatility_5",
+      "micro_v2_skewness_sign_imbalance_20",
+      "micro_v2_tail_intensity_20",
+      "micro_v2_vol_correlation_interaction",
+      "micro_v2_vol_momentum_interaction",
+      "micro_v2_volatility_regime"
+    ],
+    "missing_by_feature": {
+      "micro_v2_abs_return_autocorr_lag_1": 0,
+      "micro_v2_abs_return_autocorr_lag_2": 0,
+      "micro_v2_abs_return_autocorr_lag_3": 0,
+      "micro_v2_beta_to_btc_20": 0,
+      "micro_v2_btc_eth_corr_20": 0,
+      "micro_v2_corr_to_btc_20": 0,
+      "micro_v2_directional_persistence_20": 0,
+      "micro_v2_return_acceleration": 0,
+      "micro_v2_rolling_volatility_10": 0,
+      "micro_v2_rolling_volatility_20": 0,
+      "micro_v2_rolling_volatility_5": 0,
+      "micro_v2_skewness_sign_imbalance_20": 0,
+      "micro_v2_tail_intensity_20": 0,
+      "micro_v2_vol_correlation_interaction": 0,
+      "micro_v2_vol_momentum_interaction": 0,
+      "micro_v2_volatility_regime": 0
+    },
+    "nan_by_feature": {
+      "micro_v2_abs_return_autocorr_lag_1": 0,
+      "micro_v2_abs_return_autocorr_lag_2": 0,
+      "micro_v2_abs_return_autocorr_lag_3": 0,
+      "micro_v2_beta_to_btc_20": 0,
+      "micro_v2_btc_eth_corr_20": 0,
+      "micro_v2_corr_to_btc_20": 0,
+      "micro_v2_directional_persistence_20": 0,
+      "micro_v2_return_acceleration": 0,
+      "micro_v2_rolling_volatility_10": 0,
+      "micro_v2_rolling_volatility_20": 0,
+      "micro_v2_rolling_volatility_5": 0,
+      "micro_v2_skewness_sign_imbalance_20": 0,
+      "micro_v2_tail_intensity_20": 0,
+      "micro_v2_vol_correlation_interaction": 0,
+      "micro_v2_vol_momentum_interaction": 0,
+      "micro_v2_volatility_regime": 0
+    },
+    "total_missing": 0,
+    "total_nan": 0
+  },
+  "volatility_feature_stats": {
+    "BTCUSDT_micro_v2_rolling_volatility_10": {
+      "max": 0.01641978818231408,
+      "mean": 0.004687399240735563,
+      "min": 0.0,
+      "stddev": 0.0028291710999417846
+    },
+    "BTCUSDT_micro_v2_rolling_volatility_20": {
+      "max": 0.012747379142884452,
+      "mean": 0.005033174747706228,
+      "min": 0.0,
+      "stddev": 0.0024409291239041136
+    },
+    "BTCUSDT_micro_v2_rolling_volatility_5": {
+      "max": 0.02174238230164656,
+      "mean": 0.004184650655039156,
+      "min": 0.0,
+      "stddev": 0.0030767036840815614
+    },
+    "DOGEUSDT_micro_v2_rolling_volatility_10": {
+      "max": 0.021350218808437887,
+      "mean": 0.006258463826991366,
+      "min": 0.0,
+      "stddev": 0.00364284022763762
+    },
+    "DOGEUSDT_micro_v2_rolling_volatility_20": {
+      "max": 0.01679992043724882,
+      "mean": 0.006685990607777323,
+      "min": 0.0,
+      "stddev": 0.0033052225365976405
+    },
+    "DOGEUSDT_micro_v2_rolling_volatility_5": {
+      "max": 0.025580644885918213,
+      "mean": 0.00560137948502609,
+      "min": 0.0,
+      "stddev": 0.00382679159750437
+    },
+    "ETHUSDT_micro_v2_rolling_volatility_10": {
+      "max": 0.014826524802829316,
+      "mean": 0.004993787353147477,
+      "min": 0.0,
+      "stddev": 0.002779686116619647
+    },
+    "ETHUSDT_micro_v2_rolling_volatility_20": {
+      "max": 0.013828989666956885,
+      "mean": 0.0053009836915323206,
+      "min": 0.0,
+      "stddev": 0.002498485802547772
+    },
+    "ETHUSDT_micro_v2_rolling_volatility_5": {
+      "max": 0.017017960943142525,
+      "mean": 0.004485438392916613,
+      "min": 0.0,
+      "stddev": 0.0029963161269799215
+    },
+    "LINKUSDT_micro_v2_rolling_volatility_10": {
+      "max": 0.026101281271397426,
+      "mean": 0.008281328943495182,
+      "min": 0.0,
+      "stddev": 0.0038073737498747493
+    },
+    "LINKUSDT_micro_v2_rolling_volatility_20": {
+      "max": 0.019880738962483196,
+      "mean": 0.008693033312599133,
+      "min": 0.0,
+      "stddev": 0.0032901437396713677
+    },
+    "LINKUSDT_micro_v2_rolling_volatility_5": {
+      "max": 0.034078036274910725,
+      "mean": 0.007527370057395991,
+      "min": 0.0,
+      "stddev": 0.004228484605910628
+    },
+    "SOLUSDT_micro_v2_rolling_volatility_10": {
+      "max": 0.02703492029448416,
+      "mean": 0.010168584494761252,
+      "min": 0.0,
+      "stddev": 0.004111213984668976
+    },
+    "SOLUSDT_micro_v2_rolling_volatility_20": {
+      "max": 0.02183264833554076,
+      "mean": 0.010653776719808435,
+      "min": 0.0,
+      "stddev": 0.003422957372711735
+    },
+    "SOLUSDT_micro_v2_rolling_volatility_5": {
+      "max": 0.03399250378996331,
+      "mean": 0.00918234909263256,
+      "min": 0.0,
+      "stddev": 0.004852326043609264
+    },
+    "XRPUSDT_micro_v2_rolling_volatility_10": {
+      "max": 0.031868269961616416,
+      "mean": 0.005310264201666136,
+      "min": 0.0,
+      "stddev": 0.004140149306788553
+    },
+    "XRPUSDT_micro_v2_rolling_volatility_20": {
+      "max": 0.023426090193106663,
+      "mean": 0.005692529780378492,
+      "min": 0.0,
+      "stddev": 0.003863794002582918
+    },
+    "XRPUSDT_micro_v2_rolling_volatility_5": {
+      "max": 0.04109337401773853,
+      "mean": 0.004767980412581107,
+      "min": 0.0,
+      "stddev": 0.004237554044927943
+    }
+  }
+}
