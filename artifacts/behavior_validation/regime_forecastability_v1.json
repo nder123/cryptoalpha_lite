@@ -1,0 +1,756 @@
+{
+  "baseline_random_comparison": {
+    "forecastability_above_random": true,
+    "random_same_state_probability": 0.045454545454545456,
+    "state_space_size": 22
+  },
+  "cross_symbol_comparison": {
+    "alt_mean_stay_probability": 0.6363391655450875,
+    "btc_stay_probability": 0.6514131897711979,
+    "btc_vs_alt_forecastability_delta": 0.015074024226110372,
+    "cross_symbol_stay_probability_stddev": 0.01708927497060649,
+    "per_symbol": {
+      "BTCUSDT": {
+        "forecastability_gain_vs_random": 0.6059586443166525,
+        "stay_probability": 0.6514131897711979,
+        "transition_count": 743
+      },
+      "DOGEUSDT": {
+        "forecastability_gain_vs_random": 0.6126881194175946,
+        "stay_probability": 0.65814266487214,
+        "transition_count": 743
+      },
+      "ETHUSDT": {
+        "forecastability_gain_vs_random": 0.5709653737917534,
+        "stay_probability": 0.6164199192462988,
+        "transition_count": 743
+      },
+      "LINKUSDT": {
+        "forecastability_gain_vs_random": 0.5763489538725071,
+        "stay_probability": 0.6218034993270525,
+        "transition_count": 743
+      },
+      "SOLUSDT": {
+        "forecastability_gain_vs_random": 0.6113422243974062,
+        "stay_probability": 0.6567967698519516,
+        "transition_count": 743
+      },
+      "XRPUSDT": {
+        "forecastability_gain_vs_random": 0.5830784289734492,
+        "stay_probability": 0.6285329744279946,
+        "transition_count": 743
+      }
+    }
+  },
+  "dataset_rows": 4464,
+  "forecastability_score_per_state": {
+    "HIGH_DOWN_CHAOTIC": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6982002768804799,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.39603960396039606,
+      "one_step_transition_risk": 0.25634517766497467,
+      "risk_class": "HIGHLY_PREDICTABLE",
+      "stay_probability": 0.7436548223350253
+    },
+    "HIGH_DOWN_STABLE": {
+      "forecastability_above_random": false,
+      "forecastability_score": -0.045454545454545456,
+      "hazard_non_uniform": false,
+      "hazard_slope_1_to_5": 0.0,
+      "one_step_transition_risk": 1.0,
+      "risk_class": "VOLATILE",
+      "stay_probability": 0.0
+    },
+    "HIGH_DOWN_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.4651837524177949,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.3913043478260869,
+      "one_step_transition_risk": 0.4893617021276596,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5106382978723404
+    },
+    "HIGH_FLAT_CHAOTIC": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6177033492822966,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.5,
+      "one_step_transition_risk": 0.33684210526315794,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6631578947368421
+    },
+    "HIGH_FLAT_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.47017045454545453,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.5806451612903226,
+      "one_step_transition_risk": 0.484375,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.515625
+    },
+    "HIGH_UP_CHAOTIC": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6977148534525585,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.5319148936170213,
+      "one_step_transition_risk": 0.2568306010928961,
+      "risk_class": "HIGHLY_PREDICTABLE",
+      "stay_probability": 0.7431693989071039
+    },
+    "HIGH_UP_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5227272727272728,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.26315789473684215,
+      "one_step_transition_risk": 0.43181818181818177,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5681818181818182
+    },
+    "LOW_DOWN_STABLE": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5502133245815557,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.48214285714285715,
+      "one_step_transition_risk": 0.4043321299638989,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5956678700361011
+    },
+    "LOW_DOWN_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5899621212121212,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.45714285714285713,
+      "one_step_transition_risk": 0.36458333333333337,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6354166666666666
+    },
+    "LOW_FLAT_STABLE": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5411880538234329,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.4279475982532751,
+      "one_step_transition_risk": 0.41335740072202165,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5866425992779783
+    },
+    "LOW_FLAT_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.46947082767978293,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.36923076923076925,
+      "one_step_transition_risk": 0.4850746268656716,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5149253731343284
+    },
+    "LOW_UP_STABLE": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6312577833125779,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.4830508474576271,
+      "one_step_transition_risk": 0.3232876712328767,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6767123287671233
+    },
+    "LOW_UP_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5447093889716841,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.44000000000000006,
+      "one_step_transition_risk": 0.4098360655737705,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5901639344262295
+    },
+    "MID_DOWN_CHAOTIC": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.4980237154150197,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.47619047619047616,
+      "one_step_transition_risk": 0.4565217391304348,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5434782608695652
+    },
+    "MID_DOWN_STABLE": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5609284332688589,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.5945945945945945,
+      "one_step_transition_risk": 0.3936170212765957,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6063829787234043
+    },
+    "MID_DOWN_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6100076394194042,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.45121951219512196,
+      "one_step_transition_risk": 0.3445378151260504,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6554621848739496
+    },
+    "MID_FLAT_CHAOTIC": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.49854545454545457,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.3508771929824561,
+      "one_step_transition_risk": 0.45599999999999996,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.544
+    },
+    "MID_FLAT_STABLE": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5067842605156039,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.44999999999999996,
+      "one_step_transition_risk": 0.4477611940298507,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5522388059701493
+    },
+    "MID_FLAT_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.5656565656565657,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.5071428571428571,
+      "one_step_transition_risk": 0.38888888888888884,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6111111111111112
+    },
+    "MID_UP_CHAOTIC": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6327063740856844,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.6071428571428571,
+      "one_step_transition_risk": 0.32183908045977017,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.6781609195402298
+    },
+    "MID_UP_STABLE": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.49999999999999994,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.4857142857142857,
+      "one_step_transition_risk": 0.4545454545454546,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.5454545454545454
+    },
+    "MID_UP_TRANSITIONAL": {
+      "forecastability_above_random": true,
+      "forecastability_score": 0.6523871811641596,
+      "hazard_non_uniform": true,
+      "hazard_slope_1_to_5": 0.6190476190476191,
+      "one_step_transition_risk": 0.302158273381295,
+      "risk_class": "MODERATELY_PREDICTABLE",
+      "stay_probability": 0.697841726618705
+    }
+  },
+  "global_forecastability_index": {
+    "forecastability_above_random": true,
+    "forecastability_gain_vs_random": 0.5934153438058594,
+    "forecastability_index": 0.6388698892604048,
+    "random_same_state_probability": 0.045454545454545456,
+    "weighted_stay_probability": 0.6388698892604048
+  },
+  "hazard_curves": {
+    "HIGH_DOWN_CHAOTIC": {
+      "cumulative_exit_probability": {
+        "1": 0.3564356435643564,
+        "10": 0.9504950495049505,
+        "2": 0.49504950495049505,
+        "3": 0.6336633663366337,
+        "5": 0.7524752475247525
+      },
+      "decay_shape": "mixed",
+      "observed_exits": 101,
+      "observed_runs": 102,
+      "step_hazard": {
+        "1": 0.3564356435643564,
+        "10": 0.375,
+        "2": 0.2153846153846154,
+        "3": 0.27450980392156865,
+        "5": 0.21875
+      }
+    },
+    "HIGH_DOWN_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 1.0,
+        "10": 1.0,
+        "2": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "decay_shape": "mixed",
+      "observed_exits": 1,
+      "observed_runs": 1,
+      "step_hazard": {
+        "1": 1.0,
+        "10": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "5": 0.0
+      }
+    },
+    "HIGH_DOWN_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.5217391304347826,
+        "10": 1.0,
+        "2": 0.782608695652174,
+        "3": 0.8695652173913043,
+        "5": 0.9130434782608695
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 23,
+      "observed_runs": 23,
+      "step_hazard": {
+        "1": 0.5217391304347826,
+        "10": 0.0,
+        "2": 0.5454545454545454,
+        "3": 0.4,
+        "5": 0.0
+      }
+    },
+    "HIGH_FLAT_CHAOTIC": {
+      "cumulative_exit_probability": {
+        "1": 0.3802083333333333,
+        "10": 0.96875,
+        "2": 0.578125,
+        "3": 0.7447916666666666,
+        "5": 0.8802083333333334
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 192,
+      "observed_runs": 193,
+      "step_hazard": {
+        "1": 0.3802083333333333,
+        "10": 0.14285714285714285,
+        "2": 0.31932773109243695,
+        "3": 0.3950617283950617,
+        "5": 0.28125
+      }
+    },
+    "HIGH_FLAT_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.3870967741935484,
+        "10": 1.0,
+        "2": 0.7419354838709677,
+        "3": 0.8709677419354839,
+        "5": 0.967741935483871
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 31,
+      "observed_runs": 31,
+      "step_hazard": {
+        "1": 0.3870967741935484,
+        "10": 0.0,
+        "2": 0.5789473684210527,
+        "3": 0.5,
+        "5": 0.0
+      }
+    },
+    "HIGH_UP_CHAOTIC": {
+      "cumulative_exit_probability": {
+        "1": 0.2978723404255319,
+        "10": 0.925531914893617,
+        "2": 0.46808510638297873,
+        "3": 0.6063829787234043,
+        "5": 0.8297872340425532
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 94,
+      "observed_runs": 94,
+      "step_hazard": {
+        "1": 0.2978723404255319,
+        "10": 0.2222222222222222,
+        "2": 0.24242424242424243,
+        "3": 0.26,
+        "5": 0.2727272727272727
+      }
+    },
+    "HIGH_UP_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.631578947368421,
+        "10": 1.0,
+        "2": 0.7368421052631579,
+        "3": 0.8421052631578947,
+        "5": 0.8947368421052632
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 19,
+      "observed_runs": 19,
+      "step_hazard": {
+        "1": 0.631578947368421,
+        "10": 0.0,
+        "2": 0.2857142857142857,
+        "3": 0.4,
+        "5": 0.3333333333333333
+      }
+    },
+    "LOW_DOWN_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 0.44642857142857145,
+        "10": 0.9732142857142857,
+        "2": 0.6785714285714286,
+        "3": 0.8035714285714286,
+        "5": 0.9285714285714286
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 112,
+      "observed_runs": 112,
+      "step_hazard": {
+        "1": 0.44642857142857145,
+        "10": 0.0,
+        "2": 0.41935483870967744,
+        "3": 0.3888888888888889,
+        "5": 0.2
+      }
+    },
+    "LOW_DOWN_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.42857142857142855,
+        "10": 1.0,
+        "2": 0.6571428571428571,
+        "3": 0.7428571428571429,
+        "5": 0.8857142857142857
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 35,
+      "observed_runs": 36,
+      "step_hazard": {
+        "1": 0.42857142857142855,
+        "10": 1.0,
+        "2": 0.4,
+        "3": 0.25,
+        "5": 0.3333333333333333
+      }
+    },
+    "LOW_FLAT_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 0.4759825327510917,
+        "10": 0.982532751091703,
+        "2": 0.7074235807860262,
+        "3": 0.8253275109170306,
+        "5": 0.9039301310043668
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 229,
+      "observed_runs": 229,
+      "step_hazard": {
+        "1": 0.4759825327510917,
+        "10": 0.0,
+        "2": 0.44166666666666665,
+        "3": 0.40298507462686567,
+        "5": 0.18518518518518517
+      }
+    },
+    "LOW_FLAT_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.5692307692307692,
+        "10": 1.0,
+        "2": 0.7230769230769231,
+        "3": 0.8615384615384616,
+        "5": 0.9384615384615385
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 65,
+      "observed_runs": 65,
+      "step_hazard": {
+        "1": 0.5692307692307692,
+        "10": 0.0,
+        "2": 0.35714285714285715,
+        "3": 0.5,
+        "5": 0.2
+      }
+    },
+    "LOW_UP_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 0.3898305084745763,
+        "10": 0.9491525423728814,
+        "2": 0.576271186440678,
+        "3": 0.6864406779661016,
+        "5": 0.8728813559322034
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 118,
+      "observed_runs": 118,
+      "step_hazard": {
+        "1": 0.3898305084745763,
+        "10": 0.14285714285714285,
+        "2": 0.3055555555555556,
+        "3": 0.26,
+        "5": 0.25
+      }
+    },
+    "LOW_UP_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.48,
+        "10": 1.0,
+        "2": 0.8,
+        "3": 0.8,
+        "5": 0.92
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 25,
+      "observed_runs": 25,
+      "step_hazard": {
+        "1": 0.48,
+        "10": 1.0,
+        "2": 0.6153846153846154,
+        "3": 0.0,
+        "5": 0.5
+      }
+    },
+    "MID_DOWN_CHAOTIC": {
+      "cumulative_exit_probability": {
+        "1": 0.47619047619047616,
+        "10": 1.0,
+        "2": 0.7380952380952381,
+        "3": 0.7857142857142857,
+        "5": 0.9523809523809523
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 42,
+      "observed_runs": 42,
+      "step_hazard": {
+        "1": 0.47619047619047616,
+        "10": 0.0,
+        "2": 0.5,
+        "3": 0.18181818181818182,
+        "5": 0.6
+      }
+    },
+    "MID_DOWN_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 0.40540540540540543,
+        "10": 1.0,
+        "2": 0.5675675675675675,
+        "3": 0.6756756756756757,
+        "5": 1.0
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 37,
+      "observed_runs": 38,
+      "step_hazard": {
+        "1": 0.40540540540540543,
+        "10": 0.0,
+        "2": 0.2727272727272727,
+        "3": 0.25,
+        "5": 1.0
+      }
+    },
+    "MID_DOWN_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.4268292682926829,
+        "10": 0.9878048780487805,
+        "2": 0.6097560975609756,
+        "3": 0.6829268292682927,
+        "5": 0.8780487804878049
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 82,
+      "observed_runs": 83,
+      "step_hazard": {
+        "1": 0.4268292682926829,
+        "10": 0.5,
+        "2": 0.3191489361702128,
+        "3": 0.1875,
+        "5": 0.3333333333333333
+      }
+    },
+    "MID_FLAT_CHAOTIC": {
+      "cumulative_exit_probability": {
+        "1": 0.5964912280701754,
+        "10": 1.0,
+        "2": 0.7368421052631579,
+        "3": 0.7894736842105263,
+        "5": 0.9473684210526315
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 57,
+      "observed_runs": 57,
+      "step_hazard": {
+        "1": 0.5964912280701754,
+        "10": 1.0,
+        "2": 0.34782608695652173,
+        "3": 0.2,
+        "5": 0.5714285714285714
+      }
+    },
+    "MID_FLAT_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 0.5166666666666667,
+        "10": 0.9833333333333333,
+        "2": 0.7333333333333333,
+        "3": 0.8333333333333334,
+        "5": 0.9666666666666667
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 60,
+      "observed_runs": 60,
+      "step_hazard": {
+        "1": 0.5166666666666667,
+        "10": 0.0,
+        "2": 0.4482758620689655,
+        "3": 0.375,
+        "5": 0.75
+      }
+    },
+    "MID_FLAT_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.4,
+        "10": 0.9928571428571429,
+        "2": 0.6142857142857143,
+        "3": 0.8,
+        "5": 0.9071428571428571
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 140,
+      "observed_runs": 141,
+      "step_hazard": {
+        "1": 0.4,
+        "10": 0.0,
+        "2": 0.35714285714285715,
+        "3": 0.48148148148148145,
+        "5": 0.4090909090909091
+      }
+    },
+    "MID_UP_CHAOTIC": {
+      "cumulative_exit_probability": {
+        "1": 0.25,
+        "10": 1.0,
+        "2": 0.4642857142857143,
+        "3": 0.7142857142857143,
+        "5": 0.8571428571428571
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 28,
+      "observed_runs": 28,
+      "step_hazard": {
+        "1": 0.25,
+        "10": 1.0,
+        "2": 0.2857142857142857,
+        "3": 0.4666666666666667,
+        "5": 0.2
+      }
+    },
+    "MID_UP_STABLE": {
+      "cumulative_exit_probability": {
+        "1": 0.45714285714285713,
+        "10": 1.0,
+        "2": 0.7428571428571429,
+        "3": 0.8,
+        "5": 0.9428571428571428
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 35,
+      "observed_runs": 35,
+      "step_hazard": {
+        "1": 0.45714285714285713,
+        "10": 0.0,
+        "2": 0.5263157894736842,
+        "3": 0.2222222222222222,
+        "5": 0.5
+      }
+    },
+    "MID_UP_TRANSITIONAL": {
+      "cumulative_exit_probability": {
+        "1": 0.25,
+        "10": 0.9761904761904762,
+        "2": 0.4523809523809524,
+        "3": 0.6071428571428571,
+        "5": 0.8690476190476191
+      },
+      "decay_shape": "front_loaded",
+      "observed_exits": 84,
+      "observed_runs": 84,
+      "step_hazard": {
+        "1": 0.25,
+        "10": 0.3333333333333333,
+        "2": 0.2698412698412698,
+        "3": 0.2826086956521739,
+        "5": 0.42105263157894735
+      }
+    }
+  },
+  "lead_lag_signal_check": {
+    "aggregate_risk_rises_before_shift": true,
+    "per_lead_window": {
+      "1": {
+        "lead_window": 1,
+        "pre_shift_mean_transition_risk": 0.37416404392747726,
+        "pre_shift_samples": 1610,
+        "risk_lift_before_shift": 0.020373352467940198,
+        "risk_rises_before_shift": true,
+        "stable_mean_transition_risk": 0.35379069145953707,
+        "stable_samples": 2848
+      },
+      "3": {
+        "lead_window": 3,
+        "pre_shift_mean_transition_risk": 0.36855759643368924,
+        "pre_shift_samples": 3144,
+        "risk_lift_before_shift": 0.025273023970674047,
+        "risk_rises_before_shift": true,
+        "stable_mean_transition_risk": 0.3432845724630152,
+        "stable_samples": 1308
+      },
+      "5": {
+        "lead_window": 5,
+        "pre_shift_mean_transition_risk": 0.3658799705110601,
+        "pre_shift_samples": 3798,
+        "risk_lift_before_shift": 0.03240842913991804,
+        "risk_rises_before_shift": true,
+        "stable_mean_transition_risk": 0.33347154137114204,
+        "stable_samples": 652
+      }
+    },
+    "risk_signal": "one_step_transition_risk_by_current_state"
+  },
+  "model_consistency": {
+    "global_same_state_probability": 0.6388515029161059,
+    "per_symbol_mismatch_count": 0,
+    "per_symbol_mismatches": {},
+    "per_symbol_stay_matches_transition_model": true,
+    "same_state_probability_matches_stability_model": true,
+    "stability_model_same_state_probability": 0.6388515029161059,
+    "state_label_rows_match": true,
+    "unique_states_match_transition_model": true
+  },
+  "source_constraints": {
+    "external_sources_used": false,
+    "input_layers": [
+      "market_state_labeling_v1",
+      "state_transition_model_v1",
+      "state_stability_model_v1",
+      "expanded_dataset_v1"
+    ],
+    "learning_model_used": false,
+    "new_features_created": false,
+    "parameter_search_used": false,
+    "trading_rules_used": false
+  },
+  "state_label_rows": 4464,
+  "stay_probabilities_per_state": {
+    "HIGH_DOWN_CHAOTIC": 0.7436548223350253,
+    "HIGH_DOWN_STABLE": 0.0,
+    "HIGH_DOWN_TRANSITIONAL": 0.5106382978723404,
+    "HIGH_FLAT_CHAOTIC": 0.6631578947368421,
+    "HIGH_FLAT_TRANSITIONAL": 0.515625,
+    "HIGH_UP_CHAOTIC": 0.7431693989071039,
+    "HIGH_UP_TRANSITIONAL": 0.5681818181818182,
+    "LOW_DOWN_STABLE": 0.5956678700361011,
+    "LOW_DOWN_TRANSITIONAL": 0.6354166666666666,
+    "LOW_FLAT_STABLE": 0.5866425992779783,
+    "LOW_FLAT_TRANSITIONAL": 0.5149253731343284,
+    "LOW_UP_STABLE": 0.6767123287671233,
+    "LOW_UP_TRANSITIONAL": 0.5901639344262295,
+    "MID_DOWN_CHAOTIC": 0.5434782608695652,
+    "MID_DOWN_STABLE": 0.6063829787234043,
+    "MID_DOWN_TRANSITIONAL": 0.6554621848739496,
+    "MID_FLAT_CHAOTIC": 0.544,
+    "MID_FLAT_STABLE": 0.5522388059701493,
+    "MID_FLAT_TRANSITIONAL": 0.6111111111111112,
+    "MID_UP_CHAOTIC": 0.6781609195402298,
+    "MID_UP_STABLE": 0.5454545454545454,
+    "MID_UP_TRANSITIONAL": 0.697841726618705
+  },
+  "symbols": 6,
+  "unique_states": 22
+}
