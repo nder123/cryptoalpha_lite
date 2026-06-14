@@ -1,0 +1,56 @@
+{
+  "dataset_rows": 4464,
+  "decision_sensitivity_check": {
+    "baseline_decision_distribution": {
+      "long": 2173,
+      "short": 2291
+    },
+    "baseline_execution_acceptance_ratio": 1.0,
+    "baseline_regime_distribution": {
+      "high": 1086,
+      "low": 1263,
+      "mid": 2115
+    },
+    "decision_output_distribution_changed": false,
+    "execution_acceptance_ratio_changed": false,
+    "execution_acceptance_ratio_delta": 0.0,
+    "expanded_decision_distribution": {
+      "long": 2173,
+      "short": 2291
+    },
+    "expanded_execution_acceptance_ratio": 1.0,
+    "expanded_regime_distribution": {
+      "high": 1086,
+      "low": 1263,
+      "mid": 2115
+    },
+    "regime_routing_behavior_changed": false
+  },
+  "information_gain_proxy": {
+    "baseline_mutual_information_proxy": 0.022601741823066738,
+    "expanded_mutual_information_proxy": 0.014806766558811161,
+    "feature_importance_stability": {
+      "common_feature_count": 6,
+      "max_abs_common_importance_delta": 0.0,
+      "mean_abs_common_importance_delta": 0.0
+    },
+    "mutual_information_proxy_change": -0.007794975264255577,
+    "signal_variance_shift": {
+      "baseline_signal_variance": 0.4314764881890951,
+      "delta": 0.0,
+      "expanded_signal_variance": 0.4314764881890951
+    }
+  },
+  "predictive_delta": {
+    "baseline_edge": -0.00010065118752237128,
+    "delta": 0.0,
+    "expanded_edge": -0.00010065118752237128
+  },
+  "stability_constraint": {
+    "changed_sections": [],
+    "confirmed": true,
+    "no_change_except_numeric_sensitivity": true,
+    "pipeline_behavior_changed": false
+  },
+  "symbols": 6
+}
