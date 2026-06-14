@@ -1,0 +1,125 @@
+{
+  "dataset_rows": 4464,
+  "delta": {
+    "cost_adjusted_pnl": 0.16878756997524036,
+    "edge": 3.781083556793019e-05,
+    "total_pnl": 0.11568886025044911
+  },
+  "dynamic_mode": {
+    "acceptance_ratio": 1.0,
+    "cost_adjusted_pnl": -0.28051933112462507,
+    "decision_distribution": {
+      "long": 2173,
+      "short": 2291
+    },
+    "edge": -6.28403519544411e-05,
+    "mode": "DYNAMIC",
+    "regime_pnl": {
+      "high": -0.25113547417709153,
+      "low": -0.0030403000070815182,
+      "mid": -0.02634355694045161
+    },
+    "scaling_summary": {
+      "count": 4464,
+      "factor_by_correlation_regime": {
+        "high_correlation": {
+          "count": 3138,
+          "max_factor": 0.9450000000000001,
+          "mean_factor": 0.7555812619502869,
+          "min_factor": 0.54
+        },
+        "low_correlation": {
+          "count": 29,
+          "max_factor": 0.95,
+          "mean_factor": 0.7809655172413793,
+          "min_factor": 0.57
+        },
+        "mid_correlation": {
+          "count": 1297,
+          "max_factor": 1.05,
+          "mean_factor": 0.8348573631457209,
+          "min_factor": 0.6000000000000001
+        }
+      },
+      "factor_by_market_stress_regime": {
+        "elevated": {
+          "count": 2095,
+          "max_factor": 0.9450000000000001,
+          "mean_factor": 0.781784248210024,
+          "min_factor": 0.6075
+        },
+        "normal": {
+          "count": 704,
+          "max_factor": 1.05,
+          "mean_factor": 0.9267329545454547,
+          "min_factor": 0.675
+        },
+        "stress": {
+          "count": 1665,
+          "max_factor": 0.8400000000000001,
+          "mean_factor": 0.7124408408408409,
+          "min_factor": 0.54
+        }
+      },
+      "factor_by_volatility_regime": {
+        "high": {
+          "count": 1086,
+          "max_factor": 0.75,
+          "mean_factor": 0.60603591160221,
+          "min_factor": 0.54
+        },
+        "low": {
+          "count": 1263,
+          "max_factor": 1.05,
+          "mean_factor": 0.8587387173396674,
+          "min_factor": 0.7560000000000001
+        },
+        "mid": {
+          "count": 2115,
+          "max_factor": 1.0,
+          "mean_factor": 0.8197304964539007,
+          "min_factor": 0.7200000000000001
+        }
+      },
+      "max_factor": 1.05,
+      "mean_factor": 0.7787795698924732,
+      "min_factor": 0.54
+    },
+    "total_pnl": -0.14876601385059074
+  },
+  "static_mode": {
+    "acceptance_ratio": 1.0,
+    "cost_adjusted_pnl": -0.44930690109986543,
+    "decision_distribution": {
+      "long": 2173,
+      "short": 2291
+    },
+    "edge": -0.00010065118752237128,
+    "mode": "STATIC",
+    "regime_pnl": {
+      "high": -0.43351378306808186,
+      "low": -0.0028956027165307425,
+      "mid": -0.012897515315252758
+    },
+    "scaling_summary": {
+      "count": 0,
+      "factor_by_correlation_regime": {},
+      "factor_by_market_stress_regime": {},
+      "factor_by_volatility_regime": {},
+      "max_factor": 1.0,
+      "mean_factor": 1.0,
+      "min_factor": 1.0
+    },
+    "total_pnl": -0.26445487410103985
+  },
+  "symbols": 6,
+  "validation": {
+    "dynamic_direction_changes": 0,
+    "economic_closure_unmodified": true,
+    "metrics_v1_unmodified": true,
+    "new_dataset_created": false,
+    "new_features_created": false,
+    "optimization_loop_used": false,
+    "uses_existing_evaluation_runner_decisions": true
+  }
+}
