@@ -1,0 +1,83 @@
+{
+  "dataset_path": "artifacts/behavior_validation/expanded_dataset_v1",
+  "date_range": {
+    "end": "2024-01-31T23:00:00Z",
+    "start": "2024-01-01T00:00:00Z"
+  },
+  "interval": "1h",
+  "months": [
+    "2024-01"
+  ],
+  "required_symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT",
+    "XRPUSDT",
+    "DOGEUSDT",
+    "LINKUSDT"
+  ],
+  "row_count": 4464,
+  "rows_per_symbol": {
+    "BTCUSDT": 744,
+    "DOGEUSDT": 744,
+    "ETHUSDT": 744,
+    "LINKUSDT": 744,
+    "SOLUSDT": 744,
+    "XRPUSDT": 744
+  },
+  "schema_version": "dataset_expansion_v1",
+  "source": "binance_vision_usdt_m_futures",
+  "symbol_count": 6,
+  "symbols": [
+    "BTCUSDT",
+    "DOGEUSDT",
+    "ETHUSDT",
+    "LINKUSDT",
+    "SOLUSDT",
+    "XRPUSDT"
+  ],
+  "volatility_statistics_per_symbol": {
+    "BTCUSDT": {
+      "close_to_close_return_stddev": 0.0057809531801403325,
+      "max_range_pct": 0.07896886746533271,
+      "mean_abs_close_to_close_return": 0.0037622759093064832,
+      "mean_range_pct": 0.00818231728885279,
+      "min_range_pct": 0.0009933441145561252
+    },
+    "DOGEUSDT": {
+      "close_to_close_return_stddev": 0.007673737683637491,
+      "max_range_pct": 0.17899787970092623,
+      "mean_abs_close_to_close_return": 0.0050466702516688035,
+      "mean_range_pct": 0.011249564740576925,
+      "min_range_pct": 0.0025986882811533454
+    },
+    "ETHUSDT": {
+      "close_to_close_return_stddev": 0.006054132310918905,
+      "max_range_pct": 0.10531899231855066,
+      "mean_abs_close_to_close_return": 0.004088853955262033,
+      "mean_range_pct": 0.00863721544974179,
+      "min_range_pct": 0.0013499585716307198
+    },
+    "LINKUSDT": {
+      "close_to_close_return_stddev": 0.009548139250182946,
+      "max_range_pct": 0.19526231263383292,
+      "mean_abs_close_to_close_return": 0.006849197042904896,
+      "mean_range_pct": 0.014374791626862556,
+      "min_range_pct": 0.0034124939062608463
+    },
+    "SOLUSDT": {
+      "close_to_close_return_stddev": 0.011470026049723744,
+      "max_range_pct": 0.19375845410628006,
+      "mean_abs_close_to_close_return": 0.008419318810058828,
+      "mean_range_pct": 0.018171625804642523,
+      "min_range_pct": 0.003711976519590477
+    },
+    "XRPUSDT": {
+      "close_to_close_return_stddev": 0.007015237448122748,
+      "max_range_pct": 0.22297624818225878,
+      "mean_abs_close_to_close_return": 0.004178136745809127,
+      "mean_range_pct": 0.00933310604972075,
+      "min_range_pct": 0.0019133762393459557
+    }
+  }
+}
