@@ -1,0 +1,165 @@
+{
+  "alpha_retention": 0.9862813069445832,
+  "artifact_consistency": {
+    "execution_state_space_covers_train_survivors": true,
+    "labels_match_dataset_rows": true,
+    "labels_match_regime_alpha_rows": true,
+    "labels_match_survivor_rows": true,
+    "state_count_matches_survivor_artifact": true,
+    "survivor_selection_matches_existing_logic": true
+  },
+  "dataset_summary": {
+    "path": "artifacts/behavior_validation/expanded_dataset_v1",
+    "rows": 4464,
+    "symbols": [
+      "BTCUSDT",
+      "DOGEUSDT",
+      "ETHUSDT",
+      "LINKUSDT",
+      "SOLUSDT",
+      "XRPUSDT"
+    ]
+  },
+  "frequency_drift": {
+    "HIGH_UP_CHAOTIC": {
+      "appears_in_test": true,
+      "frequency_delta": -0.03214285714285714,
+      "test_frequency": 0.05952380952380952,
+      "train_frequency": 0.09166666666666666
+    },
+    "HIGH_UP_TRANSITIONAL": {
+      "appears_in_test": true,
+      "frequency_delta": 0.00399496336996337,
+      "test_frequency": 0.012648809523809524,
+      "train_frequency": 0.008653846153846154
+    },
+    "LOW_UP_STABLE": {
+      "appears_in_test": true,
+      "frequency_delta": 0.019276556776556777,
+      "test_frequency": 0.09523809523809523,
+      "train_frequency": 0.07596153846153846
+    },
+    "LOW_UP_TRANSITIONAL": {
+      "appears_in_test": true,
+      "frequency_delta": 0.020902014652014654,
+      "test_frequency": 0.028273809523809524,
+      "train_frequency": 0.007371794871794872
+    },
+    "MID_UP_CHAOTIC": {
+      "appears_in_test": true,
+      "frequency_delta": 0.005116758241758244,
+      "test_frequency": 0.023065476190476192,
+      "train_frequency": 0.017948717948717947
+    },
+    "MID_UP_STABLE": {
+      "appears_in_test": true,
+      "frequency_delta": -0.0023237179487179474,
+      "test_frequency": 0.015625,
+      "train_frequency": 0.017948717948717947
+    },
+    "MID_UP_TRANSITIONAL": {
+      "appears_in_test": true,
+      "frequency_delta": -0.011389652014652016,
+      "test_frequency": 0.05431547619047619,
+      "train_frequency": 0.06570512820512821
+    }
+  },
+  "input_rows": 4464,
+  "regime_composition_drift": {
+    "absolute_probability_mass_change": 0.09514652014652014,
+    "probability_mass_delta": 0.003434065934065922,
+    "test_survivor_probability_mass": 0.28869047619047616,
+    "train_survivor_probability_mass": 0.28525641025641024
+  },
+  "source_constraints": {
+    "alpha_model_modified": false,
+    "chronological_split_only": true,
+    "execution_model_modified": false,
+    "features_modified": false,
+    "input_layers": [
+      "dataset_expansion_v1",
+      "market_state_labeling_v1",
+      "regime_to_alpha_v1",
+      "execution_reality_model_v1",
+      "regime_survival_optimization_v1"
+    ],
+    "learning_model_used": false,
+    "new_regime_definitions_used": false,
+    "optimization_used": false,
+    "parameter_search_used": false,
+    "randomization_used": false,
+    "shuffling_used": false,
+    "stability_model_modified": false,
+    "states_modified": false,
+    "survivor_selection_logic_modified": false,
+    "test_data_used_for_survivor_selection": false,
+    "transitions_modified": false,
+    "tuning_used": false
+  },
+  "split": {
+    "method": "chronological_unique_timestamp_split",
+    "test_end": "2024-01-31T23:00:00Z",
+    "test_rows": 1344,
+    "test_start": "2024-01-22T16:00:00Z",
+    "test_unique_timestamps": 224,
+    "train_end": "2024-01-22T15:00:00Z",
+    "train_fraction": 0.7,
+    "train_rows": 3120,
+    "train_start": "2024-01-01T00:00:00Z",
+    "train_unique_timestamps": 520,
+    "unique_timestamps": 744
+  },
+  "survivor_alpha": {
+    "alpha_retention": 0.9862813069445832,
+    "delta": -0.0007889896078480604,
+    "test_alpha": 0.0721667963363412,
+    "test_execution_adjusted_alpha": 0.05672302007564945,
+    "train_alpha": 0.07633714721636659,
+    "train_execution_adjusted_alpha": 0.05751200968349751
+  },
+  "survivor_count": 7,
+  "survivor_retention": {
+    "retention_ratio": 1.0,
+    "test_retained_survivor_count": 7,
+    "train_survivor_count": 7
+  },
+  "test_alpha": 0.05672302007564945,
+  "test_phase": {
+    "metrics": {
+      "execution_adjusted_alpha": 0.05672302007564945,
+      "expectancy": 0.19648386335482698,
+      "raw_alpha": 0.0721667963363412,
+      "survivor_probability_mass": 0.28869047619047616
+    },
+    "retained_survivor_count": 7,
+    "retained_survivor_regimes": [
+      "HIGH_UP_CHAOTIC",
+      "HIGH_UP_TRANSITIONAL",
+      "LOW_UP_STABLE",
+      "LOW_UP_TRANSITIONAL",
+      "MID_UP_CHAOTIC",
+      "MID_UP_STABLE",
+      "MID_UP_TRANSITIONAL"
+    ]
+  },
+  "train_alpha": 0.05751200968349751,
+  "train_phase": {
+    "metrics": {
+      "execution_adjusted_alpha": 0.05751200968349751,
+      "expectancy": 0.20161513507023848,
+      "raw_alpha": 0.07633714721636659,
+      "survivor_probability_mass": 0.28525641025641024
+    },
+    "survivor_count": 7,
+    "survivor_regimes": [
+      "HIGH_UP_CHAOTIC",
+      "HIGH_UP_TRANSITIONAL",
+      "LOW_UP_STABLE",
+      "LOW_UP_TRANSITIONAL",
+      "MID_UP_CHAOTIC",
+      "MID_UP_STABLE",
+      "MID_UP_TRANSITIONAL"
+    ]
+  },
+  "verdict": "ROBUST_EDGE"
+}
