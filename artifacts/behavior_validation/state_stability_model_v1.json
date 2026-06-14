@@ -1,0 +1,1036 @@
+{
+  "baseline_random_model_comparison": {
+    "global": {
+      "observed_same_state_probability": 0.6388515029161059,
+      "stability_above_random": true,
+      "stability_edge_vs_random": 0.5933969574615605
+    },
+    "per_symbol": {
+      "BTCUSDT": {
+        "mean_duration": 2.8615384615384616,
+        "observed_same_state_probability": 0.6514131897711979,
+        "stability_edge_vs_random": 0.6059586443166525
+      },
+      "DOGEUSDT": {
+        "mean_duration": 2.9176470588235293,
+        "observed_same_state_probability": 0.65814266487214,
+        "stability_edge_vs_random": 0.6126881194175946
+      },
+      "ETHUSDT": {
+        "mean_duration": 2.6013986013986012,
+        "observed_same_state_probability": 0.6164199192462988,
+        "stability_edge_vs_random": 0.5709653737917534
+      },
+      "LINKUSDT": {
+        "mean_duration": 2.6382978723404253,
+        "observed_same_state_probability": 0.6218034993270525,
+        "stability_edge_vs_random": 0.5763489538725071
+      },
+      "SOLUSDT": {
+        "mean_duration": 2.90625,
+        "observed_same_state_probability": 0.6567967698519516,
+        "stability_edge_vs_random": 0.6113422243974062
+      },
+      "XRPUSDT": {
+        "mean_duration": 2.6859205776173285,
+        "observed_same_state_probability": 0.6285329744279946,
+        "stability_edge_vs_random": 0.5830784289734492
+      }
+    },
+    "random_model": {
+      "same_state_probability": 0.045454545454545456,
+      "state_space_size": 22
+    }
+  },
+  "cross_symbol_stability_divergence": {
+    "alt_mean_duration": 2.7499028220359767,
+    "btc_duration_advantage": 0.1116356395024849,
+    "btc_mean_duration": 2.8615384615384616,
+    "btc_vs_alt_duration_differences": {
+      "DOGEUSDT": -0.056108597285067674,
+      "ETHUSDT": 0.26013986013986035,
+      "LINKUSDT": 0.22324058919803624,
+      "SOLUSDT": -0.044711538461538414,
+      "XRPUSDT": 0.1756178839211331
+    },
+    "cross_symbol_duration_stddev": 0.13010950194816773,
+    "mean_duration_by_symbol": {
+      "BTCUSDT": 2.8615384615384616,
+      "DOGEUSDT": 2.9176470588235293,
+      "ETHUSDT": 2.6013986013986012,
+      "LINKUSDT": 2.6382978723404253,
+      "SOLUSDT": 2.90625,
+      "XRPUSDT": 2.6859205776173285
+    }
+  },
+  "dataset_rows": 4464,
+  "exit_probability_distributions": {
+    "HIGH_DOWN_CHAOTIC": {
+      "exit_probability_next_step": 0.25634517766497467,
+      "exit_within_k_steps": {
+        "1": 0.3564356435643564,
+        "10": 0.9504950495049505,
+        "3": 0.6336633663366337,
+        "5": 0.7524752475247525
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_TRANSITIONAL": 0.04950495049504951,
+        "HIGH_FLAT_CHAOTIC": 0.7821782178217822,
+        "HIGH_FLAT_TRANSITIONAL": 0.009900990099009901,
+        "MID_DOWN_CHAOTIC": 0.09900990099009901,
+        "MID_DOWN_TRANSITIONAL": 0.0297029702970297,
+        "MID_FLAT_CHAOTIC": 0.0297029702970297
+      },
+      "observed_exits": 101,
+      "observed_runs": 102,
+      "stay_probability_next_step": 0.7436548223350253
+    },
+    "HIGH_DOWN_STABLE": {
+      "exit_probability_next_step": 1.0,
+      "exit_within_k_steps": {
+        "1": 1.0,
+        "10": 1.0,
+        "3": 1.0,
+        "5": 1.0
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_TRANSITIONAL": 1.0
+      },
+      "observed_exits": 1,
+      "observed_runs": 1,
+      "stay_probability_next_step": 0.0
+    },
+    "HIGH_DOWN_TRANSITIONAL": {
+      "exit_probability_next_step": 0.4893617021276596,
+      "exit_within_k_steps": {
+        "1": 0.5217391304347826,
+        "10": 1.0,
+        "3": 0.8695652173913043,
+        "5": 0.9130434782608695
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_CHAOTIC": 0.391304347826087,
+        "HIGH_FLAT_CHAOTIC": 0.08695652173913043,
+        "HIGH_FLAT_TRANSITIONAL": 0.30434782608695654,
+        "MID_DOWN_TRANSITIONAL": 0.17391304347826086,
+        "MID_FLAT_TRANSITIONAL": 0.043478260869565216
+      },
+      "observed_exits": 23,
+      "observed_runs": 23,
+      "stay_probability_next_step": 0.5106382978723404
+    },
+    "HIGH_FLAT_CHAOTIC": {
+      "exit_probability_next_step": 0.33684210526315794,
+      "exit_within_k_steps": {
+        "1": 0.3802083333333333,
+        "10": 0.96875,
+        "3": 0.7447916666666666,
+        "5": 0.8802083333333334
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_CHAOTIC": 0.3958333333333333,
+        "HIGH_DOWN_TRANSITIONAL": 0.020833333333333332,
+        "HIGH_FLAT_TRANSITIONAL": 0.03125,
+        "HIGH_UP_CHAOTIC": 0.4375,
+        "HIGH_UP_TRANSITIONAL": 0.010416666666666666,
+        "MID_DOWN_CHAOTIC": 0.026041666666666668,
+        "MID_FLAT_CHAOTIC": 0.052083333333333336,
+        "MID_FLAT_TRANSITIONAL": 0.020833333333333332,
+        "MID_UP_TRANSITIONAL": 0.005208333333333333
+      },
+      "observed_exits": 192,
+      "observed_runs": 193,
+      "stay_probability_next_step": 0.6631578947368421
+    },
+    "HIGH_FLAT_TRANSITIONAL": {
+      "exit_probability_next_step": 0.484375,
+      "exit_within_k_steps": {
+        "1": 0.3870967741935484,
+        "10": 1.0,
+        "3": 0.8709677419354839,
+        "5": 0.967741935483871
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_CHAOTIC": 0.03225806451612903,
+        "HIGH_DOWN_TRANSITIONAL": 0.16129032258064516,
+        "HIGH_FLAT_CHAOTIC": 0.25806451612903225,
+        "HIGH_UP_CHAOTIC": 0.03225806451612903,
+        "HIGH_UP_TRANSITIONAL": 0.22580645161290322,
+        "MID_FLAT_STABLE": 0.03225806451612903,
+        "MID_FLAT_TRANSITIONAL": 0.22580645161290322,
+        "MID_UP_TRANSITIONAL": 0.03225806451612903
+      },
+      "observed_exits": 31,
+      "observed_runs": 31,
+      "stay_probability_next_step": 0.515625
+    },
+    "HIGH_UP_CHAOTIC": {
+      "exit_probability_next_step": 0.2568306010928961,
+      "exit_within_k_steps": {
+        "1": 0.2978723404255319,
+        "10": 0.925531914893617,
+        "3": 0.6063829787234043,
+        "5": 0.8297872340425532
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_CHAOTIC": 0.8617021276595744,
+        "HIGH_UP_TRANSITIONAL": 0.031914893617021274,
+        "MID_FLAT_CHAOTIC": 0.0425531914893617,
+        "MID_UP_CHAOTIC": 0.031914893617021274,
+        "MID_UP_TRANSITIONAL": 0.031914893617021274
+      },
+      "observed_exits": 94,
+      "observed_runs": 94,
+      "stay_probability_next_step": 0.7431693989071039
+    },
+    "HIGH_UP_TRANSITIONAL": {
+      "exit_probability_next_step": 0.43181818181818177,
+      "exit_within_k_steps": {
+        "1": 0.631578947368421,
+        "10": 1.0,
+        "3": 0.8421052631578947,
+        "5": 0.8947368421052632
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_TRANSITIONAL": 0.3684210526315789,
+        "HIGH_UP_CHAOTIC": 0.15789473684210525,
+        "MID_FLAT_TRANSITIONAL": 0.05263157894736842,
+        "MID_UP_TRANSITIONAL": 0.42105263157894735
+      },
+      "observed_exits": 19,
+      "observed_runs": 19,
+      "stay_probability_next_step": 0.5681818181818182
+    },
+    "LOW_DOWN_STABLE": {
+      "exit_probability_next_step": 0.4043321299638989,
+      "exit_within_k_steps": {
+        "1": 0.44642857142857145,
+        "10": 0.9732142857142857,
+        "3": 0.8035714285714286,
+        "5": 0.9285714285714286
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_TRANSITIONAL": 0.008928571428571428,
+        "LOW_DOWN_TRANSITIONAL": 0.10714285714285714,
+        "LOW_FLAT_STABLE": 0.75,
+        "LOW_FLAT_TRANSITIONAL": 0.03571428571428571,
+        "MID_DOWN_STABLE": 0.05357142857142857,
+        "MID_DOWN_TRANSITIONAL": 0.017857142857142856,
+        "MID_FLAT_STABLE": 0.008928571428571428,
+        "MID_FLAT_TRANSITIONAL": 0.017857142857142856
+      },
+      "observed_exits": 112,
+      "observed_runs": 112,
+      "stay_probability_next_step": 0.5956678700361011
+    },
+    "LOW_DOWN_TRANSITIONAL": {
+      "exit_probability_next_step": 0.36458333333333337,
+      "exit_within_k_steps": {
+        "1": 0.42857142857142855,
+        "10": 1.0,
+        "3": 0.7428571428571429,
+        "5": 0.8857142857142857
+      },
+      "next_state_distribution": {
+        "LOW_DOWN_STABLE": 0.2571428571428571,
+        "LOW_FLAT_STABLE": 0.05714285714285714,
+        "LOW_FLAT_TRANSITIONAL": 0.4857142857142857,
+        "MID_DOWN_STABLE": 0.02857142857142857,
+        "MID_DOWN_TRANSITIONAL": 0.08571428571428572,
+        "MID_FLAT_TRANSITIONAL": 0.08571428571428572
+      },
+      "observed_exits": 35,
+      "observed_runs": 36,
+      "stay_probability_next_step": 0.6354166666666666
+    },
+    "LOW_FLAT_STABLE": {
+      "exit_probability_next_step": 0.41335740072202165,
+      "exit_within_k_steps": {
+        "1": 0.4759825327510917,
+        "10": 0.982532751091703,
+        "3": 0.8253275109170306,
+        "5": 0.9039301310043668
+      },
+      "next_state_distribution": {
+        "HIGH_UP_CHAOTIC": 0.004366812227074236,
+        "LOW_DOWN_STABLE": 0.38427947598253276,
+        "LOW_DOWN_TRANSITIONAL": 0.021834061135371178,
+        "LOW_FLAT_TRANSITIONAL": 0.09170305676855896,
+        "LOW_UP_STABLE": 0.38427947598253276,
+        "MID_DOWN_STABLE": 0.026200873362445413,
+        "MID_DOWN_TRANSITIONAL": 0.008733624454148471,
+        "MID_FLAT_STABLE": 0.043668122270742356,
+        "MID_FLAT_TRANSITIONAL": 0.03056768558951965,
+        "MID_UP_TRANSITIONAL": 0.004366812227074236
+      },
+      "observed_exits": 229,
+      "observed_runs": 229,
+      "stay_probability_next_step": 0.5866425992779783
+    },
+    "LOW_FLAT_TRANSITIONAL": {
+      "exit_probability_next_step": 0.4850746268656716,
+      "exit_within_k_steps": {
+        "1": 0.5692307692307692,
+        "10": 1.0,
+        "3": 0.8615384615384616,
+        "5": 0.9384615384615385
+      },
+      "next_state_distribution": {
+        "LOW_DOWN_STABLE": 0.03076923076923077,
+        "LOW_DOWN_TRANSITIONAL": 0.27692307692307694,
+        "LOW_FLAT_STABLE": 0.3384615384615385,
+        "LOW_UP_STABLE": 0.03076923076923077,
+        "LOW_UP_TRANSITIONAL": 0.2153846153846154,
+        "MID_FLAT_CHAOTIC": 0.03076923076923077,
+        "MID_FLAT_STABLE": 0.015384615384615385,
+        "MID_FLAT_TRANSITIONAL": 0.06153846153846154
+      },
+      "observed_exits": 65,
+      "observed_runs": 65,
+      "stay_probability_next_step": 0.5149253731343284
+    },
+    "LOW_UP_STABLE": {
+      "exit_probability_next_step": 0.3232876712328767,
+      "exit_within_k_steps": {
+        "1": 0.3898305084745763,
+        "10": 0.9491525423728814,
+        "3": 0.6864406779661016,
+        "5": 0.8728813559322034
+      },
+      "next_state_distribution": {
+        "HIGH_UP_TRANSITIONAL": 0.00847457627118644,
+        "LOW_FLAT_STABLE": 0.7203389830508474,
+        "LOW_FLAT_TRANSITIONAL": 0.0423728813559322,
+        "LOW_UP_TRANSITIONAL": 0.07627118644067797,
+        "MID_FLAT_STABLE": 0.01694915254237288,
+        "MID_FLAT_TRANSITIONAL": 0.025423728813559324,
+        "MID_UP_STABLE": 0.06779661016949153,
+        "MID_UP_TRANSITIONAL": 0.0423728813559322
+      },
+      "observed_exits": 118,
+      "observed_runs": 118,
+      "stay_probability_next_step": 0.6767123287671233
+    },
+    "LOW_UP_TRANSITIONAL": {
+      "exit_probability_next_step": 0.4098360655737705,
+      "exit_within_k_steps": {
+        "1": 0.48,
+        "10": 1.0,
+        "3": 0.8,
+        "5": 0.92
+      },
+      "next_state_distribution": {
+        "LOW_FLAT_STABLE": 0.08,
+        "LOW_FLAT_TRANSITIONAL": 0.4,
+        "LOW_UP_STABLE": 0.24,
+        "MID_FLAT_TRANSITIONAL": 0.04,
+        "MID_UP_TRANSITIONAL": 0.24
+      },
+      "observed_exits": 25,
+      "observed_runs": 25,
+      "stay_probability_next_step": 0.5901639344262295
+    },
+    "MID_DOWN_CHAOTIC": {
+      "exit_probability_next_step": 0.4565217391304348,
+      "exit_within_k_steps": {
+        "1": 0.47619047619047616,
+        "10": 1.0,
+        "3": 0.7857142857142857,
+        "5": 0.9523809523809523
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_CHAOTIC": 0.30952380952380953,
+        "HIGH_FLAT_CHAOTIC": 0.07142857142857142,
+        "MID_DOWN_TRANSITIONAL": 0.21428571428571427,
+        "MID_FLAT_CHAOTIC": 0.35714285714285715,
+        "MID_FLAT_TRANSITIONAL": 0.047619047619047616
+      },
+      "observed_exits": 42,
+      "observed_runs": 42,
+      "stay_probability_next_step": 0.5434782608695652
+    },
+    "MID_DOWN_STABLE": {
+      "exit_probability_next_step": 0.3936170212765957,
+      "exit_within_k_steps": {
+        "1": 0.40540540540540543,
+        "10": 1.0,
+        "3": 0.6756756756756757,
+        "5": 1.0
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_STABLE": 0.02702702702702703,
+        "LOW_DOWN_STABLE": 0.16216216216216217,
+        "LOW_FLAT_STABLE": 0.05405405405405406,
+        "MID_DOWN_TRANSITIONAL": 0.21621621621621623,
+        "MID_FLAT_STABLE": 0.4864864864864865,
+        "MID_FLAT_TRANSITIONAL": 0.05405405405405406
+      },
+      "observed_exits": 37,
+      "observed_runs": 38,
+      "stay_probability_next_step": 0.6063829787234043
+    },
+    "MID_DOWN_TRANSITIONAL": {
+      "exit_probability_next_step": 0.3445378151260504,
+      "exit_within_k_steps": {
+        "1": 0.4268292682926829,
+        "10": 0.9878048780487805,
+        "3": 0.6829268292682927,
+        "5": 0.8780487804878049
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_CHAOTIC": 0.024390243902439025,
+        "HIGH_DOWN_TRANSITIONAL": 0.07317073170731707,
+        "HIGH_FLAT_CHAOTIC": 0.04878048780487805,
+        "HIGH_FLAT_TRANSITIONAL": 0.024390243902439025,
+        "LOW_DOWN_STABLE": 0.06097560975609756,
+        "LOW_DOWN_TRANSITIONAL": 0.012195121951219513,
+        "MID_DOWN_CHAOTIC": 0.06097560975609756,
+        "MID_DOWN_STABLE": 0.08536585365853659,
+        "MID_FLAT_CHAOTIC": 0.04878048780487805,
+        "MID_FLAT_STABLE": 0.024390243902439025,
+        "MID_FLAT_TRANSITIONAL": 0.5365853658536586
+      },
+      "observed_exits": 82,
+      "observed_runs": 83,
+      "stay_probability_next_step": 0.6554621848739496
+    },
+    "MID_FLAT_CHAOTIC": {
+      "exit_probability_next_step": 0.45599999999999996,
+      "exit_within_k_steps": {
+        "1": 0.5964912280701754,
+        "10": 1.0,
+        "3": 0.7894736842105263,
+        "5": 0.9473684210526315
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_CHAOTIC": 0.12280701754385964,
+        "MID_DOWN_CHAOTIC": 0.3684210526315789,
+        "MID_DOWN_TRANSITIONAL": 0.07017543859649122,
+        "MID_FLAT_TRANSITIONAL": 0.17543859649122806,
+        "MID_UP_CHAOTIC": 0.22807017543859648,
+        "MID_UP_TRANSITIONAL": 0.03508771929824561
+      },
+      "observed_exits": 57,
+      "observed_runs": 57,
+      "stay_probability_next_step": 0.544
+    },
+    "MID_FLAT_STABLE": {
+      "exit_probability_next_step": 0.4477611940298507,
+      "exit_within_k_steps": {
+        "1": 0.5166666666666667,
+        "10": 0.9833333333333333,
+        "3": 0.8333333333333334,
+        "5": 0.9666666666666667
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_CHAOTIC": 0.016666666666666666,
+        "LOW_DOWN_STABLE": 0.016666666666666666,
+        "LOW_FLAT_STABLE": 0.2833333333333333,
+        "LOW_UP_STABLE": 0.016666666666666666,
+        "MID_DOWN_STABLE": 0.23333333333333334,
+        "MID_DOWN_TRANSITIONAL": 0.06666666666666667,
+        "MID_FLAT_TRANSITIONAL": 0.13333333333333333,
+        "MID_UP_STABLE": 0.21666666666666667,
+        "MID_UP_TRANSITIONAL": 0.016666666666666666
+      },
+      "observed_exits": 60,
+      "observed_runs": 60,
+      "stay_probability_next_step": 0.5522388059701493
+    },
+    "MID_FLAT_TRANSITIONAL": {
+      "exit_probability_next_step": 0.38888888888888884,
+      "exit_within_k_steps": {
+        "1": 0.4,
+        "10": 0.9928571428571429,
+        "3": 0.8,
+        "5": 0.9071428571428571
+      },
+      "next_state_distribution": {
+        "HIGH_DOWN_CHAOTIC": 0.007142857142857143,
+        "HIGH_DOWN_TRANSITIONAL": 0.014285714285714285,
+        "HIGH_FLAT_CHAOTIC": 0.04285714285714286,
+        "HIGH_FLAT_TRANSITIONAL": 0.03571428571428571,
+        "HIGH_UP_CHAOTIC": 0.014285714285714285,
+        "HIGH_UP_TRANSITIONAL": 0.014285714285714285,
+        "LOW_DOWN_STABLE": 0.007142857142857143,
+        "LOW_FLAT_STABLE": 0.02142857142857143,
+        "LOW_FLAT_TRANSITIONAL": 0.03571428571428571,
+        "LOW_UP_STABLE": 0.007142857142857143,
+        "LOW_UP_TRANSITIONAL": 0.007142857142857143,
+        "MID_DOWN_CHAOTIC": 0.007142857142857143,
+        "MID_DOWN_STABLE": 0.02857142857142857,
+        "MID_DOWN_TRANSITIONAL": 0.3142857142857143,
+        "MID_FLAT_CHAOTIC": 0.03571428571428571,
+        "MID_FLAT_STABLE": 0.05714285714285714,
+        "MID_UP_CHAOTIC": 0.02142857142857143,
+        "MID_UP_STABLE": 0.02857142857142857,
+        "MID_UP_TRANSITIONAL": 0.3
+      },
+      "observed_exits": 140,
+      "observed_runs": 141,
+      "stay_probability_next_step": 0.6111111111111112
+    },
+    "MID_UP_CHAOTIC": {
+      "exit_probability_next_step": 0.32183908045977017,
+      "exit_within_k_steps": {
+        "1": 0.25,
+        "10": 1.0,
+        "3": 0.7142857142857143,
+        "5": 0.8571428571428571
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_CHAOTIC": 0.07142857142857142,
+        "HIGH_UP_CHAOTIC": 0.10714285714285714,
+        "MID_FLAT_CHAOTIC": 0.4642857142857143,
+        "MID_UP_TRANSITIONAL": 0.35714285714285715
+      },
+      "observed_exits": 28,
+      "observed_runs": 28,
+      "stay_probability_next_step": 0.6781609195402298
+    },
+    "MID_UP_STABLE": {
+      "exit_probability_next_step": 0.4545454545454546,
+      "exit_within_k_steps": {
+        "1": 0.45714285714285713,
+        "10": 1.0,
+        "3": 0.8,
+        "5": 0.9428571428571428
+      },
+      "next_state_distribution": {
+        "HIGH_UP_TRANSITIONAL": 0.02857142857142857,
+        "LOW_FLAT_STABLE": 0.05714285714285714,
+        "LOW_UP_STABLE": 0.3142857142857143,
+        "MID_FLAT_STABLE": 0.4857142857142857,
+        "MID_UP_TRANSITIONAL": 0.11428571428571428
+      },
+      "observed_exits": 35,
+      "observed_runs": 35,
+      "stay_probability_next_step": 0.5454545454545454
+    },
+    "MID_UP_TRANSITIONAL": {
+      "exit_probability_next_step": 0.302158273381295,
+      "exit_within_k_steps": {
+        "1": 0.25,
+        "10": 0.9761904761904762,
+        "3": 0.6071428571428571,
+        "5": 0.8690476190476191
+      },
+      "next_state_distribution": {
+        "HIGH_FLAT_TRANSITIONAL": 0.023809523809523808,
+        "HIGH_UP_TRANSITIONAL": 0.03571428571428571,
+        "LOW_FLAT_STABLE": 0.047619047619047616,
+        "LOW_FLAT_TRANSITIONAL": 0.03571428571428571,
+        "LOW_UP_STABLE": 0.10714285714285714,
+        "LOW_UP_TRANSITIONAL": 0.011904761904761904,
+        "MID_FLAT_CHAOTIC": 0.011904761904761904,
+        "MID_FLAT_TRANSITIONAL": 0.5,
+        "MID_UP_CHAOTIC": 0.10714285714285714,
+        "MID_UP_STABLE": 0.11904761904761904
+      },
+      "observed_exits": 84,
+      "observed_runs": 84,
+      "stay_probability_next_step": 0.697841726618705
+    }
+  },
+  "half_life_estimates": {
+    "histogram_per_state_class": {
+      "stress": {
+        "CHAOTIC": {
+          "1_to_3": 6
+        },
+        "STABLE": {
+          "0_to_1": 1,
+          "1_to_3": 6
+        },
+        "TRANSITIONAL": {
+          "1_to_3": 9
+        }
+      },
+      "trend": {
+        "DOWN": {
+          "0_to_1": 1,
+          "1_to_3": 7
+        },
+        "FLAT": {
+          "1_to_3": 7
+        },
+        "UP": {
+          "1_to_3": 7
+        }
+      },
+      "volatility": {
+        "HIGH": {
+          "0_to_1": 1,
+          "1_to_3": 6
+        },
+        "LOW": {
+          "1_to_3": 6
+        },
+        "MID": {
+          "1_to_3": 9
+        }
+      }
+    },
+    "per_state": {
+      "HIGH_DOWN_CHAOTIC": 2.3403037288776125,
+      "HIGH_DOWN_STABLE": 0.0,
+      "HIGH_DOWN_TRANSITIONAL": 1.031325106845082,
+      "HIGH_FLAT_CHAOTIC": 1.6875481488666593,
+      "HIGH_FLAT_TRANSITIONAL": 1.0464565154503334,
+      "HIGH_UP_CHAOTIC": 2.335155549209351,
+      "HIGH_UP_TRANSITIONAL": 1.226128160082792,
+      "LOW_DOWN_STABLE": 1.3379359188729218,
+      "LOW_DOWN_TRANSITIONAL": 1.528525737488456,
+      "LOW_FLAT_STABLE": 1.2996359257447525,
+      "LOW_FLAT_TRANSITIONAL": 1.0443158199418352,
+      "LOW_UP_STABLE": 1.7749838043833996,
+      "LOW_UP_TRANSITIONAL": 1.3143845762268496,
+      "MID_DOWN_CHAOTIC": 1.136743714010294,
+      "MID_DOWN_STABLE": 1.3856195244074112,
+      "MID_DOWN_TRANSITIONAL": 1.6409164635102438,
+      "MID_FLAT_CHAOTIC": 1.1385353363520363,
+      "MID_FLAT_STABLE": 1.1673572024609467,
+      "MID_FLAT_TRANSITIONAL": 1.407472643942183,
+      "MID_UP_CHAOTIC": 1.7847567430475058,
+      "MID_UP_STABLE": 1.1435509608195185,
+      "MID_UP_TRANSITIONAL": 1.9266774737215528
+    }
+  },
+  "mean_state_duration_per_symbol": {
+    "BTCUSDT": {
+      "max_duration": 15.0,
+      "mean_duration": 2.8615384615384616,
+      "median_duration": 2.0,
+      "run_count": 260
+    },
+    "DOGEUSDT": {
+      "max_duration": 24.0,
+      "mean_duration": 2.9176470588235293,
+      "median_duration": 2.0,
+      "run_count": 255
+    },
+    "ETHUSDT": {
+      "max_duration": 20.0,
+      "mean_duration": 2.6013986013986012,
+      "median_duration": 2.0,
+      "run_count": 286
+    },
+    "LINKUSDT": {
+      "max_duration": 17.0,
+      "mean_duration": 2.6382978723404253,
+      "median_duration": 2.0,
+      "run_count": 282
+    },
+    "SOLUSDT": {
+      "max_duration": 16.0,
+      "mean_duration": 2.90625,
+      "median_duration": 2.0,
+      "run_count": 256
+    },
+    "XRPUSDT": {
+      "max_duration": 20.0,
+      "mean_duration": 2.6859205776173285,
+      "median_duration": 2.0,
+      "run_count": 277
+    }
+  },
+  "per_state_duration_stats": {
+    "HIGH_DOWN_CHAOTIC": {
+      "max_duration": 16.0,
+      "mean_duration": 3.872549019607843,
+      "median_duration": 2.5,
+      "min_duration": 1.0,
+      "run_count": 102
+    },
+    "HIGH_DOWN_STABLE": {
+      "max_duration": 1.0,
+      "mean_duration": 1.0,
+      "median_duration": 1.0,
+      "min_duration": 1.0,
+      "run_count": 1
+    },
+    "HIGH_DOWN_TRANSITIONAL": {
+      "max_duration": 7.0,
+      "mean_duration": 2.0434782608695654,
+      "median_duration": 1.0,
+      "min_duration": 1.0,
+      "run_count": 23
+    },
+    "HIGH_FLAT_CHAOTIC": {
+      "max_duration": 17.0,
+      "mean_duration": 2.9585492227979273,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 193
+    },
+    "HIGH_FLAT_TRANSITIONAL": {
+      "max_duration": 6.0,
+      "mean_duration": 2.064516129032258,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 31
+    },
+    "HIGH_UP_CHAOTIC": {
+      "max_duration": 24.0,
+      "mean_duration": 3.893617021276596,
+      "median_duration": 3.0,
+      "min_duration": 1.0,
+      "run_count": 94
+    },
+    "HIGH_UP_TRANSITIONAL": {
+      "max_duration": 9.0,
+      "mean_duration": 2.3157894736842106,
+      "median_duration": 1.0,
+      "min_duration": 1.0,
+      "run_count": 19
+    },
+    "LOW_DOWN_STABLE": {
+      "max_duration": 13.0,
+      "mean_duration": 2.4732142857142856,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 112
+    },
+    "LOW_DOWN_TRANSITIONAL": {
+      "max_duration": 10.0,
+      "mean_duration": 2.6944444444444446,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 36
+    },
+    "LOW_FLAT_STABLE": {
+      "max_duration": 17.0,
+      "mean_duration": 2.4192139737991267,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 229
+    },
+    "LOW_FLAT_TRANSITIONAL": {
+      "max_duration": 8.0,
+      "mean_duration": 2.0615384615384613,
+      "median_duration": 1.0,
+      "min_duration": 1.0,
+      "run_count": 65
+    },
+    "LOW_UP_STABLE": {
+      "max_duration": 20.0,
+      "mean_duration": 3.093220338983051,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 118
+    },
+    "LOW_UP_TRANSITIONAL": {
+      "max_duration": 10.0,
+      "mean_duration": 2.44,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 25
+    },
+    "MID_DOWN_CHAOTIC": {
+      "max_duration": 7.0,
+      "mean_duration": 2.1904761904761907,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 42
+    },
+    "MID_DOWN_STABLE": {
+      "max_duration": 5.0,
+      "mean_duration": 2.5,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 38
+    },
+    "MID_DOWN_TRANSITIONAL": {
+      "max_duration": 12.0,
+      "mean_duration": 2.8795180722891565,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 83
+    },
+    "MID_FLAT_CHAOTIC": {
+      "max_duration": 10.0,
+      "mean_duration": 2.192982456140351,
+      "median_duration": 1.0,
+      "min_duration": 1.0,
+      "run_count": 57
+    },
+    "MID_FLAT_STABLE": {
+      "max_duration": 12.0,
+      "mean_duration": 2.2333333333333334,
+      "median_duration": 1.0,
+      "min_duration": 1.0,
+      "run_count": 60
+    },
+    "MID_FLAT_TRANSITIONAL": {
+      "max_duration": 13.0,
+      "mean_duration": 2.5602836879432624,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 141
+    },
+    "MID_UP_CHAOTIC": {
+      "max_duration": 10.0,
+      "mean_duration": 3.107142857142857,
+      "median_duration": 3.0,
+      "min_duration": 1.0,
+      "run_count": 28
+    },
+    "MID_UP_STABLE": {
+      "max_duration": 7.0,
+      "mean_duration": 2.2,
+      "median_duration": 2.0,
+      "min_duration": 1.0,
+      "run_count": 35
+    },
+    "MID_UP_TRANSITIONAL": {
+      "max_duration": 12.0,
+      "mean_duration": 3.3095238095238093,
+      "median_duration": 3.0,
+      "min_duration": 1.0,
+      "run_count": 84
+    }
+  },
+  "source_constraints": {
+    "external_sources_used": false,
+    "input_layers": [
+      "market_state_labeling_v1",
+      "state_transition_model_v1",
+      "expanded_dataset_v1"
+    ],
+    "new_features_created": false,
+    "optimization_used": false,
+    "price_prediction_model_used": false,
+    "reinforcement_learning_used": false,
+    "trading_logic_used": false
+  },
+  "stability_entropy_metrics": {
+    "global_exit_entropy": 4.064076796514791,
+    "mean_state_stability_score": 45454545.97456413,
+    "per_state": {
+      "HIGH_DOWN_CHAOTIC": {
+        "exit_entropy": 1.1895245962802252,
+        "stability_score": 0.8406719820061817
+      },
+      "HIGH_DOWN_STABLE": {
+        "exit_entropy": -0.0,
+        "stability_score": 999999999.9999999
+      },
+      "HIGH_DOWN_TRANSITIONAL": {
+        "exit_entropy": 1.9939615444316199,
+        "stability_score": 0.5015141855632179
+      },
+      "HIGH_FLAT_CHAOTIC": {
+        "exit_entropy": 1.9071716102900846,
+        "stability_score": 0.5243366640969965
+      },
+      "HIGH_FLAT_TRANSITIONAL": {
+        "exit_entropy": 2.537660523830641,
+        "stability_score": 0.3940637412330012
+      },
+      "HIGH_UP_CHAOTIC": {
+        "exit_entropy": 0.8546685033782224,
+        "stability_score": 1.170044287401876
+      },
+      "HIGH_UP_TRANSITIONAL": {
+        "exit_entropy": 1.7002237262558646,
+        "stability_score": 0.5881578903748995
+      },
+      "LOW_DOWN_STABLE": {
+        "exit_entropy": 1.3833907387862052,
+        "stability_score": 0.7228615690151328
+      },
+      "LOW_DOWN_TRANSITIONAL": {
+        "exit_entropy": 1.9999696364145803,
+        "stability_score": 0.5000075910116001
+      },
+      "LOW_FLAT_STABLE": {
+        "exit_entropy": 2.1139251346447216,
+        "stability_score": 0.4730536496355467
+      },
+      "LOW_FLAT_TRANSITIONAL": {
+        "exit_entropy": 2.32284297387786,
+        "stability_score": 0.4305069310520609
+      },
+      "LOW_UP_STABLE": {
+        "exit_entropy": 1.5665267524489384,
+        "stability_score": 0.6383548818663379
+      },
+      "LOW_UP_TRANSITIONAL": {
+        "exit_entropy": 1.9943029514736248,
+        "stability_score": 0.5014283307664379
+      },
+      "MID_DOWN_CHAOTIC": {
+        "exit_entropy": 2.0115248564667065,
+        "stability_score": 0.4971352935486588
+      },
+      "MID_DOWN_STABLE": {
+        "exit_entropy": 2.004901337783313,
+        "stability_score": 0.4987776611020839
+      },
+      "MID_DOWN_TRANSITIONAL": {
+        "exit_entropy": 2.447850399402902,
+        "stability_score": 0.4085216973406248
+      },
+      "MID_FLAT_CHAOTIC": {
+        "exit_entropy": 2.2677119857881625,
+        "stability_score": 0.44097310693202585
+      },
+      "MID_FLAT_STABLE": {
+        "exit_entropy": 2.525298036510245,
+        "stability_score": 0.3959928632352315
+      },
+      "MID_FLAT_TRANSITIONAL": {
+        "exit_entropy": 3.0397059140255855,
+        "stability_score": 0.32897919347588006
+      },
+      "MID_UP_CHAOTIC": {
+        "exit_entropy": 1.6616447510979153,
+        "stability_score": 0.6018133535096837
+      },
+      "MID_UP_STABLE": {
+        "exit_entropy": 1.7709796996230796,
+        "stability_score": 0.5646592110642666
+      },
+      "MID_UP_TRANSITIONAL": {
+        "exit_entropy": 2.3891622116374496,
+        "stability_score": 0.4185567623366328
+      }
+    }
+  },
+  "stability_ranking_of_states": {
+    "most_persistent": [
+      {
+        "exit_entropy": 0.8546685033782224,
+        "half_life_steps": 2.335155549209351,
+        "mean_duration": 3.893617021276596,
+        "stability_score": 1.170044287401876,
+        "state": "HIGH_UP_CHAOTIC",
+        "stay_probability_next_step": 0.7431693989071039
+      },
+      {
+        "exit_entropy": 1.1895245962802252,
+        "half_life_steps": 2.3403037288776125,
+        "mean_duration": 3.872549019607843,
+        "stability_score": 0.8406719820061817,
+        "state": "HIGH_DOWN_CHAOTIC",
+        "stay_probability_next_step": 0.7436548223350253
+      },
+      {
+        "exit_entropy": 2.3891622116374496,
+        "half_life_steps": 1.9266774737215528,
+        "mean_duration": 3.3095238095238093,
+        "stability_score": 0.4185567623366328,
+        "state": "MID_UP_TRANSITIONAL",
+        "stay_probability_next_step": 0.697841726618705
+      },
+      {
+        "exit_entropy": 1.6616447510979153,
+        "half_life_steps": 1.7847567430475058,
+        "mean_duration": 3.107142857142857,
+        "stability_score": 0.6018133535096837,
+        "state": "MID_UP_CHAOTIC",
+        "stay_probability_next_step": 0.6781609195402298
+      },
+      {
+        "exit_entropy": 1.5665267524489384,
+        "half_life_steps": 1.7749838043833996,
+        "mean_duration": 3.093220338983051,
+        "stability_score": 0.6383548818663379,
+        "state": "LOW_UP_STABLE",
+        "stay_probability_next_step": 0.6767123287671233
+      }
+    ],
+    "most_transient": [
+      {
+        "exit_entropy": -0.0,
+        "half_life_steps": 0.0,
+        "mean_duration": 1.0,
+        "stability_score": 999999999.9999999,
+        "state": "HIGH_DOWN_STABLE",
+        "stay_probability_next_step": 0.0
+      },
+      {
+        "exit_entropy": 1.9939615444316199,
+        "half_life_steps": 1.031325106845082,
+        "mean_duration": 2.0434782608695654,
+        "stability_score": 0.5015141855632179,
+        "state": "HIGH_DOWN_TRANSITIONAL",
+        "stay_probability_next_step": 0.5106382978723404
+      },
+      {
+        "exit_entropy": 2.32284297387786,
+        "half_life_steps": 1.0443158199418352,
+        "mean_duration": 2.0615384615384613,
+        "stability_score": 0.4305069310520609,
+        "state": "LOW_FLAT_TRANSITIONAL",
+        "stay_probability_next_step": 0.5149253731343284
+      },
+      {
+        "exit_entropy": 2.537660523830641,
+        "half_life_steps": 1.0464565154503334,
+        "mean_duration": 2.064516129032258,
+        "stability_score": 0.3940637412330012,
+        "state": "HIGH_FLAT_TRANSITIONAL",
+        "stay_probability_next_step": 0.515625
+      },
+      {
+        "exit_entropy": 2.0115248564667065,
+        "half_life_steps": 1.136743714010294,
+        "mean_duration": 2.1904761904761907,
+        "stability_score": 0.4971352935486588,
+        "state": "MID_DOWN_CHAOTIC",
+        "stay_probability_next_step": 0.5434782608695652
+      }
+    ],
+    "most_volatile_exit_distribution": [
+      {
+        "exit_entropy": 3.0397059140255855,
+        "half_life_steps": 1.407472643942183,
+        "mean_duration": 2.5602836879432624,
+        "stability_score": 0.32897919347588006,
+        "state": "MID_FLAT_TRANSITIONAL",
+        "stay_probability_next_step": 0.6111111111111112
+      },
+      {
+        "exit_entropy": 2.537660523830641,
+        "half_life_steps": 1.0464565154503334,
+        "mean_duration": 2.064516129032258,
+        "stability_score": 0.3940637412330012,
+        "state": "HIGH_FLAT_TRANSITIONAL",
+        "stay_probability_next_step": 0.515625
+      },
+      {
+        "exit_entropy": 2.525298036510245,
+        "half_life_steps": 1.1673572024609467,
+        "mean_duration": 2.2333333333333334,
+        "stability_score": 0.3959928632352315,
+        "state": "MID_FLAT_STABLE",
+        "stay_probability_next_step": 0.5522388059701493
+      },
+      {
+        "exit_entropy": 2.447850399402902,
+        "half_life_steps": 1.6409164635102438,
+        "mean_duration": 2.8795180722891565,
+        "stability_score": 0.4085216973406248,
+        "state": "MID_DOWN_TRANSITIONAL",
+        "stay_probability_next_step": 0.6554621848739496
+      },
+      {
+        "exit_entropy": 2.3891622116374496,
+        "half_life_steps": 1.9266774737215528,
+        "mean_duration": 3.3095238095238093,
+        "stability_score": 0.4185567623366328,
+        "state": "MID_UP_TRANSITIONAL",
+        "stay_probability_next_step": 0.697841726618705
+      }
+    ]
+  },
+  "state_label_rows": 4464,
+  "symbols": 6,
+  "transition_model_consistency": {
+    "matches_state_transition_model_v1": true,
+    "mismatch_count": 0,
+    "mismatches": {}
+  },
+  "unique_states": 22
+}
